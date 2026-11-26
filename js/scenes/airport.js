@@ -544,6 +544,27 @@ export async function airportScene(game) {
     scene.add(n.group);
     npcs.push({ p: n, dir: i % 2 ? 1 : -1, speed: 1 + Math.random() });
   }
+  // three more travelers crossing the hall at different depths
+  for (let i = 0; i < 3; i++) {
+    const n = makePerson({ top: [0x8a6a3a, 0x3a6a7a, 0x7a3a5a][i], bottom: 0x333340, hair: [0x2a1a12, 0x14100c, 0x54382a][i], hairStyle: i % 2 ? 'short' : 'long', skin: [0xd8a878, 0xe8c098, 0xb87a50][i] });
+    n.group.position.set(-14 + i * 11, 0, 7 - (i % 2) * 3);
+    scene.add(n.group);
+    npcs.push({ p: n, dir: i % 2 ? -1 : 1, speed: 0.8 + Math.random() });
+  }
+  // foreground seating bank near the windows so the hall doesn't read empty
+  for (const rowX of [-14, 14]) {
+    for (let i = 0; i < 4; i++) {
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), mat(0x24448f));
+      seat.scale.set(1, 0.9, 0.9);
+      seat.position.set(rowX - 1.5 + i * 1.05, 0.45, 4.5);
+      scene.add(seat);
+    }
+    const rb = new THREE.Mesh(new THREE.BoxGeometry(4.4, 1, 1), mat(0x24448f));
+    rb.position.set(rowX, 0.5, 4.5);
+    rb.visible = false;
+    scene.add(rb);
+    solid(rb);
+  }
 
   const followCam = new FollowCam(camera);
   followCam.snap(christian.group.position);

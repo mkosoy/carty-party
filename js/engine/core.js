@@ -94,7 +94,7 @@ export class GuideMarker {
     // light column down to the ground
     const col = new THREE.Mesh(
       new THREE.CylinderGeometry(0.3, 0.52, 5.6, 12, 1, true),
-      new THREE.MeshBasicMaterial({ color: 0xffd663, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false })
+      new THREE.MeshBasicMaterial({ color: 0xffd663, transparent: true, opacity: 0.09, side: THREE.DoubleSide, depthWrite: false })
     );
     col.position.y = 2.8;
     this.group.add(col);

@@ -1,4 +1,10 @@
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { VignetteShader } from 'three/addons/shaders/VignetteShader.js';
 import { Input } from './engine/input.js';
 import { Dialogue } from './engine/core.js';
 import { cropPhotoSquare } from './engine/character.js';
@@ -16,6 +22,26 @@ renderer.toneMappingExposure = 1.15;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement);
+
+// cinematic post pipeline: bloom for emissive/neon, vignette for focus
+const composer = new EffectComposer(renderer);
+let renderPass = null;
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.32, 0.55, 0.88);
+const vignettePass = new ShaderPass(VignetteShader);
+vignettePass.uniforms.offset.value = 0.92;
+vignettePass.uniforms.darkness.value = 1.25;
+const outputPass = new OutputPass();
+function rebuildComposer() {
+  composer.passes = [];
+  if (game && game.scene) {
+    renderPass = new RenderPass(game.scene, camera);
+    composer.addPass(renderPass);
+    composer.addPass(bloomPass);
+    composer.addPass(vignettePass);
+    composer.addPass(outputPass);
+  }
+}
+window.addEventListener('resize', () => composer.setSize(window.innerWidth, window.innerHeight));
 
 const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 400);
 
@@ -67,6 +93,7 @@ const game = {
     this.scene = new THREE.Scene();
     window.__sceneName = factory.name;
     this.sceneApi = await factory(this);
+    rebuildComposer();
   },
 };
 
@@ -84,7 +111,10 @@ function loop() {
 function tick() {
   const dt = Math.min(clock.getDelta(), 0.05);
   if (game.sceneApi?.update) game.sceneApi.update(dt);
-  if (game.scene) renderer.render(game.scene, camera);
+  if (game.scene) {
+    if (composer.passes.length) composer.render();
+    else renderer.render(game.scene, camera);
+  }
 }
 
 const titleFx = initTitle();

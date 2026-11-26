@@ -130,11 +130,11 @@ export async function houseScene(game) {
     if (ry) c.rotation.y = ry;
     parent.add(c);
   }
-  wallArt(ground, -2, 2.0, 5.85, 1.0, 0.8, 0x4a6a8a);
-  wallArt(ground, 0.5, 2.0, 5.85, 0.8, 1.0, 0x8a5a3a);
-  wallArt(ground, 2.5, 2.1, 5.85, 1.2, 0.7, 0x3a6a4a);
+  wallArt(ground, -2, 2.0, 5.85, 1.0, 0.8, 0x7ab0d0);
+  wallArt(ground, 0.5, 2.0, 5.85, 0.8, 1.0, 0xd09060);
+  wallArt(ground, 2.5, 2.1, 5.85, 1.2, 0.7, 0x70b080);
   wallArt(ground, -7.85, 2.0, -1, 1.0, 0.9, 0x9a7a4a, Math.PI / 2);
-  wallArt(upper, 0, 2.0, 5.85, 1.4, 0.9, 0x6a5a8a);
+  wallArt(upper, 0, 2.0, 5.85, 1.4, 0.9, 0xa090d0);
   // table lamps with warm glow
   function lamp(parent, x, y, z) {
     const base = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.1, 0.3, 8), mat(0x5a4a3a));
@@ -184,7 +184,7 @@ export async function houseScene(game) {
   }
   // ceiling light fixtures
   for (const [fx, fz, fl] of [[0, 0, ground], [0, 0, upper]]) {
-    const fix = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), new THREE.MeshStandardMaterial({ color: 0xfff2cc, emissive: 0xffe9b0, emissiveIntensity: 0.8 }));
+    const fix = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), new THREE.MeshStandardMaterial({ color: 0xfff2cc, emissive: 0xffe9b0, emissiveIntensity: 0.35 }));
     fix.position.set(fx, 3.1, fz);
     fl.add(fix);
   }
@@ -454,7 +454,7 @@ export async function houseScene(game) {
 
   // start: walk in the front door
   showFloor('ground');
-  christian.group.position.set(-4.5, 0, 0.5);
+  christian.group.position.set(0.5, 0, -0.5);
   christian.group.rotation.y = Math.PI;
   followCam.snap(christian.group.position);
 

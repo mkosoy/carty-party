@@ -312,6 +312,7 @@ export async function houseScene(game) {
   const player = new PlayerController(christian, input, boundsByFloor.ground);
   const interactions = new Interactions();
   const guide = new GuideMarker(scene);
+  guide.setTarget(-3, 2);
 
   // start: walk in the front door
   showFloor('ground');
@@ -347,6 +348,7 @@ export async function houseScene(game) {
         { speaker: 'Jim', text: 'She’s upstairs.' },
         { speaker: 'Jim', text: '…Help yourself to a cookie on the way out. Stacy’s mom made them. They’re the good ones.' },
       ]);
+      guide.setTarget(6, 4);
       showObjective('Upstairs — the stair landing is in the corner.', 4500);
       player.frozen = false;
     },
@@ -413,6 +415,7 @@ export async function houseScene(game) {
         { speaker: 'Christian', text: 'Sure, no problem.' },
       ]);
       items.main = true;
+      guide.setTarget(-5, 3.8);
       showObjective('Pile collected ✓ — now the room across the hall.', 4500);
       player.frozen = false;
     },
@@ -448,6 +451,7 @@ export async function houseScene(game) {
             { speaker: 'Olivia #2', text: 'The item’s downstairs, by the way. In the basement.' },
           ]);
           items.photoDone = true;
+          guide.setTarget(6, 4);
           showObjective('To the basement — take the stairs.', 4500);
         } else {
           await dialogue.play([
@@ -472,6 +476,7 @@ export async function houseScene(game) {
         { speaker: 'Tre', text: 'It’s warm down here. That’s the thing people don’t understand about basements.' },
       ]);
       items.treItem = true;
+      guide.setTarget(-6.5, 5.4);
       showObjective('All items collected ✓ — back to the car. Baltimore awaits.', 5000);
       player.frozen = false;
       // enable exit

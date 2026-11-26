@@ -347,6 +347,20 @@ export async function swapScene(game) {
         { speaker: 'Christian', text: 'I don’t even know where to start. Anyway — where do you want these?' },
         { speaker: 'Stacy', text: 'Just drop them over there, babe.' },
       ]);
+      // vintage camera payoff — the whole reason christian was collecting them
+      const inv2 = inventory();
+      if (inv2.cameras > 0) {
+        const camLines = [
+          { speaker: 'Christian', text: 'Oh — before I forget. I found some vintage cameras on the way. For you.' },
+          { speaker: 'Stacy', text: inv2.cameras >= 5
+              ? 'WAIT. Five?! Christian — the film grain on these is going to be INSANE. This is the best swap ever.'
+              : inv2.cameras >= 2
+                ? 'Babe!! Vintage?! These are going to shoot SO well. You know me too well.'
+                : 'Ooh — vintage! Look at this little lens. Thank you, babe.' },
+        ];
+        if (inv2.cameras >= 5) camLines.push({ speaker: 'Stacy', text: 'Full collection energy. TikTok is going to lose its mind.' });
+        await dialogue.play(camLines);
+      }
       state.met = true;
       showObjective('Hang the clothes on the marked rack — 4 pieces.', 5000);
       hangInt.hidden = false;

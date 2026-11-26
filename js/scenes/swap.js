@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { makePerson } from '../engine/character.js';
+import { brickWall, concrete } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
 
 // Scene 4 — the swap. A Baltimore brewery venue: brick + string lights +
@@ -21,17 +22,17 @@ export async function swapScene(game) {
   const bounds = [];
 
   // big open brewery floor: brick walls, industrial windows, string lights
-  const floor = new THREE.Mesh(new THREE.BoxGeometry(34, 0.2, 24), mat(0x6e5238));
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(34, 0.2, 24), new THREE.MeshStandardMaterial({ map: concrete('#8a7a68', 5, 3.5), roughness: 0.9 }));
   floor.receiveShadow = true;
   scene.add(floor);
-  const wallN = new THREE.Mesh(new THREE.BoxGeometry(34, 6, 0.4), mat(0x7a4436));
+  const wallN = new THREE.Mesh(new THREE.BoxGeometry(34, 6, 0.4), new THREE.MeshStandardMaterial({ map: brickWall('#7a4436', 5, 1.2), roughness: 0.95 }));
   wallN.position.set(0, 3, -12);
   scene.add(wallN);
-  const wallS = new THREE.Mesh(new THREE.BoxGeometry(34, 6, 0.4), mat(0x7a4436));
+  const wallS = new THREE.Mesh(new THREE.BoxGeometry(34, 6, 0.4), new THREE.MeshStandardMaterial({ map: brickWall('#7a4436', 5, 1.2), roughness: 0.95 }));
   wallS.position.set(0, 3, 12);
   scene.add(wallS);
   for (const sx of [-1, 1]) {
-    const w = new THREE.Mesh(new THREE.BoxGeometry(0.4, 6, 24), mat(0x74402f));
+    const w = new THREE.Mesh(new THREE.BoxGeometry(0.4, 6, 24), new THREE.MeshStandardMaterial({ map: brickWall('#74402f', 3.5, 1.2), roughness: 0.95 }));
     w.position.set(sx * 17, 3, 0);
     scene.add(w);
   }
@@ -139,11 +140,11 @@ export async function swapScene(game) {
   }
 
   // player + Stacy (filming a tiktok with her friend near the entrance)
-  const christian = makePerson({ photo: faces.christian, top: 0x8a6d4b, bottom: 0x2e2e38, hair: 0x54382a, hairStyle: 'short', skin: 0xe0b088 });
+  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088 });
   christian.group.position.set(0, 0, 4);
   scene.add(christian.group);
 
-  const stacy = makePerson({ photo: faces.stacy, top: 0x1a1a1a, bottom: 0x1a1a1a, hair: 0x2a1a12, hairStyle: 'long', skin: 0xe8c098 });
+  const stacy = makePerson({ photo: faces.stacy, top: 0x4a7a52, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098 });
   stacy.group.position.set(-4, 0, 8);
   scene.add(stacy.group);
   const friend = makePerson({ top: 0xd0a0b8, skin: 0xd8a878, hair: 0x5a3a1a, hairStyle: 'long' });

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { makePerson } from '../engine/character.js';
+import { concrete } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, phoneOverlay, choice } from '../engine/core.js';
 
 // Scene 1 — Washington Dulles. Long concourse, big windows looking at snow,
@@ -12,6 +13,7 @@ export async function airportScene(game) {
   scene.fog = new THREE.Fog(0x2a3a55, 45, 130);
 
   // lighting: cool terminal light + warm spots
+  scene.add(new THREE.HemisphereLight(0xdde8ff, 0x8a8078, 0.5));
   scene.add(new THREE.AmbientLight(0xd8e2f2, 0.85));
   const sun = new THREE.DirectionalLight(0xfff2d8, 0.9);
   sun.position.set(8, 14, -6);
@@ -28,7 +30,7 @@ export async function airportScene(game) {
   };
 
   // floor: polished terrazzo-ish
-  const floor = new THREE.Mesh(new THREE.BoxGeometry(60, 0.2, 26), mat(0x9aa0b4));
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(60, 0.2, 26), new THREE.MeshStandardMaterial({ map: concrete('#a8aec0', 8, 3.5), roughness: 0.35, metalness: 0.15 }));
   floor.position.y = -0.1;
   floor.receiveShadow = true;
   scene.add(floor);
@@ -234,9 +236,125 @@ export async function airportScene(game) {
   const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.12 }));
   scene.add(snow);
 
+  // ---- density pass: detailed seating, gate counters, ads, travelers ----
+  function seatRow(x, z, count, facing = 1) {
+    const grp = new THREE.Group();
+    for (let i = 0; i < count; i++) {
+      const seat = new THREE.Group();
+      const base = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.1, 0.6), mat(0x24448f));
+      base.position.y = 0.48;
+      const back = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.62, 0.09), mat(0x24448f));
+      back.position.set(0, 0.82, -0.26 * facing);
+      const legs = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.44, 0.08), mat(0x2a2e3a));
+      legs.position.y = 0.22;
+      const armL = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.1, 0.55), mat(0x1a1e28));
+      armL.position.set(-0.31, 0.56, 0);
+      const armR = armL.clone();
+      armR.position.x = 0.31;
+      seat.add(base, back, legs, armL, armR);
+      seat.position.x = i * 0.68;
+      if (facing < 0) seat.rotation.y = Math.PI;
+      grp.add(seat);
+    }
+    grp.position.set(x, 0, z);
+    scene.add(grp);
+    return grp;
+  }
+  // rows facing each other across the concourse
+  seatRow(-14, -6.5, 8, 1);
+  seatRow(-14, -4.2, 8, -1);
+  seatRow(2, -6.5, 8, 1);
+  seatRow(2, -4.2, 8, -1);
+  seatRow(-6, 3.5, 7, 1);
+  seatRow(8, 3.5, 7, 1);
+
+  // gate podium counters along the window
+  for (const gx of [-18, 6, 20]) {
+    const counter = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.1, 0.6), mat(0x39404f));
+    counter.position.set(gx, 0.55, -10.5);
+    scene.add(counter);
+    const screen = textSign('C' + (8 + Math.floor(Math.random() * 20)), 1.2, 0.8, '#101826', '#7fd0ff', 90);
+    screen.position.set(gx, 2.6, -10.5);
+    scene.add(screen);
+    const pole = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.5, 0.08), mat(0x2a2e3a));
+    pole.position.set(gx, 1.4, -10.5);
+    scene.add(pole);
+  }
+
+  // glowing ad lightboxes on the south wall
+  function lightbox(x, title, color1, color2) {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 384;
+    const ctx = c.getContext('2d');
+    const grad = ctx.createLinearGradient(0, 0, 0, 384);
+    grad.addColorStop(0, color1);
+    grad.addColorStop(1, color2);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 256, 384);
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    ctx.font = 'bold 30px Georgia';
+    ctx.textAlign = 'center';
+    ctx.fillText(title, 128, 340);
+    const tex = new THREE.CanvasTexture(c);
+    const boxM = new THREE.Mesh(new THREE.BoxGeometry(1.8, 2.7, 0.18), new THREE.MeshBasicMaterial({ map: tex }));
+    boxM.position.set(x, 2.2, 12.55);
+    scene.add(boxM);
+  }
+  lightbox(-18, 'YO YOGI', '#d04030', '#701810');
+  lightbox(-10, 'MoCo', '#2a5a8a', '#102a4a');
+  lightbox(16, 'swap.season', '#7a4a8a', '#2a1a3a');
+
+  // travelers with roller bags
+  function rollerBag(parent, x, z, color) {
+    const bag = new THREE.Group();
+    const bodyM = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.6, 0.25), mat(color));
+    bodyM.position.y = 0.36;
+    const handle = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.5, 0.04), mat(0x888888));
+    handle.position.set(0, 0.85, -0.1);
+    handle.rotation.x = 0.3;
+    const w1 = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), mat(0x111111));
+    w1.position.set(-0.12, 0.05, 0);
+    const w2 = w1.clone();
+    w2.position.x = 0.12;
+    bag.add(bodyM, handle, w1, w2);
+    bag.position.set(x, 0, z);
+    parent.add(bag);
+    return bag;
+  }
+
+  // a few static travelers waiting at seats/windows
+  const staticLooks = [
+    { x: -12, z: -5.4, top: 0x8a4a5a, hair: 0x2a1a12, hairStyle: 'long', skin: 0xd8a878, sitz: true },
+    { x: 3.4, z: -5.4, top: 0x3a4a6a, hair: 0x14100c, hairStyle: 'short', skin: 0x8a5a3a },
+    { x: 15, z: -9.5, top: 0x777770, hair: 0x54382a, hairStyle: 'receding', skin: 0xe0b088, bagColor: 0x8a2f2f },
+    { x: -20, z: 1, top: 0x4a6a4a, hair: 0x0e0c0a, hairStyle: 'curly', skin: 0xb87a50, bagColor: 0x2c3140 },
+  ];
+  for (const look of staticLooks) {
+    const p = makePerson(look);
+    p.group.position.set(look.x, 0, look.z);
+    p.group.rotation.y = Math.random() * Math.PI * 2;
+    scene.add(p.group);
+    if (look.bagColor) rollerBag(scene, look.x + 0.6, look.z + 0.2, look.bagColor);
+  }
+
+  // planter greenery near the center
+  for (const px of [-3, 14]) {
+    const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.35, 0.55, 10), mat(0x8a8078));
+    pot.position.set(px, 0.28, 6.5);
+    scene.add(pot);
+    for (let li = 0; li < 5; li++) {
+      const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.9, 6), mat(0x2a6a3a));
+      const ang = (li / 5) * Math.PI * 2;
+      leaf.position.set(px + Math.cos(ang) * 0.15, 1.0, 6.5 + Math.sin(ang) * 0.15);
+      leaf.rotation.z = Math.cos(ang) * 0.4;
+      leaf.rotation.x = Math.sin(ang) * 0.4;
+      scene.add(leaf);
+    }
+  }
+
   // player: Christian, arriving near baggage claim
   const christian = makePerson({
-    photo: faces.christian, top: 0x8a6d4b, bottom: 0x2e2e38, hair: 0x54382a, hairStyle: 'short', skin: 0xe0b088,
+    photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088,
   });
   christian.group.position.set(8, 0, 6);
   christian.group.rotation.y = Math.PI;

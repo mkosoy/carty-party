@@ -58,10 +58,10 @@ export async function initTitle() {
   }
 
   // cast faces are pre-cropped assets
-  const castMap = { 'cast-stacy': 'stacy', 'cast-olivia': 'olivia', 'cast-kylie': 'kylieSolo', 'cast-mark': 'mark' };
+  const castMap = { 'cast-stacy': 'stacy', 'cast-olivia': 'olivia', 'cast-kylie': 'kylie', 'cast-mark': 'mark' };
   for (const [id, name] of Object.entries(castMap)) {
     const el = document.getElementById(id);
-    if (el) el.src = 'assets/faces/' + name + '.png';
+    if (el) el.src = 'assets/portraits/' + name + '.png';
   }
 
   // procedural chime loop — silent until user interacts (browser policy)

@@ -20,14 +20,14 @@ const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 100)
 camera.position.set(0, 1.5, 4.2);
 camera.lookAt(0, 1.2, 0);
 const cast = [
-  { photo: 'assets/faces/christian.png', top: 0x8a6d4b, hair: 0x54382a, hairStyle: 'short' },
-  { photo: 'assets/faces/stacy.png', top: 0x1a1a1a, hair: 0x1e1410, hairStyle: 'long' },
-  { photo: 'assets/faces/kylieSolo.png', top: 0xe8e0d0, hair: 0xd8b878, hairStyle: 'long' },
-  { photo: 'assets/faces/olivia.png', top: 0x1a1a1a, hair: 0x1e1410, hairStyle: 'long' },
-  { photo: 'assets/faces/olivia.png', top: 0xc05a7a, hair: 0x6a4a26, hairStyle: 'bun' },
-  { photo: 'assets/faces/mark.png', top: 0x3a5a8a, hair: 0x54382a, hairStyle: 'short' },
-  { photo: 'assets/faces/jim.png', top: 0x2c3140, hair: 0xb8b0a4, hairStyle: 'short' },
-  { photo: null, top: 0x7ab06a, skin: 0x8a5a3a, hair: 0x14100c, hairStyle: 'short' },
+  { photo: 'assets/faces2/christian.png', top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true },
+  { photo: 'assets/faces2/stacy.png', top: 0x4a7a52, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long' },
+  { photo: 'assets/faces2/kylie.png', top: 0x5a7ab0, bottom: 0x4a3a30, hair: 0xd8b878, hairStyle: 'long' },
+  { photo: 'assets/faces2/olivia.png', top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long' },
+  { photo: 'assets/faces2/olivia2.png', top: 0xd07a92, bottom: 0x777788, hair: 0x241812, hairStyle: 'bun' },
+  { photo: 'assets/faces2/mark.png', top: 0x3a5a8a, bottom: 0x2c3a55, hair: 0xc8a060, hairStyle: 'short' },
+  { photo: 'assets/faces2/jim.png', top: 0x2c3140, bottom: 0x3c3c44, hair: 0xb8b0a4, hairStyle: 'receding' },
+  { photo: 'assets/faces2/tre.png', top: 0x5a6b42, bottom: 0x2c2c34, hair: 0x14100c, hairStyle: 'curly' },
 ];
 cast.forEach((c, i) => {
   const p = makePerson(c);

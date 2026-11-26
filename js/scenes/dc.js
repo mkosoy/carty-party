@@ -100,21 +100,21 @@ export async function dcScene(game) {
   scene.add(snow);
 
   // characters
-  const christian = makePerson({ photo: faces.christian, top: 0x8a6d4b, bottom: 0x2e2e38, hair: 0x54382a, hairStyle: 'short', skin: 0xe0b088 });
+  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088 });
   christian.group.position.set(0, 0, 16);
   scene.add(christian.group);
 
-  const stacy = makePerson({ photo: faces.stacy, top: 0x1a1a1a, bottom: 0x1a1a1a, hair: 0x2a1a12, hairStyle: 'long', skin: 0xe8c098 });
+  const stacy = makePerson({ photo: faces.stacy, top: 0x4a7a52, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098 });
   stacy.group.position.set(-1.4, 0, 16.4);
   scene.add(stacy.group);
 
-  const mark = makePerson({ photo: faces.mark, top: 0x3a5a8a, bottom: 0x2c3a55, hair: 0x8a6a3a, skin: 0xe8c098 });
+  const mark = makePerson({ photo: faces.mark, top: 0x3a5a8a, bottom: 0x2c3a55, hair: 0xc8a060, hairStyle: 'short', skin: 0xe8c098 });
   mark.group.position.set(2, 0, 12);
   scene.add(mark.group);
-  const kylie = makePerson({ photo: faces.kylie, top: 0xe8e0d0, bottom: 0x6a4a3a, hair: 0xd8b878, hairStyle: 'long', skin: 0xe8c8a8 });
+  const kylie = makePerson({ photo: faces.kylie, top: 0x5a7ab0, bottom: 0x4a3a30, hair: 0xd8b878, hairStyle: 'long', skin: 0xe8c8a8 });
   kylie.group.position.set(3.4, 0, 12.2);
   scene.add(kylie.group);
-  const olivia = makePerson({ photo: faces.olivia, top: 0x1a1a1a, bottom: 0x1a1a1a, hair: 0x2a1a12, hairStyle: 'long', skin: 0xe8c098 });
+  const olivia = makePerson({ photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098 });
   olivia.group.position.set(-4, 0, 5);
   scene.add(olivia.group);
 

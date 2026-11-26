@@ -193,5 +193,15 @@ export function choice(options) {
       };
       box.appendChild(b);
     });
+    const keyHandler = (ev) => {
+      const n = parseInt(ev.key, 10);
+      if (n >= 1 && n <= options.length) {
+        window.removeEventListener('keydown', keyHandler);
+        box.classList.add('hidden');
+        box.innerHTML = '';
+        resolve(n - 1);
+      }
+    };
+    window.addEventListener('keydown', keyHandler);
   });
 }

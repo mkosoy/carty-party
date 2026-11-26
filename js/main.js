@@ -3,6 +3,7 @@ import { Input } from './engine/input.js';
 import { Dialogue } from './engine/core.js';
 import { cropPhotoSquare } from './engine/character.js';
 import { airportScene } from './scenes/airport.js';
+import { Music } from './engine/music.js';
 import { initTitle } from './title.js';
 
 const container = document.getElementById('game-container');
@@ -25,27 +26,28 @@ window.addEventListener('resize', () => {
 });
 
 const input = new Input();
+const music = new Music();
 const dialogue = new Dialogue(input);
 fetch('assets/voice/manifest.json').then((r) => r.ok ? r.json() : null).then((m) => {
   if (m) dialogue.voiceManifest = m;
 }).catch(() => {});
 {
-  const f = (n) => 'assets/faces/' + n + '.png';
+  const f = (n) => 'assets/faces2/' + n + '.png';
   dialogue.faceMap = {
     'Christian': f('christian'), 'Stacy': f('stacy'), 'Olivia': f('olivia'),
     'Olivia #2': f('olivia2'), 'Olivia??': f('olivia2'), 'Jim': f('jim'),
-    'Mark': f('mark'), 'Kylie ❤️': f('kylieSolo'),
+    'Mark': f('mark'), 'Kylie ❤️': f('kylie'), 'Tre': f('tre'),
   };
 }
 
 // Face crops prepared once and handed to every scene. Crop fractions are
 // tuned per photo so the face fills the character head.
 async function loadFaces() {
-  const f = (n) => 'assets/faces/' + n + '.png';
+  const f = (n) => 'assets/faces2/' + n + '.png';
   return {
-    christian: f('christian'), stacy: f('stacy'), kylie: f('kylieSolo'),
+    christian: f('christian'), stacy: f('stacy'), kylie: f('kylie'),
     olivia: f('olivia'), jim: f('jim'), mark: f('mark'),
-    tre: null, olivia2: f('olivia2'),
+    tre: f('tre'), olivia2: f('olivia2'),
   };
 }
 
@@ -57,6 +59,7 @@ const game = {
   sceneApi: null,
   async switchScene(factory) {
     window.__game = this;
+    setTimeout(() => { try { const n = factory.name.replace('Scene',''); if (music.scene !== n) music.play(n); } catch {} }, 50);
     if (this.sceneApi?.dispose) this.sceneApi.dispose();
     this.scene = new THREE.Scene();
     this.sceneApi = await factory(this);
@@ -64,8 +67,17 @@ const game = {
 };
 
 const clock = new THREE.Clock();
+let loopStarted = false;
 function loop() {
-  requestAnimationFrame(loop);
+  if (loopStarted) return;
+  loopStarted = true;
+  const frame = () => {
+    requestAnimationFrame(frame);
+    tick();
+  };
+  requestAnimationFrame(frame);
+}
+function tick() {
   const dt = Math.min(clock.getDelta(), 0.05);
   if (game.sceneApi?.update) game.sceneApi.update(dt);
   if (game.scene) renderer.render(game.scene, camera);
@@ -83,8 +95,9 @@ async function startGame(sceneName) {
     swap: (await import('./scenes/swap.js')).swapScene,
     dc: (await import('./scenes/dc.js')).dcScene,
   };
-  await game.switchScene(factories[sceneName] || airportScene);
+  music.play(sceneName || 'airport');
   loop();
+  await game.switchScene(factories[sceneName] || airportScene);
 }
 document.getElementById('start-button').addEventListener('click', () => startGame(), { once: true });
 // dev/test shortcut: ?scene=drive jumps straight in, skipping the title

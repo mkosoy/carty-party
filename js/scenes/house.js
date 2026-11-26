@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { makePerson } from '../engine/character.js';
+import { woodFloor, carpet } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
 
 // Scene 3 — Olivia's townhouse. Three floors (basement / ground / upstairs)
@@ -12,15 +13,20 @@ export async function houseScene(game) {
   scene.background = new THREE.Color(0x1a1c26);
   scene.add(new THREE.AmbientLight(0xffe8c8, 1.15));
   const lampLight = new THREE.PointLight(0xffd9a0, 60, 40);
+  lampLight.castShadow = true;
+  lampLight.shadow.mapSize.set(1024, 1024);
   lampLight.position.set(0, 4, 0);
   scene.add(lampLight);
 
   const mat = (c) => new THREE.MeshLambertMaterial({ color: c });
 
   // ---- build three stacked floor shells; only one is visible at a time ----
-  function buildFloor({ wallColor, floorColor, y }) {
+  function buildFloor({ wallColor, floorColor, y, floorTex = null }) {
     const g = new THREE.Group();
-    const floor = new THREE.Mesh(new THREE.BoxGeometry(16, 0.2, 12), mat(floorColor));
+    const floorMat = floorTex
+      ? new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.8 })
+      : mat(floorColor);
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(16, 0.2, 12), floorMat);
     floor.receiveShadow = true;
     g.add(floor);
     for (const [w, h, d, x, z] of [
@@ -36,9 +42,9 @@ export async function houseScene(game) {
     return g;
   }
 
-  const ground = buildFloor({ wallColor: 0xcfc4ae, floorColor: 0x9a7850, y: 0 });
-  const upper = buildFloor({ wallColor: 0xd8cfc4, floorColor: 0xa88a62, y: 0 });
-  const basement = buildFloor({ wallColor: 0x4a4a52, floorColor: 0x3c3c44, y: 0 });
+  const ground = buildFloor({ wallColor: 0xcfc4ae, floorColor: 0x9a7850, y: 0, floorTex: woodFloor('#8a6a42', 3, 2.2) });
+  const upper = buildFloor({ wallColor: 0xd8cfc4, floorColor: 0xa88a62, y: 0, floorTex: carpet('#7a6858', 4, 3) });
+  const basement = buildFloor({ wallColor: 0x4a4a52, floorColor: 0x3c3c44, y: 0, floorTex: carpet('#3c3c44', 4, 3) });
 
   const boundsByFloor = {
     ground: [
@@ -59,12 +65,48 @@ export async function houseScene(game) {
     return m;
   }
 
-  // GROUND: foyer + living room, stairs illusion at x=6
-  box(ground, 2.6, 0.9, 1.2, 0x7a5a3a, -4, 0.45, 3.5);        // couch
-  box(ground, 1.4, 1.1, 0.8, 0x5a4a3a, 3, 0.55, -4.5);       // tv stand
-  box(ground, 1.8, 1, 0.1, 0x111118, 3, 1.6, -5);            // tv
-  box(ground, 0.9, 2.1, 0.15, 0x6a4a2a, -6.5, 1.05, 5.9);    // front door
-  const stairsMarker = box(ground, 2, 0.3, 2, 0x8a6a4a, 6, 0.1, 4); // stair landing
+  // GROUND: foyer + living room
+  // couch: rounded, two cushions + arms
+  const couchMat = 0x7a5a3a;
+  box(ground, 2.6, 0.5, 1.1, couchMat, -4, 0.3, 3.5);
+  box(ground, 2.6, 0.55, 0.28, couchMat, -4, 0.75, 4.0);
+  box(ground, 0.28, 0.65, 1.1, couchMat, -5.25, 0.5, 3.5);
+  box(ground, 0.28, 0.65, 1.1, couchMat, -2.75, 0.5, 3.5);
+  box(ground, 1.15, 0.14, 0.95, 0x8a6a4a, -4.55, 0.62, 3.5);  // cushions
+  box(ground, 1.15, 0.14, 0.95, 0x8a6a4a, -3.35, 0.62, 3.5);
+  // area rug
+  const rug = new THREE.Mesh(new THREE.CylinderGeometry(1.7, 1.7, 0.03, 24), mat(0x8a4a42));
+  rug.position.set(-2.5, 0.12, 1.5);
+  rug.scale.z = 0.7;
+  ground.add(rug);
+  // coffee table + clutter
+  box(ground, 1.3, 0.08, 0.7, 0x5a4030, -2.5, 0.45, 1.5);
+  box(ground, 0.08, 0.42, 0.6, 0x5a4030, -3.05, 0.21, 1.5);
+  box(ground, 0.08, 0.42, 0.6, 0x5a4030, -1.95, 0.21, 1.5);
+  box(ground, 0.3, 0.12, 0.22, 0xc0b8a0, -2.7, 0.55, 1.4);   // book
+  box(ground, 0.18, 0.1, 0.18, 0xa04038, -2.2, 0.54, 1.6);   // mug
+  // tv console + tv
+  box(ground, 1.8, 0.5, 0.5, 0x4a3a2e, 3, 0.25, -4.9);
+  box(ground, 1.9, 1.05, 0.08, 0x111118, 3, 1.35, -4.95);
+  box(ground, 0.5, 0.3, 0.3, 0x2c2c34, 1.8, 0.65, -4.8);     // console box
+  // framed pictures on the wall
+  for (const [fx, fy, fc] of [[-1.5, 1.9, 0xc0a060], [-0.5, 2.0, 0x6080a0], [0.6, 1.85, 0x7a9a5a]]) {
+    box(ground, 0.5, 0.65, 0.05, 0x4a3524, fx, fy, -5.82);
+    box(ground, 0.4, 0.55, 0.06, fc, fx, fy, -5.83);
+  }
+  // window with snowy night outside
+  box(ground, 1.6, 1.4, 0.1, 0x3a4a66, 5.5, 1.8, -5.85);
+  box(ground, 1.7, 0.08, 0.14, 0xd8cfc0, 5.5, 2.52, -5.8);
+  box(ground, 1.7, 0.08, 0.14, 0xd8cfc0, 5.5, 1.08, -5.8);
+  box(ground, 0.08, 1.4, 0.14, 0xd8cfc0, 5.5, 1.8, -5.8);
+  // kitchen hint: counter along east wall
+  box(ground, 0.9, 0.9, 3.2, 0xd0ccc0, 7.4, 0.45, -3);
+  box(ground, 0.95, 0.06, 3.3, 0x8a8078, 7.4, 0.93, -3);
+  box(ground, 0.5, 0.35, 0.5, 0x9aa0a8, 7.35, 1.15, -3.8);   // microwave-ish
+  // front door + stair landing
+  box(ground, 0.9, 2.1, 0.15, 0x6a4a2a, -6.5, 1.05, 5.9);
+  box(ground, 0.12, 0.12, 0.12, 0xc0a040, -6.15, 1.05, 5.78); // doorknob
+  const stairsMarker = box(ground, 2, 0.3, 2, 0x8a6a4a, 6, 0.1, 4);
 
   // holiday touches: garland + lights over the door (the reference photos)
   const garland = box(ground, 2.4, 0.25, 0.2, 0x1e5a2e, -6.5, 2.3, 5.85);
@@ -96,22 +138,22 @@ export async function houseScene(game) {
   box(basement, 2, 0.3, 2, 0x555560, 6, 0.1, 4); // stairs landing
 
   // characters
-  const christian = makePerson({ photo: faces.christian, top: 0x8a6d4b, bottom: 0x2e2e38, hair: 0x54382a, hairStyle: 'short', skin: 0xe0b088 });
+  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088 });
   scene.add(christian.group);
 
-  const jim = makePerson({ photo: faces.jim, top: 0x2c3140, bottom: 0x3c3c44, hair: 0xb8b0a4, hairStyle: 'short', skin: 0xd8a878 });
+  const jim = makePerson({ photo: faces.jim, top: 0x2c3140, bottom: 0x3c3c44, hair: 0xb8b0a4, hairStyle: 'receding', skin: 0xd8a878 });
   jim.group.position.set(-3, 0, 2);
   ground.add(jim.group);
 
-  const olivia = makePerson({ photo: faces.olivia, top: 0x1a1a1a, bottom: 0x1a1a1a, hair: 0x1e1410, hairStyle: 'long', skin: 0xe8c098 });
+  const olivia = makePerson({ photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098 });
   olivia.group.position.set(-5.5, 0, -3.4);
   upper.add(olivia.group);
 
-  const olivia2 = makePerson({ photo: faces.olivia2, top: 0xc05a7a, bottom: 0x777788, hair: 0x6a4a26, hairStyle: 'bun', skin: 0xe8c098 });
+  const olivia2 = makePerson({ photo: faces.olivia2, top: 0xd07a92, bottom: 0x777788, hair: 0x241812, hairStyle: 'bun', skin: 0xe8c098 });
   olivia2.group.position.set(-5, 0, 3.8);
   upper.add(olivia2.group);
 
-  const tre = makePerson({ photo: faces.tre, top: 0x3a4a3a, bottom: 0x2c2c34, hair: 0x14100c, hairStyle: 'short', skin: 0xb87a50 });
+  const tre = makePerson({ photo: faces.tre, top: 0x5a6b42, bottom: 0x2c2c34, hair: 0x14100c, hairStyle: 'curly', skin: 0x8a5a3a });
   tre.group.position.set(-1.5, 0, -2);
   tre.sit();
   basement.add(tre.group);

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { showObjective, choice } from '../engine/core.js';
+import { asphalt } from '../engine/textures.js';
 
 // Scene 2 — the drive. Part A: cruise with radio stations. Part B: the Yo
 // Yogi run — a lane-dodging timer game dodging dentists, environmental
@@ -17,7 +18,7 @@ export async function driveScene(game) {
   const mat = (c) => new THREE.MeshLambertMaterial({ color: c });
 
   // straight winter highway: 3 lanes each way, grass/snow shoulders
-  const road = new THREE.Mesh(new THREE.BoxGeometry(14, 0.1, 400), mat(0x3c3f45));
+  const road = new THREE.Mesh(new THREE.BoxGeometry(14, 0.1, 400), new THREE.MeshStandardMaterial({ map: asphalt(1.5, 30), roughness: 0.95 }));
   road.position.z = -100;
   scene.add(road);
   // lane dashes

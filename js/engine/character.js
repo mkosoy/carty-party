@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { fabricWeave } from './textures.js';
 import { npcFace } from './textures.js';
 
 // Character builder v3 — quality-bar pass. Human-proportioned bodies with
@@ -46,7 +47,9 @@ export function makePerson({
   name = null,
 } = {}) {
   const g = new THREE.Group();
-  const mat = (c, rough = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0 });
+  const weave = fabricWeave(2, 2);
+  const mat = (c, rough = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0, map: weave, bumpMap: weave, bumpScale: 0.6 });
+  const smoothMat = (c, rough = 0.7) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0 });
 
   const H = 1.78 * height;
   const u = H / 1.78;
@@ -121,7 +124,7 @@ export function makePerson({
     const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.052 * u, 0.052 * u, 0.04 * u, 8), mat(new THREE.Color(top).multiplyScalar(0.8).getHex()));
     cuff.position.y = -0.52 * u;
     pivot.add(cuff);
-    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.047 * u, 10, 8), mat(skin));
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.047 * u, 10, 8), smoothMat(skin));
     hand.position.y = -0.58 * u;
     hand.scale.set(0.85, 1.15, 0.9);
     pivot.add(hand);
@@ -133,7 +136,7 @@ export function makePerson({
   const armR = makeArm(1);
 
   // ---- neck + head ----
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.05 * u, 0.058 * u, 0.1 * u, 10), mat(skin));
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.05 * u, 0.058 * u, 0.1 * u, 10), smoothMat(skin));
   neck.position.y = 1.52 * u;
   g.add(neck);
 

@@ -163,3 +163,27 @@ export function npcFace({ skin = '#e8c098', eyeColor = '#3a2a1a', mouthCurve = 0
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
+
+// Neutral grayscale weave — multiplies over any material color for cloth feel.
+export function fabricWeave(rx = 2, ry = 2) {
+  const [c, x] = canvas(128, 128);
+  x.fillStyle = '#c8c8c8';
+  x.fillRect(0, 0, 128, 128);
+  // weave threads
+  for (let i = 0; i < 128; i += 2) {
+    x.fillStyle = i % 4 === 0 ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.10)';
+    x.fillRect(i, 0, 1, 128);
+    x.fillRect(0, i, 128, 1);
+  }
+  noise(x, 128, 128, 0.06, [0, 255]);
+  return tex(c, rx, ry);
+}
+
+// Subtle skin-ish noise for skin materials (very light).
+export function skinNoise(rx = 1, ry = 1) {
+  const [c, x] = canvas(64, 64);
+  x.fillStyle = '#d8d8d8';
+  x.fillRect(0, 0, 64, 64);
+  noise(x, 64, 64, 0.05, [150, 255]);
+  return tex(c, rx, ry);
+}

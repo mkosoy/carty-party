@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { Pickups } from '../engine/core.js';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
 import { brickWall, concrete } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
@@ -454,10 +456,20 @@ export async function swapScene(game) {
 
   showObjective('The swap! Find Stacy — she’s filming near the entrance.', 6500);
 
+
+  // collectibles: vintage cameras for Stacy + vinyl records
+  const pickups = new Pickups(scene);
+  const inv = inventory();
+  pickups.add(makeCameraMesh(), -10, 5, 'camera--10-5', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
+  pickups.add(makeCameraMesh(), 10, -7, 'camera-10--7', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
+  pickups.add(makeRecordMesh(), -6, -9, 'record--6--9', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
+  pickups.add(makeRecordMesh(), 13, 7, 'record-13-7', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       player.update(dt);
+      pickups.update(dt, christian.group.position);
       followCam.update(dt, christian.group.position);
 
       // NPCs browse: shuffle around racks

@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { Pickups } from '../engine/core.js';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective } from '../engine/core.js';
 
@@ -317,10 +319,20 @@ export async function dcScene(game) {
 
   showObjective('DC at night — Mark and Kylie are waiting by the tree.', 6000);
 
+
+  // collectibles: vintage cameras for Stacy + vinyl records
+  const pickups = new Pickups(scene);
+  const inv = inventory();
+  pickups.add(makeCameraMesh(), -12, 10, 'camera--12-10', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
+  pickups.add(makeCameraMesh(), 12, -4, 'camera-12--4', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
+  pickups.add(makeRecordMesh(), -6, 14, 'record--6-14', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
+  pickups.add(makeRecordMesh(), 7, -10, 'record-7--10', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       player.update(dt);
+      pickups.update(dt, christian.group.position);
       // skater glides around the rink
       if (typeof skater !== 'undefined') {
         const t = performance.now() * 0.0004;

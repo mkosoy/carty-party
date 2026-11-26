@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { Pickups } from '../engine/core.js';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
 import { woodFloor, carpet } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
@@ -475,10 +477,18 @@ export async function houseScene(game) {
 
   showObjective('Olivia’s townhouse. Say hi to Jim.', 6000);
 
+
+  // collectibles: vintage cameras for Stacy + vinyl records
+  const pickups = new Pickups(scene);
+  const inv = inventory();
+  pickups.add(makeCameraMesh(), -6, 5, 'camera--6-5', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
+  pickups.add(makeRecordMesh(), 5, -4, 'record-5--4', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, floor: typeof floor !== "undefined" ? floor : null, self: this };
       player.update(dt);
+      pickups.update(dt, christian.group.position);
       followCam.update(dt, christian.group.position);
 
       const near = [...interactions.items].filter((i) => i.floor === floor && !i.hidden && !(i.once && i.done));

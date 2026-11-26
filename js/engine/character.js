@@ -97,7 +97,7 @@ export function makePerson({
   function makeLeg(side) {
     const pivot = new THREE.Group();
     pivot.position.set(side * 0.095 * u, 0.82 * u, 0);
-    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.062 * u, 0.62 * u, 4, 10), mat(bottom));
+    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.06 * u, 0.68 * u, 4, 10), mat(bottom));
     leg.position.y = -0.4 * u;
     pivot.add(leg);
     // boot: shaft + toe box
@@ -105,9 +105,14 @@ export function makePerson({
     const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.068 * u, 0.075 * u, 0.12 * u, 10), bootMat);
     shaft.position.y = -0.72 * u;
     pivot.add(shaft);
-    const toe = new THREE.Mesh(new THREE.BoxGeometry(0.11 * u, 0.07 * u, 0.2 * u), bootMat);
-    toe.position.set(0, -0.79 * u, 0.045 * u);
+    const toe = new THREE.Mesh(new THREE.SphereGeometry(0.062 * u, 10, 8), bootMat);
+    toe.scale.set(0.95, 0.55, 1.9);
+    toe.position.set(0, -0.79 * u, 0.055 * u);
     pivot.add(toe);
+    // sole
+    const sole = new THREE.Mesh(new THREE.BoxGeometry(0.11 * u, 0.022 * u, 0.21 * u), mat(0x1a1a1a, 0.5));
+    sole.position.set(0, -0.816 * u, 0.05 * u);
+    pivot.add(sole);
     g.add(pivot);
     return pivot;
   }

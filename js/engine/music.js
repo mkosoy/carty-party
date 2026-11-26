@@ -177,7 +177,16 @@ export class Music {
       const variant = Math.floor(step / 16) % 3;
       const melSeq = variant === 1 && pat.melody2 ? pat.melody2 : variant === 2 && pat.melody3 ? pat.melody3 : pat.melody;
       const mel = melSeq[step % 16];
-      if (mel >= 0) this.bell(N(mel), t, pat.bellVol);
+      if (mel >= 0) {
+        this.bell(N(mel), t, pat.bellVol);
+        // harmonic richness: a third above, softer, on alternate bars — and octave sparkle every 4th bar
+        if (bar % 2 === 0) this.bell(N(mel + 4), t + 0.01, pat.bellVol * 0.4);
+        if (bar % 4 === 3) this.bell(N(mel + 12), t + 0.005, pat.bellVol * 0.3);
+      }
+      // melodic fills: soft passing notes on the off-steps every other bar
+      if (variant === 2 && step % 2 === 1 && melSeq[(step - 1) % 16] >= 0) {
+        this.bell(N(melSeq[(step - 1) % 16] + 2), t, pat.bellVol * 0.25);
+      }
       if (step % 16 === 0) {
         const chord = pat.chords[bar % pat.chords.length];
         this.pad(chord.map((n) => N(n - 12)), t, stepDur * 16, pat.padVol);

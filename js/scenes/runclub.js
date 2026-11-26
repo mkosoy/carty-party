@@ -343,5 +343,6 @@ export async function runclubScene(game) {
         hud.textContent = "Kylie's Run Club — Wootton High";
       }
     },
+    dispose() { cleanupH(); },
   };
 }

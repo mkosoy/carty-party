@@ -400,5 +400,6 @@ export async function dentistScene(game) {
         near.action();
       }
     },
+    dispose() {},
   };
 }

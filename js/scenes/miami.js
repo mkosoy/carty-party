@@ -396,5 +396,6 @@ export async function miamiScene(game) {
       camera.position.y = 2.8 + Math.sin(t * 0.4) * 0.5;
       camera.lookAt(0, 1.2, -4.5);
     },
+    dispose() {},
   };
 }

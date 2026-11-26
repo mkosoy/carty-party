@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, GuideMarker } from '../engine/core.js';
 
 // Scene 5 — DC at night. Washington Monument, the big Christmas tree,
 // snow everywhere, and the ice-skating finale with Mark, Kylie and Olivia.
@@ -253,11 +253,13 @@ export async function dcScene(game) {
   followCam.snap(christian.group.position);
   const player = new PlayerController(christian, input, []);
   const interactions = new Interactions();
+  const guide = new GuideMarker(scene);
 
   let phase = 'arrive';
 
   interactions.add({
     pos: new THREE.Vector3(2.5, 0, 12), radius: 3, label: 'Mark & Kylie', once: true,
+    // guide is set below
     action: async () => {
       player.frozen = true;
       await dialogue.play([
@@ -267,8 +269,9 @@ export async function dcScene(game) {
         { speaker: 'Mark', text: '…two WHAT?' },
         { speaker: 'Christian', text: 'On the ice. I’ll tell you on the ice.' },
       ]);
-      showObjective('Onto the rink — walk on and press E to skate!', 5000);
+      showObjective('Onto the rink — follow the gold light and press E to skate!', 5000);
       rinkInt.hidden = false;
+      guide.setTarget(0, 6);
       player.frozen = false;
     },
   });
@@ -282,8 +285,9 @@ export async function dcScene(game) {
       phase = 'skating';
       player.frozen = false;
       player.speed = 7;
-      showObjective('Skate around! Feel the glide. When you’re ready, press E at the center to end the night.', 6000);
+      showObjective('Skate! When you’re ready, glide to the glowing center to end the night.', 6000);
       centerInt.hidden = false;
+      guide.setTarget(0, 6);
       // olivia waves you over once
       if (!oliviaSaidHi) {
         oliviaSaidHi = true;
@@ -301,6 +305,7 @@ export async function dcScene(game) {
     action: async () => {
       player.frozen = true;
       player.speed = 4.1;
+      guide.clear();
       await dialogue.play([
         { speaker: 'Mark', text: 'Same time next year?' },
         { speaker: 'Kylie ❤️', text: 'Same time every year. This is the whole point.' },
@@ -328,6 +333,9 @@ export async function dcScene(game) {
   pickups.add(makeRecordMesh(), -6, 14, 'record--6-14', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
   pickups.add(makeRecordMesh(), 7, -10, 'record-7--10', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
 
+  guide.setTarget(2.5, 12);
+  showObjective('Welcome to DC! Follow the golden light — Mark & Kylie are waiting by the tree. Explore freely: cameras and vinyl are hidden around the plaza.', 7000);
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
@@ -341,6 +349,7 @@ export async function dcScene(game) {
         skater.group.rotation.y = -t - Math.PI / 2;
         skater.animateWalk(dt, 2.2);
       }
+      if (typeof guide !== 'undefined') guide.update(dt);
       followCam.update(dt, christian.group.position);
 
       // skating glide: reduce friction feel by letting rotation lag (already handled); add sparkle

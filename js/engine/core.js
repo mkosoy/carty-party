@@ -44,6 +44,63 @@ export class FollowCam {
 // Player controller: screen-relative movement (camera looks north-ish),
 // wall collision against AABB list, procedural walk anim.
 
+
+// Objective guide beacon: a bobbing golden diamond + light column marking
+// where the player should go next. Reusable across scenes.
+export class GuideMarker {
+  constructor(scene) {
+    this.scene = scene;
+    this.group = new THREE.Group();
+    const diamond = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.28),
+      new THREE.MeshBasicMaterial({ color: 0xffd663 })
+    );
+    diamond.position.y = 2.6;
+    this.group.add(diamond);
+    this.diamond = diamond;
+    // light column down to the ground
+    const col = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.18, 0.34, 2.6, 12, 1, true),
+      new THREE.MeshBasicMaterial({ color: 0xffd663, transparent: true, opacity: 0.14, side: THREE.DoubleSide, depthWrite: false })
+    );
+    col.position.y = 1.3;
+    this.group.add(col);
+    // pulsing ground ring
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.55, 0.05, 8, 24),
+      new THREE.MeshBasicMaterial({ color: 0xffd663, transparent: true, opacity: 0.7 })
+    );
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 0.06;
+    this.group.add(ring);
+    this.ring = ring;
+    const light = new THREE.PointLight(0xffd663, 6, 6);
+    light.position.y = 1.8;
+    this.group.add(light);
+    this.group.visible = false;
+    scene.add(this.group);
+    this.target = null;
+  }
+  setTarget(x, z) {
+    this.group.position.set(x, 0, z);
+    this.group.visible = true;
+    this.target = { x, z };
+  }
+  clear() {
+    this.group.visible = false;
+    this.target = null;
+  }
+  update(dt) {
+    if (!this.group.visible) return;
+    const t = performance.now() / 1000;
+    this.diamond.rotation.y += dt * 2.2;
+    this.diamond.position.y = 2.6 + Math.sin(t * 2.4) * 0.22;
+    const pulse = 1 + Math.sin(t * 3) * 0.18;
+    this.ring.scale.set(pulse, pulse, 1);
+    this.ring.material.opacity = 0.5 + Math.sin(t * 3) * 0.25;
+  }
+}
+
 // Walk-over collectibles: drop-in items that bob and spin, pick up on touch.
 export class Pickups {
   constructor(scene) {

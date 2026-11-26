@@ -125,3 +125,17 @@ body.touch #touch-controls { display: block; }
 #start-button { animation: startGlow 2.2s infinite; font-size: 24px; }
 @keyframes startGlow { 0%,100% { box-shadow: 0 6px 30px rgba(232,182,76,.35); } 50% { box-shadow: 0 6px 46px rgba(232,182,76,.75); } }
 .title-small { font-size: 12px; opacity: .7; }
+
+#minigames-section { margin-top: 18px; }
+.mg-title { color: rgba(255,233,184,.6); font-family: Georgia, serif; font-style: italic; font-size: 14px; margin: 0 0 8px; letter-spacing: 2px; }
+#minigames-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.mg-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: rgba(20,28,48,.65); border: 1px solid rgba(232,182,76,.35);
+  color: #ffe9b8; border-radius: 12px; padding: 10px 14px; font-size: 24px;
+  cursor: pointer; transition: transform .15s, border-color .15s; font-family: Georgia, serif;
+}
+.mg-btn span { font-size: 11px; letter-spacing: .5px; opacity: .9; }
+.mg-btn:hover { transform: translateY(-2px) scale(1.04); border-color: rgba(232,182,76,.9); }
+
+.mg-emoji { width: 30px; height: 30px; }

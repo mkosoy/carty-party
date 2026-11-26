@@ -104,6 +104,9 @@ async function startGame(sceneName) {
   await game.switchScene(factories[sceneName] || airportScene);
 }
 document.getElementById('start-button').addEventListener('click', () => startGame(), { once: true });
+for (const btn of document.querySelectorAll('.mg-btn')) {
+  btn.addEventListener('click', () => startGame(btn.dataset.scene));
+}
 // dev/test shortcut: ?scene=drive jumps straight in, skipping the title
 const jump = new URLSearchParams(location.search).get('scene');
 if (jump) startGame(jump);

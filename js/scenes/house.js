@@ -105,10 +105,143 @@ export async function houseScene(game) {
   box(ground, 0.9, 0.9, 3.2, 0xd0ccc0, 7.4, 0.45, -3);
   box(ground, 0.95, 0.06, 3.3, 0x8a8078, 7.4, 0.93, -3);
   box(ground, 0.5, 0.35, 0.5, 0x9aa0a8, 7.35, 1.15, -3.8);   // microwave-ish
+  
+  // --- richness pass: a lived-in holiday home ---
+  // rugs with fringe
+  function floorRug(parent, x, z, w, d, color, y) {
+    const r = new THREE.Mesh(new THREE.BoxGeometry(w, 0.04, d), mat(color));
+    r.position.set(x, (y || 0) + 0.03, z);
+    parent.add(r);
+    const inner = new THREE.Mesh(new THREE.BoxGeometry(w * 0.7, 0.045, d * 0.7), mat(0xc8b090));
+    inner.position.set(x, (y || 0) + 0.035, z);
+    parent.add(inner);
+  }
+  floorRug(ground, -1, 1.5, 4.5, 3.2, 0x8a3a3a);
+  floorRug(ground, 3.4, 2.4, 2.6, 1.8, 0x3a5a4a);
+  floorRug(upper, 0, 0, 4.0, 2.6, 0x5a4a7a, 0);
+  // framed art on walls
+  function wallArt(parent, x, y, z, w, hgt, color, ry) {
+    const f = new THREE.Mesh(new THREE.BoxGeometry(w + 0.12, hgt + 0.12, 0.06), mat(0x6a4a28));
+    f.position.set(x, y, z);
+    if (ry) f.rotation.y = ry;
+    parent.add(f);
+    const c = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, 0.07), mat(color));
+    c.position.set(x, y, z);
+    if (ry) c.rotation.y = ry;
+    parent.add(c);
+  }
+  wallArt(ground, -2, 2.0, 5.85, 1.0, 0.8, 0x4a6a8a);
+  wallArt(ground, 0.5, 2.0, 5.85, 0.8, 1.0, 0x8a5a3a);
+  wallArt(ground, 2.5, 2.1, 5.85, 1.2, 0.7, 0x3a6a4a);
+  wallArt(ground, -7.85, 2.0, -1, 1.0, 0.9, 0x9a7a4a, Math.PI / 2);
+  wallArt(upper, 0, 2.0, 5.85, 1.4, 0.9, 0x6a5a8a);
+  // table lamps with warm glow
+  function lamp(parent, x, y, z) {
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.1, 0.3, 8), mat(0x5a4a3a));
+    base.position.set(x, y + 0.15, z);
+    parent.add(base);
+    const shade = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.2, 0.22, 10), new THREE.MeshStandardMaterial({ color: 0xf5deb0, emissive: 0xffdf9e, emissiveIntensity: 0.7 }));
+    shade.position.set(x, y + 0.42, z);
+    parent.add(shade);
+    const pl = new THREE.PointLight(0xffdf9e, 4, 3.5);
+    pl.position.set(x, y + 0.5, z);
+    parent.add(pl);
+  }
+  lamp(ground, -2.6, 0.75, 3.9);
+  lamp(ground, 3.9, 0.9, 2.0);
+  lamp(upper, -5.2, 0.7, -4.4);
+  // dining table + chairs with place settings
+  const dt = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.1, 1.2), mat(0x7a5a3a));
+  dt.position.set(1.5, 0.75, -3.5);
+  ground.add(dt);
+  for (const [lx, lz] of [[0.6, -3.5], [2.4, -3.5], [1.5, -3.9], [1.5, -3.1]]) {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.75, 6), mat(0x5a3a24));
+    leg.position.set(lx, 0.37, lz);
+    ground.add(leg);
+  }
+  for (let ci = 0; ci < 4; ci++) {
+    const cx = 0.7 + (ci % 2) * 1.6, cz = ci < 2 ? -4.35 : -2.65;
+    box(ground, 0.45, 0.45, 0.45, 0x6a4a2a, cx, 0.22, cz);
+    box(ground, 0.45, 0.6, 0.08, 0x6a4a2a, cx, 0.75, cz + (ci < 2 ? -0.2 : 0.2));
+    const plate2 = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.02, 10), mat(0xf0ece0));
+    plate2.position.set(cx, 0.82, ci < 2 ? -3.9 : -3.1);
+    ground.add(plate2);
+  }
+  // centerpiece candles
+  for (const cx of [1.2, 1.8]) {
+    const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.18, 6), mat(0xe8e0d0));
+    candle.position.set(cx, 0.9, -3.5);
+    ground.add(candle);
+    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.025, 6, 6), new THREE.MeshBasicMaterial({ color: 0xffca60 }));
+    flame.position.set(cx, 1.02, -3.5);
+    ground.add(flame);
+  }
+  // stockings on the fireplace wall + garland
+  for (let si = 0; si < 4; si++) {
+    const st = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.3, 0.06), mat([0xc04040, 0x3a6a4a, 0xc04040, 0x3a6a4a][si]));
+    st.position.set(-6.2 + si * 0.4, 1.6, 5.82);
+    ground.add(st);
+  }
+  // ceiling light fixtures
+  for (const [fx, fz, fl] of [[0, 0, ground], [0, 0, upper]]) {
+    const fix = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), new THREE.MeshStandardMaterial({ color: 0xfff2cc, emissive: 0xffe9b0, emissiveIntensity: 0.8 }));
+    fix.position.set(fx, 3.1, fz);
+    fl.add(fix);
+  }
+  // upstairs bedrooms: beds, dressers, posters
+  function bed(parent, x, z, color) {
+    box(parent, 1.1, 0.35, 2.0, 0x6a4a2a, x, 0.18, z);
+    box(parent, 1.0, 0.15, 1.9, color, x, 0.42, z);
+    box(parent, 0.5, 0.12, 0.4, 0xf0ece0, x, 0.5, z - 0.6);
+    box(parent, 1.1, 0.7, 0.1, 0x6a4a2a, x, 0.5, z - 1.0);
+  }
+  bed(upper, -6.2, -4.2, 0x222226);
+  bed(upper, -6.2, 4.2, 0xd07a92);
+  box(upper, 1.2, 0.9, 0.5, 0x7a5a3a, -7.3, 0.45, -2.2);
+  box(upper, 1.2, 0.9, 0.5, 0x7a5a3a, -7.3, 0.45, 2.2);
+  wallArt(upper, -7.85, 2.0, -4, 0.9, 1.1, 0x30405a, Math.PI / 2);
+  wallArt(upper, -7.85, 2.0, 4, 0.9, 1.1, 0x8a4a5a, Math.PI / 2);
+  // bookshelf loaded with books
+  for (let bi = 0; bi < 8; bi++) {
+    box(ground, 0.12, 0.3, 0.2, [0x8a3a3a, 0x3a5a8a, 0x3a6a4a, 0x9a7a3a][bi % 4], 6.1 + bi * 0.14, 1.35, -5.75);
+  }
+
   // front door + stair landing
   box(ground, 0.9, 2.1, 0.15, 0x6a4a2a, -6.5, 1.05, 5.9);
   box(ground, 0.12, 0.12, 0.12, 0xc0a040, -6.15, 1.05, 5.78); // doorknob
   const stairsMarker = box(ground, 2, 0.3, 2, 0x8a6a4a, 6, 0.1, 4);
+
+  
+  // real stairs: stepped flight with railing, replacing the flat pads
+  function staircase(parent, x, z, baseY, up) {
+    const grp = new THREE.Group();
+    const stepMat = mat(0x8a6a4a);
+    const carpetMat = mat(0x7a3a3a);
+    for (let i = 0; i < 8; i++) {
+      const s = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.22, 0.42), stepMat);
+      s.position.set(0, 0.11 + i * 0.26, (up ? -1 : 1) * i * 0.44);
+      grp.add(s);
+      const runner = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.235, 0.43), carpetMat);
+      runner.position.copy(s.position);
+      runner.position.y += 0.005;
+      grp.add(runner);
+    }
+    // railing: posts + sloped handrail
+    for (let i = 0; i < 4; i++) {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.0, 6), mat(0x5a3a24));
+      post.position.set(0.8, 0.5 + i * 0.52, (up ? -1 : 1) * i * 0.88);
+      grp.add(post);
+    }
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 4.0), mat(0x5a3a24));
+    rail.position.set(0.8, 1.6, (up ? -1 : 1) * 1.3);
+    rail.rotation.x = (up ? 1 : -1) * 0.53;
+    grp.add(rail);
+    grp.position.set(x, baseY, z);
+    parent.add(grp);
+  }
+  staircase(ground, 6, 4.4, 0, true);
+  staircase(upper, 6, 4.4, 0, false);
+  staircase(basement, 6, 4.4, 0, false);
 
   // holiday touches: garland + lights over the door (the reference photos)
   const garland = box(ground, 2.4, 0.25, 0.2, 0x1e5a2e, -6.5, 2.3, 5.85);
@@ -281,17 +414,20 @@ export async function houseScene(game) {
   scene.add(christian.group);
 
   const jim = makePerson({ photo: faces.jim, top: 0x2c3140, bottom: 0x3c3c44, hair: 0xb8b0a4, hairStyle: 'receding', skin: 0xd8a878, name: 'Jim', });
-  jim.group.position.set(-4, 0.62, 3.35);
+  jim.group.position.set(-4, 0.97, 3.42);
+  jim.group.rotation.y = Math.PI;
   ground.add(jim.group);
   jim.sit();
   jim.group.position.y += 0.42 * 0.95; // undo sit()'s floor-level drop since he's on the seat
 
   const olivia = makePerson({ photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
   olivia.group.position.set(-5.5, 0, -3.4);
+  olivia.group.rotation.y = Math.PI / 2;
   upper.add(olivia.group);
 
   const olivia2 = makePerson({ photo: faces.olivia2, top: 0xd07a92, bottom: 0x777788, hair: 0x241812, hairStyle: 'bun', skin: 0xe8c098, name: 'Olivia??', });
   olivia2.group.position.set(-5, 0, 3.8);
+  olivia2.group.rotation.y = Math.PI / 2;
   upper.add(olivia2.group);
 
   const tre = makePerson({ photo: faces.tre, top: 0x5a6b42, bottom: 0x2c2c34, hair: 0x14100c, hairStyle: 'curly', skin: 0x8a5a3a, name: 'Tre', });
@@ -348,7 +484,9 @@ export async function houseScene(game) {
       await dialogue.play([
         { speaker: 'Christian', text: 'Hi — I’m Christian. Here to pick something up for the swap later.' },
         { speaker: 'Jim', text: 'She’s upstairs.' },
-        { speaker: 'Jim', text: '…Help yourself to a cookie on the way out. Stacy’s mom made them. They’re the good ones.' },
+        { speaker: 'Jim', text: '…Help yourself to a cookie on the way out. The Olivias made them.' },
+        { speaker: 'Christian', text: '…the Olivias? Plural??' },
+        { speaker: 'Jim', text: 'You’ll see. Go on up.' },
       ]);
       guide.setTarget(6, 4);
       showObjective('Upstairs — the stair landing is in the corner.', 4500);
@@ -514,10 +652,32 @@ export async function houseScene(game) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, floor: typeof floor !== "undefined" ? floor : null, self: this };
       player.update(dt);
       pickups.update(dt, christian.group.position);
+      // floor-aware breadcrumbs: in the basement with tre's item, lead back to the stairs first
+      if (items.treItem && floor === 'basement') {
+        guide.setTarget(6, 2.2);
+      } else if (items.treItem && floor === 'ground') {
+        guide.setTarget(-6.5, 5.4);
+      }
       guide.update(dt, christian.group.position);
       const it = performance.now() / 1000;
+      const od2 = Math.hypot(christian.group.position.x - olivia.group.position.x, christian.group.position.z - olivia.group.position.z);
+      if (od2 < 4.5) {
+        olivia.group.rotation.y = Math.atan2(christian.group.position.x - olivia.group.position.x, christian.group.position.z - olivia.group.position.z);
+      }
       olivia.animateIdle(it);
-      olivia2.animateIdle(it + 1.3);
+      // pose for the camera when christian is close (photo game), idle otherwise
+      const od = Math.hypot(christian.group.position.x - olivia2.group.position.x, christian.group.position.z - olivia2.group.position.z);
+      if (od < 4.5) {
+        const ph = Math.floor(it / 2.2) % 3;
+        olivia2.group.rotation.y = Math.atan2(christian.group.position.x - olivia2.group.position.x, christian.group.position.z - olivia2.group.position.z);
+        if (olivia2.armL) {
+          if (ph === 0) { olivia2.armL.rotation.z = 2.4; olivia2.armR.rotation.z = -0.3; }
+          else if (ph === 1) { olivia2.armL.rotation.z = 0.3; olivia2.armR.rotation.z = -2.4; }
+          else { olivia2.armL.rotation.z = 2.0; olivia2.armR.rotation.z = -2.0; }
+        }
+      } else {
+        olivia2.animateIdle(it + 1.3);
+      }
       followCam.update(dt, christian.group.position);
 
       const near = [...interactions.items].filter((i) => i.floor === floor && !i.hidden && !(i.once && i.done));

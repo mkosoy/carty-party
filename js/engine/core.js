@@ -19,9 +19,23 @@ export class FollowCam {
     // consume orbit input (mouse drag / touch drag on the right half)
     const inp = window.__gameInput;
     if (inp) {
-      this.yaw += inp.camDX;
-      this.pitch = Math.max(-0.4, Math.min(1.0, this.pitch + inp.camDY));
+      const dragging = Math.abs(inp.camDX) > 0.0001 || Math.abs(inp.camDY) > 0.0001;
+      if (dragging) {
+        this.yaw += inp.camDX * 0.85;
+        this.pitch = Math.max(-0.4, Math.min(1.0, this.pitch + inp.camDY * 0.85));
+        this.lastDragT = performance.now() / 1000;
+      }
       inp.camDX = 0; inp.camDY = 0;
+      // auto-align: if the player is walking and hasn't dragged for 2s, ease behind them
+      const nowT = performance.now() / 1000;
+      const moving = inp.axes && (Math.abs(inp.axes().x) > 0.1 || Math.abs(inp.axes().z) > 0.1);
+      if (moving && (!this.lastDragT || nowT - this.lastDragT > 2.0) && window.__playerFacing !== undefined) {
+        let targetYaw = window.__playerFacing;
+        let d = targetYaw - this.yaw;
+        while (d > Math.PI) d -= Math.PI * 2;
+        while (d < -Math.PI) d += Math.PI * 2;
+        this.yaw += d * Math.min(1, dt * 1.6);
+      }
     }
     window.__camYaw = this.yaw;
     // rotate the follow offset by the yaw, lift/drop with pitch
@@ -245,6 +259,7 @@ export class PlayerController {
       while (diff > Math.PI) diff -= Math.PI * 2;
       while (diff < -Math.PI) diff += Math.PI * 2;
       g.rotation.y += diff * Math.min(1, dt * 10);
+      window.__playerFacing = targetAngle;
     }
     const accel = moving ? 14 : 11;
     this.vel.x += (tvx - this.vel.x) * Math.min(1, accel * dt);

@@ -148,3 +148,7 @@ body.touch #touch-controls { display: block; }
   backdrop-filter: blur(4px);
 }
 #menu-button.hidden { display: none; }
+
+#levels-section { margin: 10px 0 4px; text-align: center; }
+#levels-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.skip-warn { color: #e8a0a0; font-size: 0.75em; font-style: italic; }

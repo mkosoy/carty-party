@@ -94,6 +94,19 @@ const game = {
     window.__sceneName = factory.name;
     this.sceneApi = await factory(this);
     rebuildComposer();
+    // controls hint overlay: visible at scene start, fades away
+    let hint = document.getElementById('controls-hint');
+    if (!hint) {
+      hint = document.createElement('div');
+      hint.id = 'controls-hint';
+      hint.style.cssText = 'position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:30;background:rgba(10,12,22,.55);color:#e8dfc8;padding:6px 14px;border-radius:20px;font-family:Georgia;font-size:12.5px;pointer-events:none;transition:opacity 1.2s;white-space:nowrap';
+      document.body.appendChild(hint);
+    }
+    const touch = 'ontouchstart' in window;
+    hint.textContent = touch ? 'left thumb — move · right thumb — camera · tap ✦ to interact' : 'WASD — move · drag mouse — camera · E — interact · space — jump';
+    hint.style.opacity = '1';
+    clearTimeout(window.__hintT);
+    window.__hintT = setTimeout(() => { hint.style.opacity = '0'; }, 14000);
   },
 };
 

@@ -283,6 +283,7 @@ export async function dcScene(game) {
     action: async () => {
       if (phase === 'skating') return;
       phase = 'skating';
+      rinkInt.hidden = true;
       player.frozen = false;
       player.speed = 7;
       showObjective('Skate! When you’re ready, glide to the glowing center to end the night.', 6000);

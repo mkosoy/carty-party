@@ -165,7 +165,7 @@ export async function dentistScene(game) {
   // dr fritz — photo face, bald + glasses look, black polo
   const fritzFaceTex = new THREE.TextureLoader().load('assets/faces2/fritz.png');
   fritzFaceTex.colorSpace = THREE.SRGBColorSpace;
-  const fritz = makePerson({ photo: fritzFaceTex, top: 0x222222, bottom: 0x3a3a44, hair: 0x888888, hairStyle: 'receding', skin: 0xe8c0a0, name: 'Dr. Fritz', });
+  const fritz = makePerson({ photo: 'assets/faces2/fritz.png', top: 0x222222, bottom: 0x3a3a44, hair: 0x888888, hairStyle: 'receding', skin: 0xe8c0a0, name: 'Dr. Fritz', });
   fritz.group.position.set(1.8, 0, -1.2);
   fritz.group.rotation.y = Math.PI * 0.8;
   scene.add(fritz.group);

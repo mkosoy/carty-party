@@ -293,9 +293,6 @@ export async function miamiScene(game) {
   scene.add(stageSpot);
   scene.add(stageSpot.target);
   scene.add(stage);
-  bounds.push({ minX: -2.9, maxX: -0.85, minZ: -7.4, maxZ: -2.0 });
-  bounds.push({ minX: 0.85, maxX: 2.9, minZ: -7.4, maxZ: -2.0 });
-  bounds.push({ minX: -0.85, maxX: 0.85, minZ: -7.4, maxZ: -3.0 });
 
   // --- realism pass: ceiling, truss rigs, VIP booths, bottle service, DJ booth ---
   const ceiling = new THREE.Mesh(new THREE.BoxGeometry(30.5, 0.3, 22.5), mat(0x060510));

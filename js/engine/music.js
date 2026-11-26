@@ -121,11 +121,42 @@ export class Music {
     o.start(t); o.stop(t + dur + 0.1);
   }
   // scene moods — step sequencer at ~92bpm-ish feel, bars of 8 steps
+  ambient(sceneName) {
+    if (this.ambNodes) {
+      for (const n of this.ambNodes) { try { n.stop ? n.stop() : n.disconnect(); } catch {} }
+    }
+    this.ambNodes = [];
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const noiseBuf = (() => { const b = this.ctx.createBuffer(1, this.ctx.sampleRate * 2, this.ctx.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; })();
+    const loop = (freq, q, vol, type = 'bandpass') => {
+      const s = this.ctx.createBufferSource();
+      s.buffer = noiseBuf;
+      s.loop = true;
+      const f = this.ctx.createBiquadFilter();
+      f.type = type;
+      f.frequency.value = freq;
+      f.Q.value = q;
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + 2);
+      s.connect(f); f.connect(g); g.connect(this.master);
+      s.start(t);
+      this.ambNodes.push(s, g);
+    };
+    if (sceneName === 'airport') { loop(400, 0.6, 0.02); loop(120, 0.8, 0.025, 'lowpass'); }
+    else if (sceneName === 'miami') loop(700, 0.5, 0.015);
+    else if (sceneName === 'dc') loop(500, 0.4, 0.02, 'highpass');
+    else if (sceneName === 'house') loop(240, 1.2, 0.018, 'lowpass');
+    else if (sceneName === 'swap') loop(500, 0.6, 0.015);
+  }
+
   play(sceneName) {
     this.ensure();
     if (this.scene === sceneName) return;
     this.stop();
     this.scene = sceneName;
+    this.ambient(sceneName);
     let stepDur = 0.34;
     let step = 0;
     const N = (n) => 440 * Math.pow(2, (n - 9) / 12); // semitone number -> freq

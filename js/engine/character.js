@@ -155,6 +155,9 @@ export function makePerson({
   }
   const armL = makeArm(-1);
   const armR = makeArm(1);
+  // resting posture: arms drift slightly outward instead of hanging like pipes
+  armL.rotation.z = 0.14;
+  armR.rotation.z = -0.14;
 
   // ---- neck + head ----
   const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.05 * u, 0.058 * u, 0.1 * u, 10), smoothMat(skin));
@@ -285,6 +288,9 @@ export function makePerson({
       torso.position.y = baseTorsoY + b;
       legL.rotation.x = 0; legR.rotation.x = 0;
       armL.rotation.x = 0; armR.rotation.x = 0;
+      // gentle sway keeps the resting posture alive
+      armL.rotation.z = 0.14 + Math.sin(t * 1.1) * 0.02;
+      armR.rotation.z = -0.14 - Math.sin(t * 1.1 + 0.5) * 0.02;
     },
     sit() {
       legL.rotation.x = -Math.PI / 2;

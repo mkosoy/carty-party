@@ -141,7 +141,7 @@ body.touch #touch-controls { display: block; }
 .mg-emoji { width: 30px; height: 30px; }
 
 #menu-button {
-  position: fixed; top: 12px; right: 14px; z-index: 40;
+  position: fixed; top: 12px; right: 14px; z-index: 999; pointer-events: auto;
   background: rgba(10,14,26,0.55); border: 1px solid rgba(255,233,184,0.35);
   color: #ffe9b8; font-family: Georgia, serif; font-size: 14px;
   padding: 6px 14px; border-radius: 16px; cursor: pointer;

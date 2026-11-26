@@ -130,11 +130,11 @@ export async function driveScene(game) {
     tex.colorSpace = THREE.SRGBColorSpace;
     const sg = new THREE.Group();
     const panel = new THREE.Mesh(new THREE.BoxGeometry(6.4, 2.4, 0.15), new THREE.MeshBasicMaterial({ map: tex }));
-    panel.position.y = 5.2;
+    panel.position.y = 7.6;
     sg.add(panel);
     for (const gx of [-2.8, 2.8]) {
-      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 5.2, 6), mat(0x6a7078));
-      post.position.set(gx, 2.6, 0);
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 7.6, 6), mat(0x6a7078));
+      post.position.set(gx, 3.8, 0);
       sg.add(post);
     }
     sg.position.set(0, 0, -40 - i * 52);
@@ -300,7 +300,7 @@ export async function driveScene(game) {
 
   // lane dodger state
   const LANES = [-4.6, -2.3, 0, 2.3, 4.6];
-  let carLaneX = 0, speed = 14, timer = 100, score = 0, finished = false, crashed = false;
+  let carLaneX = 0, speed = 19, timer = 100, score = 0, finished = false, crashed = false;
   const obstacles = [];
   const pickups = [];
   let spawnTimer = 0, pickupTimer = 4;
@@ -331,14 +331,44 @@ export async function driveScene(game) {
   }
 
   function makePickup() {
+    // a proper thanksgiving turkey: round brown body, fan of tail feathers,
+    // head with beak + red wattle — clearly a turkey at speed
     const g = new THREE.Group();
-    const roll = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.5, 10), mat(0x222222));
-    roll.rotation.z = Math.PI / 2;
-    roll.position.y = 0.4;
-    const rice = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.52, 10), mat(0xffffff));
-    rice.rotation.z = Math.PI / 2;
-    rice.position.y = 0.4;
-    g.add(roll, rice);
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.34, 12, 10), mat(0x7a4a26));
+    body.position.y = 0.45;
+    body.scale.set(1, 1.1, 0.9);
+    g.add(body);
+    // tail feather fan behind
+    const fanColors = [0xd07820, 0xc04030, 0xe0a030, 0x9a5020, 0xd07820];
+    for (let fi = 0; fi < 5; fi++) {
+      const feather = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.5, 5), mat(fanColors[fi]));
+      const fa = (-0.5 + fi * 0.25) * Math.PI * 0.8;
+      feather.position.set(Math.sin(fa) * 0.28, 0.55 + Math.cos(fa) * 0.18, 0.22);
+      feather.rotation.x = -0.5;
+      feather.rotation.z = -fa;
+      g.add(feather);
+    }
+    // head on a little neck
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.28, 8), mat(0x8a5a30));
+    neck.position.set(0, 0.85, -0.18);
+    neck.rotation.x = 0.3;
+    g.add(neck);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 8), mat(0x3a6a9a));
+    head.position.set(0, 1.0, -0.26);
+    g.add(head);
+    const beak = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.14, 6), mat(0xe0a030));
+    beak.position.set(0, 0.99, -0.38);
+    beak.rotation.x = -Math.PI / 2;
+    g.add(beak);
+    const wattle = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 5), mat(0xd02030));
+    wattle.position.set(0, 0.9, -0.33);
+    wattle.scale.set(0.7, 1.4, 0.7);
+    g.add(wattle);
+    // golden halo ring so it reads as a boost pickup
+    const halo = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.045, 8, 24), new THREE.MeshBasicMaterial({ color: 0xffd663 }));
+    halo.rotation.x = Math.PI / 2;
+    halo.position.y = 0.12;
+    g.add(halo);
     const lane = LANES[Math.floor(Math.random() * LANES.length)];
     g.position.set(lane, 0, -150);
     scene.add(g);
@@ -415,7 +445,7 @@ export async function driveScene(game) {
               { speaker: 'Christian', text: 'No problem — I’m heading that way now. Buckle in, bronco.' },
             ]);
             phase = 'run';
-            showObjective('YO YOGI RUN — dodge everything, grab sushi rolls for speed! A/D or joystick to steer.', 7000);
+            showObjective('YO YOGI RUN — dodge everything, grab turkeys for speed! A/D or joystick to steer.', 7000);
             this._timerShown = true;
           })();
         }
@@ -424,7 +454,7 @@ export async function driveScene(game) {
       if (phase === 'run' && !finished) {
         // steering
         const { x } = input.axes();
-        carLaneX = Math.max(-5.5, Math.min(5.5, carLaneX + x * dt * 9));
+        carLaneX = Math.max(-5.5, Math.min(5.5, carLaneX + x * dt * 12));
         car.position.x += (carLaneX - car.position.x) * Math.min(1, dt * 8);
         car.rotation.z = -x * 0.12;
         car.rotation.y = -x * 0.2;
@@ -434,7 +464,7 @@ export async function driveScene(game) {
         sp.classList.remove('hidden');
         const mm = Math.max(0, Math.floor(timer / 10));
         const ss = Math.max(0, Math.floor((timer % 10) * 6));
-        sp.textContent = `🍣 Yo Yogi closes soon! ${mm}:${String(ss).padStart(2, '0')} — speed x${(speed / 14).toFixed(1)}`;
+        sp.textContent = `🍣 Yo Yogi closes soon! ${mm}:${String(ss).padStart(2, '0')} — speed x${(speed / 19).toFixed(1)}`;
 
         if (timer <= 0 && !finished) {
           finished = true;
@@ -445,7 +475,7 @@ export async function driveScene(game) {
               { speaker: 'Christian', text: '…Or did we? Watch this. (You can retry — I believe in us.)' },
             ]);
             // retry
-            timer = 100; finished = false; speed = 14;
+            timer = 100; finished = false; speed = 19;
             for (const o of obstacles) scene.remove(o.g);
             obstacles.length = 0;
           })();
@@ -512,8 +542,14 @@ export async function driveScene(game) {
               { speaker: 'Passenger', text: 'All right… but here — free roll of sushi. You earned it, bronco.' },
               { speaker: 'Christian', text: 'Okay. NOW to Olivia’s. Baltimore after that.' },
             ]);
-            const { houseScene } = await import('./house.js');
-            game.switchScene(houseScene);
+            const c = await choice(['🦃 Run it back — retry the Yo Yogi run', "Continue to Olivia's"]);
+            if (c === 0) {
+              const { driveScene } = await import('./drive.js');
+              game.switchScene(driveScene);
+            } else {
+              const { houseScene } = await import('./house.js');
+              game.switchScene(houseScene);
+            }
           })();
         }
       }

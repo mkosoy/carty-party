@@ -58,6 +58,7 @@ const game = {
   scene: null,
   sceneApi: null,
   async switchScene(factory) {
+    window.__camYaw = 0;
     const mb = document.getElementById('menu-button');
     if (mb) mb.classList.remove('hidden');
     window.__game = this;

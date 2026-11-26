@@ -55,7 +55,7 @@ export async function driveScene(game) {
       sm.position.set(side * (9 + Math.random() * 20), 0.5, z);
       scene.add(sm);
       decor.push(sm);
-    } else {
+    } else if (Math.random() < 0.42) {
       // pine with snow
       const t = new THREE.Group();
       const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 0.8, 6), mat(0x5a4030));
@@ -70,7 +70,76 @@ export async function driveScene(game) {
       t.position.set(side * (9 + Math.random() * 24), 0, z);
       scene.add(t);
       decor.push(t);
+    } else if (Math.random() < 0.5) {
+      // strip mall — rockville pike energy: brick box, colorful awning, sign band
+      const sm = new THREE.Group();
+      const brick = new THREE.Mesh(new THREE.BoxGeometry(9 + Math.random() * 5, 3.2, 4), mat(0x9a6a52));
+      brick.position.y = 1.6;
+      sm.add(brick);
+      const awning = new THREE.Mesh(new THREE.BoxGeometry(brick.geometry.parameters.width, 0.5, 0.6), mat([0xc04040, 0x3070c0, 0x40a060, 0xd0a030][Math.floor(Math.random() * 4)]));
+      awning.position.set(0, 2.2, 2.1);
+      sm.add(awning);
+      const band = new THREE.Mesh(new THREE.BoxGeometry(brick.geometry.parameters.width, 0.7, 0.15), mat(0xf0ead8));
+      band.position.set(0, 3.2, 2.0);
+      sm.add(band);
+      const snowRoof = new THREE.Mesh(new THREE.BoxGeometry(brick.geometry.parameters.width + 0.2, 0.15, 4.2), mat(0xf4f8ff));
+      snowRoof.position.y = 3.3;
+      sm.add(snowRoof);
+      sm.position.set(side * (12 + Math.random() * 8), 0, z);
+      scene.add(sm);
+      decor.push(sm);
+    } else {
+      // downtown bethesda style office block: glassy with snow cap
+      const ob = new THREE.Group();
+      const h = 6 + Math.random() * 8;
+      const tower = new THREE.Mesh(new THREE.BoxGeometry(5 + Math.random() * 3, h, 5), new THREE.MeshStandardMaterial({ color: 0x4a6a8a, roughness: 0.3, metalness: 0.5 }));
+      tower.position.y = h / 2;
+      ob.add(tower);
+      const snowRoof = new THREE.Mesh(new THREE.BoxGeometry(tower.geometry.parameters.width + 0.2, 0.2, 5.2), mat(0xf4f8ff));
+      snowRoof.position.y = h + 0.1;
+      ob.add(snowRoof);
+      ob.position.set(side * (14 + Math.random() * 10), 0, z);
+      scene.add(ob);
+      decor.push(ob);
     }
+  }
+  // gantry signs overhead — the real route: bethesda → rockville → gaithersburg
+  const signTexts = [
+    ['Bethesda Row', 'NEXT 2 LIGHTS'],
+    ['Rockville Pike', 'MD-355 NORTH'],
+    ['I-270 Gaithersburg', 'KEEP RIGHT'],
+    ['Gaithersburg', 'NEXT EXIT'],
+    ['🍣 Yo Yogi', 'EXIT 11 — 1 MILE'],
+  ];
+  for (let i = 0; i < signTexts.length; i++) {
+    const cnv = document.createElement('canvas');
+    cnv.width = 512; cnv.height = 192;
+    const cx2 = cnv.getContext('2d');
+    cx2.fillStyle = '#0a5c36';
+    cx2.fillRect(0, 0, 512, 192);
+    cx2.strokeStyle = '#ffffff';
+    cx2.lineWidth = 6;
+    cx2.strokeRect(8, 8, 496, 176);
+    cx2.fillStyle = '#ffffff';
+    cx2.font = 'bold 52px Arial';
+    cx2.textAlign = 'center';
+    cx2.fillText(signTexts[i][0], 256, 82);
+    cx2.font = 'bold 34px Arial';
+    cx2.fillText(signTexts[i][1], 256, 142);
+    const tex = new THREE.CanvasTexture(cnv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const sg = new THREE.Group();
+    const panel = new THREE.Mesh(new THREE.BoxGeometry(6.4, 2.4, 0.15), new THREE.MeshBasicMaterial({ map: tex }));
+    panel.position.y = 5.2;
+    sg.add(panel);
+    for (const gx of [-2.8, 2.8]) {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 5.2, 6), mat(0x6a7078));
+      post.position.set(gx, 2.6, 0);
+      sg.add(post);
+    }
+    sg.position.set(0, 0, -40 - i * 52);
+    scene.add(sg);
+    decor.push(sg);
   }
   // distant Baltimore skyline hint far ahead
   for (let i = 0; i < 8; i++) {
@@ -207,6 +276,14 @@ export async function driveScene(game) {
 
   camera.position.set(0, 4.4, 8.5);
   camera.lookAt(0, 0.8, -6);
+  function chaseCam(dt) {
+    // locked chase view: behind and above the car, tracking its lane position
+    const tx = car.position.x * 0.85;
+    camera.position.x += (tx - camera.position.x) * Math.min(1, dt * 5);
+    camera.position.y = 4.4;
+    camera.position.z = 8.5;
+    camera.lookAt(car.position.x * 0.9, 0.8, -8);
+  }
 
   // ---- radio system ----
   const stations = [
@@ -297,6 +374,7 @@ export async function driveScene(game) {
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
+      chaseCam(dt);
       // snow everywhere always
       const pos = snow.geometry.attributes.position;
       for (let i = 0; i < snowCount; i++) {
@@ -323,7 +401,7 @@ export async function driveScene(game) {
           const st = stations[stationIdx];
           showObjective(`📻 ${st.freq} — ${st.name}`, 3200);
         }
-        if (cruiseTimer > 7 && !this._uberStarted) {
+        if (cruiseTimer > 4.5 && !this._uberStarted) {
           this._uberStarted = true;
           phase = 'uberCall';
           (async () => {
@@ -402,7 +480,7 @@ export async function driveScene(game) {
             scene.remove(o.g);
             obstacles.splice(i, 1);
             speed = Math.max(9, speed - 4);
-            camera.position.x += (Math.random() - 0.5);
+            camera.position.x += (Math.random() - 0.5) * 0.3;
             score++;
             const names = { dentist: 'A dentist! flossing in the road!', activist: 'Environmental activist chaining himself to the lane!', clubber: 'Club goer still out from last night!', datacenter: 'An entire AI data center, in the road, in MoCo!' };
             showObjective('💥 ' + (names[o.kind] || 'Obstacle!') + ' Speed lost!', 1800);

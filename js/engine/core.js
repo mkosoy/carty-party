@@ -23,6 +23,7 @@ export class FollowCam {
       this.pitch = Math.max(-0.4, Math.min(1.0, this.pitch + inp.camDY));
       inp.camDX = 0; inp.camDY = 0;
     }
+    window.__camYaw = this.yaw;
     // rotate the follow offset by the yaw, lift/drop with pitch
     const cy = Math.cos(this.yaw), sy = Math.sin(this.yaw);
     const dist = 1 - this.pitch * 0.35;

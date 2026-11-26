@@ -222,6 +222,27 @@ export async function airportScene(game) {
     for (let x = 40; x < 512; x += 55) {
       tvCtx.beginPath(); tvCtx.moveTo(x, 40); tvCtx.lineTo(x, 248); tvCtx.stroke();
     }
+    // the game itself: red churchill vs blue wooton, a live drive downfield
+    const playT = t % 14;
+    const ballX = 60 + (playT / 14) * 400;
+    for (let i = 0; i < 5; i++) {
+      // offense (red) clustered around the ball carrier
+      const ox = ballX - 20 + Math.sin(t * 2.1 + i * 2.4) * 26 + i * 9;
+      const oy = 80 + i * 34 + Math.cos(t * 1.7 + i) * 12;
+      tvCtx.fillStyle = '#c03030';
+      tvCtx.beginPath(); tvCtx.arc(Math.max(20, Math.min(492, ox)), Math.max(48, Math.min(240, oy)), 7, 0, Math.PI * 2); tvCtx.fill();
+      // defense (blue) chasing from behind/right
+      const dx = ballX + 24 + Math.cos(t * 2.3 + i * 1.9) * 24 - i * 7;
+      const dy = 90 + i * 30 + Math.sin(t * 1.9 + i * 1.3) * 12;
+      tvCtx.fillStyle = '#3050c0';
+      tvCtx.beginPath(); tvCtx.arc(Math.max(20, Math.min(492, dx)), Math.max(48, Math.min(240, dy)), 7, 0, Math.PI * 2); tvCtx.fill();
+    }
+    // ball carrier highlight
+    tvCtx.fillStyle = '#ff5050';
+    tvCtx.beginPath(); tvCtx.arc(Math.min(492, ballX), 144 + Math.sin(t * 3) * 10, 8, 0, Math.PI * 2); tvCtx.fill();
+    tvCtx.strokeStyle = '#ffe060';
+    tvCtx.lineWidth = 2;
+    tvCtx.beginPath(); tvCtx.arc(Math.min(492, ballX), 144 + Math.sin(t * 3) * 10, 11, 0, Math.PI * 2); tvCtx.stroke();
     // scoreboard
     tvCtx.fillStyle = '#000000cc';
     tvCtx.fillRect(96, 8, 320, 44);

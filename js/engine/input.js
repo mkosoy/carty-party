@@ -140,6 +140,16 @@ export class Input {
     if (this.keys.has('KeyS') || this.keys.has('ArrowDown')) z += 1;
     const len = Math.hypot(x, z);
     if (len > 1) { x /= len; z /= len; }
+    // camera-relative: input is in screen space, rotate by the orbit yaw so
+    // "up" always walks away from the camera no matter how you've dragged it
+    const yaw = window.__camYaw || 0;
+    if (yaw !== 0) {
+      // forward (away from camera) is (sin(yaw), -cos(yaw)); right is (cos(yaw), sin(yaw))
+      const sy = Math.sin(yaw), cy = Math.cos(yaw);
+      const wx = x * cy + (-z) * sy;
+      const wz = x * sy + (-z) * -cy;
+      return { x: wx, z: wz };
+    }
     return { x, z };
   }
 

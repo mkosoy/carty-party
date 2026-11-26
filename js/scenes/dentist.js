@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { makePerson } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
+import { sfxChime } from '../engine/sfx.js';
 import { carpet } from '../engine/textures.js';
 
 // Dr. Fritz's dental office — unlockable location. Olivia sits in the chair
@@ -295,6 +296,27 @@ export async function dentistScene(game) {
                 t.glunk = 0;
                 t.clean = true;
                 cleaned++;
+                // per-tooth reward: chime + a floating sparkle at the tooth,
+                // bigger celebration every fifth tooth
+                try { sfxChime(); } catch {}
+                const pop = document.createElement('div');
+                const bonus = cleaned % 5 === 0;
+                pop.textContent = bonus ? '⭐ bonus tooth!' : '✨ +1';
+                pop.style.cssText = `position:fixed;left:${tool.x - 20 + overlay.getBoundingClientRect().left}px;top:${tool.y + overlay.getBoundingClientRect().top - 10}px;z-index:80;color:${bonus ? '#ffd663' : '#a8e8ff'};font-family:Georgia,serif;font-size:${bonus ? 22 : 17}px;text-shadow:0 2px 6px #000;pointer-events:none;transition:all 1.1s ease-out;opacity:1`;
+                document.body.appendChild(pop);
+                requestAnimationFrame(() => {
+                  pop.style.transform = 'translateY(-60px) scale(1.15)';
+                  pop.style.opacity = '0';
+                });
+                setTimeout(() => pop.remove(), 1200);
+                if (bonus) {
+                  const cheer = document.createElement('div');
+                  cheer.textContent = ['nice technique!', 'dr. fritz approves', 'the other olivia could never', 'polished!'][Math.floor(Math.random() * 4)];
+                  cheer.style.cssText = 'position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:80;color:#ffe9b8;font-family:Georgia,serif;font-size:20px;font-style:italic;text-shadow:0 2px 8px #000;pointer-events:none;transition:opacity 1.4s;opacity:1';
+                  document.body.appendChild(cheer);
+                  setTimeout(() => { cheer.style.opacity = '0'; }, 1400);
+                  setTimeout(() => cheer.remove(), 2900);
+                }
               }
             }
           }

@@ -299,6 +299,24 @@ export async function swapScene(game) {
   followCam.snap(christian.group.position);
   const player = new PlayerController(christian, input, bounds);
   const interactions = new Interactions();
+  // Kylie's Run Club flyer by the entrance — unlocks the track race
+  interactions.add({
+    pos: new THREE.Vector3(-14.5, 0, 9.5), radius: 2.2, label: 'Run Club flyer',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'A flyer: KYLIE\'S RUN CLUB — Wootton High track, Thursdays. "Marathon prep. Hurdles. No excuses."' },
+        { speaker: 'Kylie ❤️', text: 'You thinking about it? Because Maya is FAST and I need the practice. Come watch a lap!' },
+      ]);
+      const c = await choice(['Head to the Wootton track', 'Stay at the swap']);
+      player.frozen = false;
+      if (c === 0) {
+        const { runclubScene } = await import('./runclub.js');
+        game.switchScene(runclubScene);
+      }
+    },
+  });
+
   // --- DJ booth minigame: make beats, unlock banks with vinyl, publish ---
   interactions.add({
     pos: new THREE.Vector3(13.4, 0, 4.6), radius: 2.2, label: 'DJ the booth — make beats',

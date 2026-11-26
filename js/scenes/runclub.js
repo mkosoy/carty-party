@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { makePerson } from '../engine/character.js';
-import { showObjective } from '../engine/core.js';
+import { showObjective, choice } from '../engine/core.js';
 
 // Kylie's Run Club — Wootton High School track. Marathon prep: hurdles,
 // racing three other runners, two laps, best lap time wins. SPACE / tap
@@ -298,6 +298,11 @@ export async function runclubScene(game) {
                 { speaker: 'Maya', text: `${total.toFixed(1)} — good grind! But ${place === 2 ? 'Maya' : 'the pack'} got you this time. Thursday. Rematch.` },
               ]);
               showObjective(`finished ${place === 2 ? '2nd' : place === 3 ? '3rd' : '4th'} — retry for the lap record!`, 5000);
+            }
+            const c = await choice(['Walk the track again', 'Head back to the swap']);
+            if (c === 1) {
+              const { swapScene } = await import('./swap.js');
+              game.switchScene(swapScene);
             }
           })();
         }

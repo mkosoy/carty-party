@@ -352,6 +352,23 @@ export async function houseScene(game) {
     },
   });
 
+  // Dr. Fritz reminder card on the fridge — unlocks the dentist office
+  interactions.add({
+    pos: new THREE.Vector3(-7.2, 0, -3.2), radius: 2, label: 'Dr. Fritz reminder card', floor: 'ground',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'A magnet card: DR. FRITZ — family dentistry. "Olivia — don\'t forget your shift!" …Olivia works for a dentist?' },
+      ]);
+      const c = await choice(['Sneak over to Dr. Fritz\'s office', 'Stay on mission']);
+      player.frozen = false;
+      if (c === 0) {
+        const { dentistScene } = await import('./dentist.js');
+        game.switchScene(dentistScene);
+      }
+    },
+  });
+
   // --- stairs ground->upper, upper->basement chained through landings ---
   interactions.add({
     pos: new THREE.Vector3(6, 0, 4), radius: 1.7, label: 'Go upstairs', floor: 'ground',

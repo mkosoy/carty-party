@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { makePerson } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
 import { carpet } from '../engine/textures.js';
 
 // Dr. Fritz's dental office — unlockable location. Olivia sits in the chair
@@ -378,7 +378,12 @@ export async function dentistScene(game) {
         await dialogue.play([
           { speaker: 'Dr. Fritz', text: 'Too slow! OTHER OLIVIA — get in here! You, out of the chair. Come back when your wrists are faster.' },
         ]);
+        const c = await choice(['Scrub in for another shift', 'Head back to Olivia\'s']);
         player.frozen = false;
+        if (c === 1) {
+          const { houseScene } = await import('./house.js');
+          game.switchScene(houseScene);
+        }
       }
     },
   });

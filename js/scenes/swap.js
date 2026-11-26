@@ -44,10 +44,42 @@ export async function swapScene(game) {
   );
 
   // industrial windows along the north wall (harbor dusk behind glass)
+  // window glass painted with the harbor dusk: water, skyline, lit cranes
+  const winCanvas = document.createElement('canvas');
+  winCanvas.width = 256; winCanvas.height = 192;
+  const wc = winCanvas.getContext('2d');
+  const skyG = wc.createLinearGradient(0, 0, 0, 130);
+  skyG.addColorStop(0, '#2a3c5c'); skyG.addColorStop(0.7, '#7a4a58'); skyG.addColorStop(1, '#c0724a');
+  wc.fillStyle = skyG; wc.fillRect(0, 0, 256, 130);
+  // skyline silhouettes
+  wc.fillStyle = '#141c2c';
+  const heights = [40, 60, 30, 75, 45, 55, 35, 65, 42, 58];
+  for (let b = 0; b < 10; b++) wc.fillRect(b * 26, 130 - heights[b], 22, heights[b]);
+  // lit windows in skyline
+  wc.fillStyle = '#ffd9a0';
+  for (let b = 0; b < 40; b++) wc.fillRect(6 + (b * 61) % 240, 96 + (b * 23) % 30, 3, 3);
+  // water with shimmer
+  const waterG = wc.createLinearGradient(0, 130, 0, 192);
+  waterG.addColorStop(0, '#28384e'); waterG.addColorStop(1, '#141e2e');
+  wc.fillStyle = waterG; wc.fillRect(0, 130, 256, 62);
+  wc.fillStyle = 'rgba(255,190,120,0.5)';
+  for (let wsh = 0; wsh < 20; wsh++) wc.fillRect((wsh * 37) % 250, 136 + (wsh * 11) % 50, 14, 2);
+  const winTex = new THREE.CanvasTexture(winCanvas);
+  winTex.colorSpace = THREE.SRGBColorSpace;
   for (let i = -3; i <= 3; i++) {
-    const win = new THREE.Mesh(new THREE.PlaneGeometry(3, 2.4), new THREE.MeshBasicMaterial({ color: 0x3a5570 }));
+    const win = new THREE.Mesh(new THREE.PlaneGeometry(3, 2.4), new THREE.MeshBasicMaterial({ map: winTex }));
     win.position.set(i * 4.4, 3.4, -11.78);
     scene.add(win);
+    // window mullion frames
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(3.1, 2.5, 0.06), mat(0x2a2520));
+    frame.position.set(i * 4.4, 3.4, -11.84);
+    scene.add(frame);
+    const mull = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.4, 0.04), mat(0x2a2520));
+    mull.position.set(i * 4.4, 3.4, -11.76);
+    scene.add(mull);
+    const mullH = new THREE.Mesh(new THREE.BoxGeometry(3, 0.08, 0.04), mat(0x2a2520));
+    mullH.position.set(i * 4.4, 3.4, -11.76);
+    scene.add(mullH);
   }
   // string lights zigzag
   for (let row = -2; row <= 2; row++) {
@@ -138,6 +170,112 @@ export async function swapScene(game) {
     scene.add(n.group);
     npcs.push({ p: n, t: Math.random() * 10 });
   }
+
+
+  // ---- Baltimore richness pass ----
+  // shade sails overhead (swap.season signature look)
+  const sailMat = new THREE.MeshStandardMaterial({ color: 0xe8ddc8, roughness: 0.9, side: THREE.DoubleSide });
+  for (const [sx, sz, rot] of [[-6, -2, 0.1], [4, 0, -0.12], [-2, 5, 0.08]]) {
+    const sail = new THREE.Mesh(new THREE.CircleGeometry(3.2, 3), sailMat);
+    sail.rotation.x = -Math.PI / 2 + 0.15;
+    sail.rotation.z = rot;
+    sail.position.set(sx, 5.2, sz);
+    scene.add(sail);
+  }
+  // harbor dusk vista outside the north windows: water, domino-sugar-ish glow sign, cranes
+  const harbor = new THREE.Mesh(new THREE.PlaneGeometry(60, 8), new THREE.MeshBasicMaterial({ color: 0x0e1e30 }));
+  harbor.position.set(0, 2.5, -14.5);
+  scene.add(harbor);
+  const water = new THREE.Mesh(new THREE.PlaneGeometry(60, 6), new THREE.MeshStandardMaterial({ color: 0x1a3048, roughness: 0.3, metalness: 0.6 }));
+  water.rotation.x = -Math.PI / 2;
+  water.position.set(0, -0.5, -14);
+  scene.add(water);
+  // glowing factory sign across the harbor
+  const signCanvas = document.createElement('canvas');
+  signCanvas.width = 512; signCanvas.height = 96;
+  const sc = signCanvas.getContext('2d');
+  sc.fillStyle = '#101820'; sc.fillRect(0, 0, 512, 96);
+  sc.font = 'bold 56px Georgia'; sc.textAlign = 'center'; sc.fillStyle = '#ff5a3c';
+  sc.fillText('SWAP SEASON', 256, 66);
+  const signTex = new THREE.CanvasTexture(signCanvas);
+  signTex.colorSpace = THREE.SRGBColorSpace;
+  const glowSign = new THREE.Mesh(new THREE.PlaneGeometry(9, 1.7), new THREE.MeshBasicMaterial({ map: signTex, transparent: true }));
+  glowSign.position.set(-6, 3.4, -14.2);
+  scene.add(glowSign);
+  // crane silhouettes
+  for (const cx of [4, 9]) {
+    const crane = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 0.3), new THREE.MeshBasicMaterial({ color: 0x0a0e16 }));
+    crane.position.set(cx, 2, -13.8);
+    scene.add(crane);
+    const arm = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.25, 0.25), new THREE.MeshBasicMaterial({ color: 0x0a0e16 }));
+    arm.position.set(cx - 1.2, 4.3, -13.8);
+    scene.add(arm);
+  }
+  // bar area along south wall with stools + string of pennant flags
+  const barTop = new THREE.Mesh(new THREE.BoxGeometry(8, 0.12, 1.0), mat(0x6a4a2e));
+  barTop.position.set(-8, 1.05, 10.6);
+  scene.add(barTop);
+  const barBase = new THREE.Mesh(new THREE.BoxGeometry(8, 1.0, 0.85), mat(0x3a2e22));
+  barBase.position.set(-8, 0.5, 10.6);
+  scene.add(barBase);
+  bounds.push({ minX: -12.2, maxX: -3.8, minZ: 10.0, maxZ: 11.2 });
+  for (let i = 0; i < 4; i++) {
+    const stool = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.7, 10), mat(0x8a6a4a));
+    stool.position.set(-11 + i * 2, 0.35, 9.6);
+    scene.add(stool);
+  }
+  // beer taps on the bar
+  for (let i = 0; i < 3; i++) {
+    const tap = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 0.5, 8), mat(0xb89858));
+    tap.position.set(-9.5 + i * 1.2, 1.35, 10.6);
+    scene.add(tap);
+  }
+  // pennant bunting across the room
+  const flagColors = [0xc0526a, 0xe8c060, 0x5a8ac0, 0x7ab06a, 0xd07ac0];
+  for (let i = 0; i < 16; i++) {
+    const flag = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.4, 4), mat(flagColors[i % 5]));
+    flag.rotation.x = Math.PI;
+    const t = i / 15;
+    flag.position.set(-15 + t * 30, 4.6 - Math.sin(t * Math.PI) * 0.5, 7 - t * 14);
+    scene.add(flag);
+  }
+  // DJ booth detail: turntables + speakers
+  for (const dx of [-0.7, 0.7]) {
+    const tt = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.05, 20), mat(0x111116));
+    tt.position.set(14 + dx, 1.13, 3);
+    scene.add(tt);
+    const vinyl = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.055, 20), mat(0x050508));
+    vinyl.position.set(14 + dx, 1.13, 3);
+    scene.add(vinyl);
+  }
+  for (const spx of [12.6, 15.4]) {
+    const spk = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.1, 0.5), mat(0x14141c));
+    spk.position.set(spx, 0.55, 2.2);
+    scene.add(spk);
+    const cone1 = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.05, 12), mat(0x2a2a38));
+    cone1.rotation.x = Math.PI / 2;
+    cone1.position.set(spx, 0.75, 1.94);
+    scene.add(cone1);
+  }
+  // christmas corner: small tree + holiday photo backdrop (very swap.season)
+  const miniTree = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.6, 9), mat(0x2e5230));
+  miniTree.position.set(15.5, 0.8, -8.5);
+  scene.add(miniTree);
+  const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2.4), new THREE.MeshStandardMaterial({ color: 0x8a2a3a, roughness: 0.9 }));
+  backdrop.position.set(15.6, 1.3, -5.5);
+  backdrop.rotation.y = -Math.PI / 2 - 0.3;
+  scene.add(backdrop);
+  // disco ball
+  const disco = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 10), new THREE.MeshStandardMaterial({ color: 0xc0c8d8, roughness: 0.15, metalness: 0.95 }));
+  disco.position.set(4, 5.0, 0);
+  scene.add(disco);
+  // more colored mood lighting
+  const magenta = new THREE.PointLight(0xd050a0, 10, 14);
+  magenta.position.set(-8, 4.5, -4);
+  scene.add(magenta);
+  const teal = new THREE.PointLight(0x30c0b0, 10, 14);
+  teal.position.set(9, 4.5, 5);
+  scene.add(teal);
 
   // player + Stacy (filming a tiktok with her friend near the entrance)
   const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, name: 'Christian', });

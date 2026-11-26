@@ -3,7 +3,7 @@ import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
 import { woodFloor, carpet } from '../engine/textures.js';
-import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, choice, GuideMarker } from '../engine/core.js';
 
 // Scene 3 — Olivia's townhouse. Three floors (basement / ground / upstairs)
 // connected by stairs that fade-teleport. Jim downstairs, Olivia in her
@@ -311,6 +311,7 @@ export async function houseScene(game) {
   followCam.setRoom(-7.9, 7.9, -5.9, 5.9);
   const player = new PlayerController(christian, input, boundsByFloor.ground);
   const interactions = new Interactions();
+  const guide = new GuideMarker(scene);
 
   // start: walk in the front door
   showFloor('ground');
@@ -489,6 +490,7 @@ export async function houseScene(game) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, floor: typeof floor !== "undefined" ? floor : null, self: this };
       player.update(dt);
       pickups.update(dt, christian.group.position);
+      guide.update(dt);
       followCam.update(dt, christian.group.position);
 
       const near = [...interactions.items].filter((i) => i.floor === floor && !i.hidden && !(i.once && i.done));

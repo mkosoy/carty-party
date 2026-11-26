@@ -3,7 +3,7 @@ import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
 import { concrete } from '../engine/textures.js';
-import { FollowCam, PlayerController, Interactions, showObjective, phoneOverlay, choice } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, phoneOverlay, choice, GuideMarker } from '../engine/core.js';
 
 // Scene 1 — Washington Dulles. Long concourse, big windows looking at snow,
 // seating rows, a wall TV playing "Churchill vs Wooton: The Big Game",
@@ -388,6 +388,8 @@ export async function airportScene(game) {
     { minX: -30, maxX: -29.4, minZ: -13, maxZ: 13 },
   ]);
   const interactions = new Interactions();
+  const guide = new GuideMarker(scene);
+  guide.setTarget(-6, 10.8);
 
   // story state
   let phase = 'explore';
@@ -406,6 +408,7 @@ export async function airportScene(game) {
         { speaker: 'TV', text: 'Bulldogs driving down the field — Wooton’s defense is gonna have to dig in…' },
       ]);
       phase = 'phoneSoon';
+      guide.clear();
       player.frozen = false;
     },
   });
@@ -463,6 +466,7 @@ export async function airportScene(game) {
       elapsed += dt;
       player.update(dt);
       pickups.update(dt, christian.group.position);
+      guide.update(dt);
       followCam.update(dt, christian.group.position);
 
       // snow fall
@@ -526,6 +530,7 @@ export async function airportScene(game) {
           ]);
           showObjective('Head to the car — the exit is by baggage claim, on the right.', 6000);
           exitInteract.hidden = false;
+          guide.setTarget(14, 12);
           player.frozen = false;
         })();
       }

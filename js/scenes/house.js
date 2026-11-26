@@ -144,14 +144,34 @@ export async function houseScene(game) {
     f.position.set(x, y, z);
     if (ry) f.rotation.y = ry;
     parent.add(f);
-    const c = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, 0.07), mat(color));
-    c.position.set(x + (ry ? 0.02 : 0), y, z + (ry ? 0 : (z > 0 ? -0.02 : 0.02)));
-    if (ry) c.rotation.y = ry;
+    // procedural painting: gradient sky + horizon + foreground strokes, unlit so it always reads
+    const pc = document.createElement('canvas');
+    pc.width = 96; pc.height = 72;
+    const px = pc.getContext('2d');
+    const sky = px.createLinearGradient(0, 0, 0, 72);
+    sky.addColorStop(0, '#8ab8e0');
+    sky.addColorStop(0.6, '#e0c8a0');
+    sky.addColorStop(1, '#607848');
+    px.fillStyle = sky;
+    px.fillRect(0, 0, 96, 72);
+    px.fillStyle = color ? '#' + new THREE.Color(color).getHexString() : '#7a5a3a';
+    for (let si = 0; si < 7; si++) {
+      px.globalAlpha = 0.5 + Math.random() * 0.4;
+      px.beginPath();
+      px.ellipse(12 + si * 13, 52 + Math.sin(si * 2) * 8, 9, 5, 0, 0, Math.PI * 2);
+      px.fill();
+    }
+    px.globalAlpha = 1;
+    const ptex = new THREE.CanvasTexture(pc);
+    ptex.colorSpace = THREE.SRGBColorSpace;
+    const c = new THREE.Mesh(new THREE.PlaneGeometry(w, hgt), new THREE.MeshBasicMaterial({ map: ptex }));
+    c.position.set(x + (ry ? 0.06 : 0), y, z + (ry ? 0 : (z > 0 ? -0.06 : 0.06)));
+    c.rotation.y = ry ? ry : (z > 0 ? Math.PI : 0);
     parent.add(c);
   }
-  wallArt(ground, -2, 2.0, 5.72, 1.0, 0.8, 0x7ab0d0);
-  wallArt(ground, 0.5, 2.0, 5.72, 0.8, 1.0, 0xd09060);
-  wallArt(ground, 2.5, 2.1, 5.72, 1.2, 0.7, 0x70b080);
+  wallArt(ground, -7.7, 2.0, -3, 1.0, 0.8, 0x7ab0d0, Math.PI / 2);
+  wallArt(ground, -7.7, 2.0, -0.8, 0.8, 1.0, 0xd09060, Math.PI / 2);
+  wallArt(ground, -7.7, 2.1, 1.5, 1.2, 0.7, 0x70b080, Math.PI / 2);
   wallArt(ground, -7.72, 2.0, -1, 1.0, 0.9, 0xd0a860, Math.PI / 2);
   wallArt(upper, 0, 2.0, 5.72, 1.4, 0.9, 0xa090d0);
   // table lamps with warm glow

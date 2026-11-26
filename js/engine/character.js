@@ -48,7 +48,7 @@ export function makePerson({
 } = {}) {
   const g = new THREE.Group();
   const weave = fabricWeave(2, 2);
-  const mat = (c, rough = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0, map: weave, bumpMap: weave, bumpScale: 0.6 });
+  const mat = (c, rough = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0, map: weave, bumpMap: weave, bumpScale: 0.15 });
   const smoothMat = (c, rough = 0.7) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0 });
 
   const H = 1.78 * height;

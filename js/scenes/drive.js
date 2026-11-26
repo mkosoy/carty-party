@@ -320,10 +320,32 @@ export async function driveScene(game) {
       led.position.set(0, 1.2, 1.12);
       g.add(led);
     } else {
+      // person-shaped hazard with simple head so it reads as a pedestrian
       const p = new THREE.Mesh(new THREE.CapsuleGeometry(0.4, 0.9, 4, 8), mat(color));
       p.position.y = 0.95;
       g.add(p);
+      const hd = new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 8), mat(0xe8c098));
+      hd.position.y = 1.85;
+      g.add(hd);
     }
+    // floating label so the joke lands at speed: always faces the camera
+    const lc = document.createElement('canvas');
+    lc.width = 256; lc.height = 64;
+    const lx = lc.getContext('2d');
+    lx.fillStyle = 'rgba(0,0,0,0.65)';
+    lx.beginPath();
+    lx.roundRect(0, 0, 256, 64, 14);
+    lx.fill();
+    lx.font = 'bold 30px Arial';
+    lx.textAlign = 'center';
+    lx.fillStyle = '#ffe9b8';
+    lx.fillText(label, 128, 42);
+    const ltex = new THREE.CanvasTexture(lc);
+    ltex.colorSpace = THREE.SRGBColorSpace;
+    const lsprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: ltex, depthTest: false }));
+    lsprite.scale.set(2.4, 0.6, 1);
+    lsprite.position.y = 2.6;
+    g.add(lsprite);
     const lane = LANES[Math.floor(Math.random() * LANES.length)];
     g.position.set(lane, 0, -150);
     scene.add(g);
@@ -454,8 +476,8 @@ export async function driveScene(game) {
       if (phase === 'run' && !finished) {
         // steering
         const { x } = input.axes();
-        carLaneX = Math.max(-5.5, Math.min(5.5, carLaneX + x * dt * 12));
-        car.position.x += (carLaneX - car.position.x) * Math.min(1, dt * 8);
+        carLaneX = Math.max(-5.5, Math.min(5.5, carLaneX + x * dt * 17));
+        car.position.x += (carLaneX - car.position.x) * Math.min(1, dt * 13);
         car.rotation.z = -x * 0.12;
         car.rotation.y = -x * 0.2;
 

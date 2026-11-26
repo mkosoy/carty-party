@@ -218,7 +218,7 @@ export async function dcScene(game) {
   ];
   specLooks.forEach((look, i) => {
     const sp = makePerson(look);
-    sp.group.position.set(-10 + i * 9.5, 0, 13.5 + (i % 2));
+    sp.group.position.set(-11 + i * 9.5, 0, 12.6 + (i % 2));
     sp.group.rotation.y = Math.PI;
     scene.add(sp.group);
     spectators.push(sp);
@@ -243,14 +243,14 @@ export async function dcScene(game) {
   scene.add(christian.group);
 
   const stacy = makePerson({ photo: faces.stacy, top: 0x4a7a52, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098, name: 'Stacy', });
-  stacy.group.position.set(-1.4, 0, 16.4);
+  stacy.group.position.set(-2.2, 0, 16.8);
   scene.add(stacy.group);
 
   const mark = makePerson({ photo: faces.mark, top: 0x3a5a8a, bottom: 0x2c3a55, hair: 0xc8a060, hairStyle: 'short', skin: 0xe8c098, name: 'Mark', });
-  mark.group.position.set(2, 0, 12);
+  mark.group.position.set(3.2, 0, 11.6);
   scene.add(mark.group);
   const kylie = makePerson({ photo: faces.kylie, top: 0x5a7ab0, bottom: 0x4a3a30, hair: 0xd8b878, hairStyle: 'long', skin: 0xe8c8a8, name: 'Kylie', });
-  kylie.group.position.set(3.4, 0, 12.2);
+  kylie.group.position.set(5.0, 0, 12.4);
   scene.add(kylie.group);
   const olivia = makePerson({ photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
   olivia.group.position.set(-4, 0, 5);

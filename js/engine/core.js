@@ -43,6 +43,38 @@ export class FollowCam {
 
 // Player controller: screen-relative movement (camera looks north-ish),
 // wall collision against AABB list, procedural walk anim.
+
+// Walk-over collectibles: drop-in items that bob and spin, pick up on touch.
+export class Pickups {
+  constructor(scene) {
+    this.scene = scene;
+    this.items = [];
+  }
+  add(mesh, x, z, id, onPick) {
+    mesh.position.set(x, 0.5, z);
+    this.scene.add(mesh);
+    this.items.push({ mesh, id, onPick, taken: false, baseY: 0.5 });
+  }
+  update(dt, playerPos) {
+    const t = performance.now() / 1000;
+    for (const it of this.items) {
+      if (it.taken) continue;
+      it.mesh.rotation.y += dt * 1.8;
+      it.mesh.position.y = it.baseY + Math.sin(t * 2.5 + it.mesh.position.x) * 0.08;
+      const dx = playerPos.x - it.mesh.position.x;
+      const dz = playerPos.z - it.mesh.position.z;
+      const dy = playerPos.y - it.mesh.position.y;
+      if (dx * dx + dz * dz < 0.55 && dy < 1.2) {
+        it.taken = true;
+        this.scene.remove(it.mesh);
+        if (it.onPick) it.onPick(it.id);
+      }
+    }
+  }
+  count() { return this.items.filter((i) => i.taken).length; }
+  total() { return this.items.length; }
+}
+
 export class PlayerController {
   constructor(person, input, bounds) {
     this.person = person;
@@ -51,8 +83,28 @@ export class PlayerController {
     this.speed = 4.1;
     this.vel = new THREE.Vector3();
     this.frozen = false;
+    this.vy = 0;
+    this.grounded = true;
+    this.jumpQueued = false;
+  }
+  jump() {
+    if (this.grounded && !this.frozen) {
+      this.vy = 5.2;
+      this.grounded = false;
+    }
   }
   update(dt) {
+    if (this.input.consumeJump && this.input.consumeJump()) this.jump();
+    const gg = this.person.group;
+    if (!this.grounded || this.vy > 0) {
+      this.vy -= 14 * dt;
+      gg.position.y += this.vy * dt;
+      if (gg.position.y <= 0) {
+        gg.position.y = 0;
+        this.vy = 0;
+        this.grounded = true;
+      }
+    }
     if (this.frozen) {
       this.person.animateIdle(performance.now() / 1000);
       return;

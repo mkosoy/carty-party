@@ -6,6 +6,7 @@ export class Input {
     this.joyY = 0;
     this.interactQueued = false;
     this.advanceQueued = false;
+    this.jumpQueued = false;
 
     window.addEventListener('keydown', (e) => {
       if (e.repeat) return;
@@ -14,6 +15,7 @@ export class Input {
         this.interactQueued = true;
         this.advanceQueued = true;
       }
+      if (e.code === 'Space') this.jumpQueued = true;
     });
     window.addEventListener('keyup', (e) => this.keys.delete(e.code));
 
@@ -63,6 +65,15 @@ export class Input {
     zone.addEventListener('touchend', joyEnd);
     zone.addEventListener('touchcancel', joyEnd);
 
+    const jumpBtn = document.getElementById('jump-button');
+    if (jumpBtn) {
+      jumpBtn.addEventListener('touchstart', (e) => {
+        this.jumpQueued = true;
+        e.preventDefault();
+      }, { passive: false });
+      jumpBtn.addEventListener('click', () => { this.jumpQueued = true; });
+    }
+
     const actionBtn = document.getElementById('action-button');
     actionBtn.addEventListener('touchstart', (e) => {
       this.interactQueued = true;
@@ -92,6 +103,11 @@ export class Input {
     return { x, z };
   }
 
+  consumeJump() {
+    const v = this.jumpQueued;
+    this.jumpQueued = false;
+    return v;
+  }
   consumeInteract() {
     const v = this.interactQueued;
     this.interactQueued = false;
@@ -105,5 +121,6 @@ export class Input {
   clear() {
     this.interactQueued = false;
     this.advanceQueued = false;
+    this.jumpQueued = false;
   }
 }

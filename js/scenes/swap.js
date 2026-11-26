@@ -25,7 +25,7 @@ export async function swapScene(game) {
   const bounds = [];
 
   // big open brewery floor: brick walls, industrial windows, string lights
-  const floor = new THREE.Mesh(new THREE.BoxGeometry(34, 0.2, 24), new THREE.MeshStandardMaterial({ map: concrete('#8a7a68', 5, 3.5), roughness: 0.9 }));
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(34, 0.2, 24), new THREE.MeshStandardMaterial({ map: concrete('#6e6a66', 5, 3.5), roughness: 0.9 }));
   floor.receiveShadow = true;
   scene.add(floor);
   const wallN = new THREE.Mesh(new THREE.BoxGeometry(34, 6, 0.4), new THREE.MeshStandardMaterial({ map: brickWall('#7a4436', 5, 1.2), roughness: 0.95 }));
@@ -554,6 +554,43 @@ export async function swapScene(game) {
   const bmore = new THREE.Mesh(new THREE.PlaneGeometry(6, 1.1), new THREE.MeshBasicMaterial({ map: bmoreT, transparent: true }));
   bmore.position.set(0, 4.6, -11.8);
   scene.add(bmore);
+
+  // warehouse props: crates, barrels, seating nook
+  function crate(x, z, ry = 0) {
+    const cr = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.1, 1.1), mat(0x7a5c38));
+    cr.position.set(x, 0.55, z);
+    cr.rotation.y = ry;
+    scene.add(cr);
+    const cr2 = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.9, 0.9), mat(0x8a6a42));
+    cr2.position.set(x + 0.3, 1.55, z - 0.2);
+    cr2.rotation.y = ry + 0.4;
+    scene.add(cr2);
+  }
+  crate(-14.5, -8, 0.3);
+  crate(14.8, -6.5, -0.2);
+  crate(15.2, 8.5, 0.7);
+  for (const [bx, bz] of [[-15, 2], [-14.6, 3.6]]) {
+    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 1.3, 12), mat(0x5a4a34));
+    barrel.position.set(bx, 0.65, bz);
+    scene.add(barrel);
+    const band = new THREE.Mesh(new THREE.TorusGeometry(0.56, 0.03, 6, 16), mat(0x3a3a3a));
+    band.rotation.x = Math.PI / 2;
+    band.position.set(bx, 0.9, bz);
+    scene.add(band);
+  }
+  // seating nook: couch + coffee table corner
+  const nook = new THREE.Group();
+  const nc = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.6, 1), mat(0x6a3a4a));
+  nc.position.set(0, 0.5, 0);
+  const nback = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.8, 0.3), mat(0x6a3a4a));
+  nback.position.set(0, 1.0, -0.4);
+  nook.add(nc, nback);
+  nook.position.set(-13.5, 0, 8.5);
+  nook.rotation.y = Math.PI / 4;
+  scene.add(nook);
+  const ctable = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.45, 10), mat(0x4a3a2c));
+  ctable.position.set(-11.8, 0.22, 7.2);
+  scene.add(ctable);
 
   return {
     update(dt) {

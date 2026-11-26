@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { makePerson } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
 import { sfxChime } from '../engine/sfx.js';
-import { carpet } from '../engine/textures.js';
+import { carpet, paintedWall } from '../engine/textures.js';
 
 // Dr. Fritz's dental office — unlockable location. Olivia sits in the chair
 // and cleans the glunk off every tooth. Too slow and they threaten to bring
@@ -24,7 +24,42 @@ export async function dentistScene(game) {
   const floor = new THREE.Mesh(new THREE.BoxGeometry(14, 0.2, 10), new THREE.MeshStandardMaterial({ map: carpet('#b8c4c8', 4, 3), roughness: 0.9 }));
   floor.receiveShadow = true;
   scene.add(floor);
-  const wallMat = mat(0x3e7a7a);
+  const wallMat = new THREE.MeshStandardMaterial({ map: paintedWall('#3e7a7a', 3, 1.4), roughness: 0.85 });
+  // white baseboard trim — the detail that kills the minecraft look
+  function baseboard(w, x, z, ry) {
+    const bb = new THREE.Mesh(new THREE.BoxGeometry(w, 0.18, 0.06), mat(0xe8e4da));
+    bb.position.set(x, 0.19, z);
+    bb.rotation.y = ry;
+    scene.add(bb);
+  }
+  baseboard(14, 0, -4.82, 0);
+  baseboard(14, 0, 4.82, 0);
+  baseboard(10, -6.82, 0, Math.PI / 2);
+  baseboard(10, 6.82, 0, Math.PI / 2);
+  // crown molding up top
+  function crown(w, x, z, ry) {
+    const cm = new THREE.Mesh(new THREE.BoxGeometry(w, 0.12, 0.05), mat(0xe8e4da));
+    cm.position.set(x, 3.52, z);
+    cm.rotation.y = ry;
+    scene.add(cm);
+  }
+  crown(14, 0, -4.84, 0);
+  crown(14, 0, 4.84, 0);
+  crown(10, -6.84, 0, Math.PI / 2);
+  crown(10, 6.84, 0, Math.PI / 2);
+  // ceiling
+  const ceilingD = new THREE.Mesh(new THREE.BoxGeometry(14.2, 0.15, 10.2), mat(0xdcd8ce));
+  ceilingD.position.y = 3.65;
+  scene.add(ceilingD);
+  // fluorescent panel lights in the ceiling
+  for (const [lx, lz] of [[-3.5, -2], [3.5, -2], [-3.5, 2], [3.5, 2]]) {
+    const panel = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.05, 0.8), new THREE.MeshBasicMaterial({ color: 0xf8f8ee }));
+    panel.position.set(lx, 3.56, lz);
+    scene.add(panel);
+    const glowL = new THREE.PointLight(0xf0f0e0, 4, 6);
+    glowL.position.set(lx, 3.2, lz);
+    scene.add(glowL);
+  }
   for (const [w, h, d, x, z] of [
     [14, 3.6, 0.3, 0, -5], [14, 3.6, 0.3, 0, 5], [0.3, 3.6, 10, -7, 0], [0.3, 3.6, 10, 7, 0],
   ]) {

@@ -102,6 +102,26 @@ export function asphalt(rx = 2, ry = 20) {
   return tex(c, rx, ry);
 }
 
+
+export function paintedWall(base = '#3e7a7a', rx = 2, ry = 1) {
+  const [c, x] = canvas(128, 128);
+  x.fillStyle = base;
+  x.fillRect(0, 0, 128, 128);
+  noise(x, 128, 128, 0.1, [8, 40]);
+  // faint vertical roller streaks like real painted drywall
+  for (let i = 0; i < 10; i++) {
+    x.fillStyle = `rgba(255,255,255,${0.02 + Math.random() * 0.025})`;
+    const sx = Math.random() * 128;
+    x.fillRect(sx, 0, 3 + Math.random() * 6, 128);
+  }
+  for (let i = 0; i < 6; i++) {
+    x.fillStyle = `rgba(0,0,0,${0.02 + Math.random() * 0.02})`;
+    const sx = Math.random() * 128;
+    x.fillRect(sx, 0, 2 + Math.random() * 5, 128);
+  }
+  return tex(c, rx, ry);
+}
+
 // procedural human face for NPCs: skin base with soft shaded eyes, brows,
 // nose shadow, mouth. gender/age variation via params.
 export function npcFace({ skin = '#e8c098', eyeColor = '#3a2a1a', mouthCurve = 0.4, female = false } = {}) {

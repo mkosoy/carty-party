@@ -402,14 +402,6 @@ export async function airportScene(game) {
     wreath(cx, 6.0, 3.4);
     bounds.push({ minX: cx - 0.5, maxX: cx + 0.5, minZ: 6.0, maxZ: 7.0 });
   }
-  // garland swags strung between columns
-  for (const [x1, x2] of [[-18, -6], [-6, 6], [6, 18]]) {
-    const gm = new THREE.Mesh(new THREE.TorusGeometry((x2 - x1) / 2, 0.09, 6, 20, Math.PI), mat(0x1f5c2e));
-    gm.position.set((x1 + x2) / 2, 4.6, 6.4);
-    gm.rotation.x = Math.PI;
-    gm.scale.y = 0.35;
-    scene.add(gm);
-  }
   // coffee cafe mid-hall with lit sign
   const cafe = new THREE.Group();
   const kbase = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.1, 1.4), mat(0x5a3c28));
@@ -457,8 +449,8 @@ export async function airportScene(game) {
   const christian = makePerson({
     photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088,
   });
-  christian.group.position.set(8, 0, 6);
-  christian.group.rotation.y = Math.PI;
+  christian.group.position.set(1.5, 0, 2);
+  christian.group.rotation.y = 0;
   christian.group.rotation.y = Math.PI;
   scene.add(christian.group);
 

@@ -29,7 +29,7 @@ let renderPass = null;
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.32, 0.55, 0.88);
 const vignettePass = new ShaderPass(VignetteShader);
 vignettePass.uniforms.offset.value = 0.92;
-vignettePass.uniforms.darkness.value = 1.25;
+vignettePass.uniforms.darkness.value = 0.85;
 const outputPass = new OutputPass();
 function rebuildComposer() {
   composer.passes = [];

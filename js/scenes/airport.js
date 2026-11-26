@@ -66,7 +66,20 @@ export async function airportScene(game) {
     travelers.push({ tr, ph: tx, seated: false });
   }
 
-  // curved-roof hint: a series of white arches overhead (Dulles' iconic curve)
+    // a jet taking off beyond the windows, looping — the reason airports feel alive
+  const jet = new THREE.Group();
+  const fus = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 4.5, 6, 10), mat(0xdfe4ea));
+  fus.rotation.z = Math.PI / 2;
+  jet.add(fus);
+  const wing = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 4.4), mat(0xc8ccd4));
+  jet.add(wing);
+  const tail = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.2, 1.4), mat(0x3a5a9a));
+  tail.position.set(-2.2, 0.6, 0);
+  jet.add(tail);
+  jet.scale.setScalar(1.6);
+  scene.add(jet);
+
+// curved-roof hint: a series of white arches overhead (Dulles' iconic curve)
   for (let i = -3; i <= 3; i++) {
     const arch = new THREE.Mesh(new THREE.TorusGeometry(13, 0.35, 8, 24, Math.PI), mat(0xe8ecf2));
     arch.position.set(i * 8, 0, 0);
@@ -684,6 +697,7 @@ export async function airportScene(game) {
 
   let phoneTimer = -1;
   let elapsed = 0;
+  let jetT = 0;
 
 
   // collectibles: vintage cameras for Stacy + vinyl records
@@ -701,6 +715,11 @@ export async function airportScene(game) {
       player.update(dt);
       pickups.update(dt, christian.group.position);
       guide.update(dt, christian.group.position);
+      // jet flyby loop
+      jetT += dt;
+      const jt = (jetT % 24) / 24;
+      jet.position.set(-40 + jt * 95, 2 + jt * jt * 26, -20 - jt * 6);
+      jet.rotation.z = 0.12 + jt * 0.2;
       travelers.forEach((tw) => { if (tw.seated) { if (tw.tr.torso) tw.tr.torso.position.y += Math.sin(elapsed * 1.4 + tw.ph) * 0.0004; } else tw.tr.animateIdle(elapsed + tw.ph); });
       followCam.update(dt, christian.group.position);
 

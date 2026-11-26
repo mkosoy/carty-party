@@ -300,10 +300,16 @@ export function makePerson({
       torso.rotation.x *= 0.85;
       torso.rotation.y *= 0.85;
     },
-    sit() {
+    sit(seatTop) {
       legL.rotation.x = -Math.PI / 2;
       legR.rotation.x = -Math.PI / 2;
-      g.position.y -= 0.42 * u;
+      // exact geometry: hip pivot is 0.82u above group origin. place the group so
+      // the hips land just above the seat surface — no floating, no sinking.
+      if (typeof seatTop === 'number') {
+        g.position.y = seatTop - 0.82 * u + 0.06 * u;
+      } else {
+        g.position.y -= 0.42 * u;
+      }
     },
   };
   return api;

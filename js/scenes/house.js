@@ -489,10 +489,11 @@ export async function houseScene(game) {
   scene.add(christian.group);
 
   const jim = makePerson({ photo: faces.jim, top: 0x2c3140, bottom: 0x3c3c44, hair: 0xb8b0a4, hairStyle: 'receding', skin: 0xd8a878, name: 'Jim', });
-  jim.group.position.set(-4, 0.97, 3.42);
+  jim.group.position.set(-4, 0, 3.42);
   jim.group.rotation.y = Math.PI;
   ground.add(jim.group);
-  jim.sit();
+  jim.sit(0.69);
+  window.__jim = jim;
   jim.group.position.y += 0.42 * 0.95; // undo sit()'s floor-level drop since he's on the seat
 
   const olivia = makePerson({ photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });

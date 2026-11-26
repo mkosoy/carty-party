@@ -50,10 +50,10 @@ export async function airportScene(game) {
   seatedSpots.forEach(([rx, si], ti) => {
     const p = travelerPalettes[ti % travelerPalettes.length];
     const tr = makePerson({ top: p.top, bottom: p.bottom, hair: p.hair, skin: p.skin, hairStyle: ti % 2 ? 'short' : 'long' });
-    tr.group.position.set(rx - 2 + (si + 2) * 1.05, 1.28, -7);
+    tr.group.position.set(rx - 2 + (si + 2) * 1.05, 0, -7);
     tr.group.rotation.y = Math.PI;
     scene.add(tr.group);
-    tr.sit();
+    tr.sit(0.9);
     travelers.push({ tr, ph: ti * 1.7, seated: true });
   });
   // two standing travelers chatting near the kiosk

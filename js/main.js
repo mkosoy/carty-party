@@ -95,6 +95,8 @@ async function startGame(sceneName) {
     house: (await import('./scenes/house.js')).houseScene,
     swap: (await import('./scenes/swap.js')).swapScene,
     dc: (await import('./scenes/dc.js')).dcScene,
+    dentist: (await import('./scenes/dentist.js')).dentistScene,
+    miami: (await import('./scenes/miami.js')).miamiScene,
   };
   music.play(sceneName || 'airport');
   loop();

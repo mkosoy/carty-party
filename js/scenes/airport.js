@@ -68,14 +68,14 @@ export async function airportScene(game) {
 
     // a jet taking off beyond the windows, looping — the reason airports feel alive
   const jet = new THREE.Group();
-  const fus = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 4.5, 6, 10), mat(0xdfe4ea));
-  fus.rotation.z = Math.PI / 2;
-  jet.add(fus);
-  const wing = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 4.4), mat(0xc8ccd4));
-  jet.add(wing);
-  const tail = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.2, 1.4), mat(0x3a5a9a));
-  tail.position.set(-2.2, 0.6, 0);
-  jet.add(tail);
+  const jfus = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 4.5, 6, 10), mat(0xdfe4ea));
+  jfus.rotation.z = Math.PI / 2;
+  jet.add(jfus);
+  const jwing = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 4.4), mat(0xc8ccd4));
+  jet.add(jwing);
+  const jtail = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.2, 1.4), mat(0x3a5a9a));
+  jtail.position.set(-2.2, 0.6, 0);
+  jet.add(jtail);
   jet.scale.setScalar(1.6);
   scene.add(jet);
 

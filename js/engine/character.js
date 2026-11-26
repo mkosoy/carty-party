@@ -59,7 +59,7 @@ export function makePerson({
   torso.position.y = 1.13 * u;
   torso.scale.z = 0.72;
   g.add(torso);
-  const shoulders = new THREE.Mesh(new THREE.SphereGeometry(0.185 * u, 14, 10), mat(top));
+  const shoulders = new THREE.Mesh(new THREE.SphereGeometry(0.185 * u, 24, 18), mat(top));
   shoulders.position.y = 1.44 * u;
   shoulders.scale.set(1, 0.55, 0.72);
   g.add(shoulders);
@@ -87,7 +87,7 @@ export function makePerson({
     }
   }
   // hips + belt
-  const hips = new THREE.Mesh(new THREE.SphereGeometry(0.155 * u, 14, 10), mat(bottom));
+  const hips = new THREE.Mesh(new THREE.SphereGeometry(0.155 * u, 24, 18), mat(bottom));
   hips.position.y = 0.84 * u;
   hips.scale.set(1.05, 0.6, 0.8);
   g.add(hips);
@@ -97,7 +97,7 @@ export function makePerson({
   function makeLeg(side) {
     const pivot = new THREE.Group();
     pivot.position.set(side * 0.095 * u, 0.82 * u, 0);
-    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.06 * u, 0.68 * u, 4, 10), mat(bottom));
+    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.06 * u, 0.68 * u, 6, 16), mat(bottom));
     leg.position.y = -0.4 * u;
     pivot.add(leg);
     // boot: shaft + toe box
@@ -127,7 +127,7 @@ export function makePerson({
     const cap = new THREE.Mesh(new THREE.SphereGeometry(0.06 * u, 10, 8), mat(top));
     pivot.add(cap);
     // upper arm: slightly tapered sleeve down to the elbow
-    const upper = new THREE.Mesh(new THREE.CapsuleGeometry(0.05 * u, 0.2 * u, 4, 10), mat(top));
+    const upper = new THREE.Mesh(new THREE.CapsuleGeometry(0.05 * u, 0.2 * u, 6, 14), mat(top));
     upper.position.y = -0.15 * u;
     pivot.add(upper);
     // elbow joint group so the forearm carries a natural slight bend
@@ -136,7 +136,7 @@ export function makePerson({
     pivot.add(elbow);
     const elbowBall = new THREE.Mesh(new THREE.SphereGeometry(0.042 * u, 8, 8), mat(top));
     elbow.add(elbowBall);
-    const forearm = new THREE.Mesh(new THREE.CapsuleGeometry(0.042 * u, 0.2 * u, 4, 10), mat(top));
+    const forearm = new THREE.Mesh(new THREE.CapsuleGeometry(0.042 * u, 0.2 * u, 6, 14), mat(top));
     forearm.position.y = -0.13 * u;
     elbow.add(forearm);
     const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.047 * u, 0.047 * u, 0.04 * u, 8), mat(new THREE.Color(top).multiplyScalar(0.8).getHex()));
@@ -233,7 +233,7 @@ export function makePerson({
   } else if (hairStyle === 'long') {
     // cap + volume at back falling past shoulders + side strands
     hairBall(headR * 1.07, 0, headR * 0.26, -headR * 0.1, 0.96, 0.88, 0.98);
-    const back = new THREE.Mesh(new THREE.CapsuleGeometry(headR * 0.72, headR * 2.4, 4, 10), hairMat);
+    const back = new THREE.Mesh(new THREE.CapsuleGeometry(headR * 0.72, headR * 2.4, 6, 18), hairMat);
     back.position.set(0, -headR * 1.3, -headR * 0.55);
     back.scale.z = 0.5;
     headGroup.add(back);

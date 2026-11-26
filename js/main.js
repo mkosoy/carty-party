@@ -91,6 +91,18 @@ const game = {
     setTimeout(() => { try { const n = factory.name.replace('Scene',''); if (music.scene !== n) music.play(n); } catch {} }, 50);
     if (this.sceneApi?.dispose) this.sceneApi.dispose();
     this.scene = new THREE.Scene();
+    // cinematic baseline lighting: soft sky fill + warm key with shadows.
+    // scenes add their own mood lighting on top of this floor.
+    const hemi = new THREE.HemisphereLight(0xbcc8e0, 0x40382c, 0.55);
+    this.scene.add(hemi);
+    const key = new THREE.DirectionalLight(0xfff0d8, 1.1);
+    key.position.set(6, 10, 4);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.camera.left = -18; key.shadow.camera.right = 18;
+    key.shadow.camera.top = 18; key.shadow.camera.bottom = -18;
+    key.shadow.bias = -0.0004;
+    this.scene.add(key);
     window.__sceneName = factory.name;
     this.sceneApi = await factory(this);
     rebuildComposer();

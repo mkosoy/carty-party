@@ -130,11 +130,11 @@ export async function houseScene(game) {
     if (ry) c.rotation.y = ry;
     parent.add(c);
   }
-  wallArt(ground, -2, 2.0, 5.85, 1.0, 0.8, 0x7ab0d0);
-  wallArt(ground, 0.5, 2.0, 5.85, 0.8, 1.0, 0xd09060);
-  wallArt(ground, 2.5, 2.1, 5.85, 1.2, 0.7, 0x70b080);
-  wallArt(ground, -7.85, 2.0, -1, 1.0, 0.9, 0x9a7a4a, Math.PI / 2);
-  wallArt(upper, 0, 2.0, 5.85, 1.4, 0.9, 0xa090d0);
+  wallArt(ground, -2, 2.0, 5.72, 1.0, 0.8, 0x7ab0d0);
+  wallArt(ground, 0.5, 2.0, 5.72, 0.8, 1.0, 0xd09060);
+  wallArt(ground, 2.5, 2.1, 5.72, 1.2, 0.7, 0x70b080);
+  wallArt(ground, -7.72, 2.0, -1, 1.0, 0.9, 0xd0a860, Math.PI / 2);
+  wallArt(upper, 0, 2.0, 5.72, 1.4, 0.9, 0xa090d0);
   // table lamps with warm glow
   function lamp(parent, x, y, z) {
     const base = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.1, 0.3, 8), mat(0x5a4a3a));

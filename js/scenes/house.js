@@ -359,7 +359,43 @@ export async function houseScene(game) {
   for (let i = 0; i < 5; i++) {
     box(basement, 0.4, 0.35, 0.4, 0xa08050, 4.7 + (i % 3) * 0.7, i < 3 ? 1.42 : 2.12, -5.5);
   }
-  // exposed pipes along basement ceiling
+    // basement richness: tre's hangout — workbench, shelves, storage, warm string lights
+  box(basement, 2.2, 0.9, 0.8, 0x6a4a2a, -5, 0.45, -5.2);
+  box(basement, 0.5, 0.5, 0.4, 0x8a8a92, -5.6, 1.1, -5.2);
+  box(basement, 0.3, 0.35, 0.3, 0xc0c0c8, -4.4, 1.0, -5.2);
+  // shelving units with boxes
+  for (const sx of [3.5, 5.2]) {
+    box(basement, 1.4, 2.0, 0.5, 0x5a5a62, sx, 1.0, -5.4);
+    for (let bi = 0; bi < 3; bi++) {
+      box(basement, 0.5, 0.35, 0.4, [0x9a7a4a, 0x7a6a5a, 0x6a7a8a][bi], sx - 0.35 + bi * 0.4, 0.5 + bi * 0.55, -5.3);
+    }
+  }
+  // washer + dryer
+  box(basement, 0.9, 1.0, 0.8, 0xe0e4e8, -7, 0.5, 4.5);
+  box(basement, 0.9, 1.0, 0.8, 0xd0d4d8, -7, 0.5, 3.5);
+  const wdoor = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.05, 16), mat(0x3a4a5a));
+  wdoor.rotation.x = Math.PI / 2;
+  wdoor.position.set(-7, 0.6, 4.95);
+  basement.add(wdoor);
+  // warm string lights across basement ceiling
+  for (let li = 0; li < 12; li++) {
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 6), new THREE.MeshBasicMaterial({ color: 0xffca70 }));
+    bulb.position.set(-7 + li * 1.2, 3.1 + Math.sin(li * 1.2) * 0.1, -1);
+    basement.add(bulb);
+  }
+  const baseLight = new THREE.PointLight(0xffca80, 8, 14);
+  baseLight.position.set(0, 2.6, 0);
+  basement.add(baseLight);
+  // rug + beanbag corner (tre's spot)
+  const brug = new THREE.Mesh(new THREE.BoxGeometry(3, 0.04, 2.4), mat(0x4a5a6a));
+  brug.position.set(2, 0.05, 3);
+  basement.add(brug);
+  const bean = new THREE.Mesh(new THREE.SphereGeometry(0.5, 10, 8), mat(0x8a3a3a));
+  bean.scale.y = 0.6;
+  bean.position.set(3.2, 0.28, 3.8);
+  basement.add(bean);
+
+// exposed pipes along basement ceiling
   for (let i = 0; i < 3; i++) {
     const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 15, 8), mat(0x707078));
     pipe.rotation.z = Math.PI / 2;

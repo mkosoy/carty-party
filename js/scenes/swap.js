@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { runDJMinigame } from '../engine/djbooth.js';
 import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
@@ -147,6 +148,7 @@ export async function swapScene(game) {
   dj.group.position.set(14, 0, 4.2);
   dj.group.rotation.y = Math.PI;
   scene.add(dj.group);
+
 
   // yoga corner west side: mats on the floor
   for (let i = 0; i < 4; i++) {
@@ -297,6 +299,23 @@ export async function swapScene(game) {
   followCam.snap(christian.group.position);
   const player = new PlayerController(christian, input, bounds);
   const interactions = new Interactions();
+  // --- DJ booth minigame: make beats, unlock banks with vinyl, publish ---
+  interactions.add({
+    pos: new THREE.Vector3(13.4, 0, 4.6), radius: 2.2, label: 'DJ the booth — make beats',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([{ speaker: 'DJ', text: 'Yo — you want a turn on the decks? The booth is yours, bronco. Make something.' }]);
+      const recs = (window.__inventory && window.__inventory.records) || 0;
+      const res = await runDJMinigame(recs);
+      if (res.published) {
+        await dialogue.play([
+          { speaker: 'DJ', text: 'You PUBLISHED it?? Bold. SoundCloud is gonna feel that one.' },
+          { speaker: 'Stacy', text: 'Already liked it. Obviously.' },
+        ]);
+      }
+      player.frozen = false;
+    },
+  });
 
   const state = { met: false, hung: 0, dancing: false, danceScore: 0 };
 

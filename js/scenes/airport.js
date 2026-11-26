@@ -12,11 +12,11 @@ export async function airportScene(game) {
   const { scene, camera, input, dialogue, faces } = game;
 
   scene.background = new THREE.Color(0x2a3a55);
-  scene.fog = new THREE.Fog(0x2a3a55, 45, 130);
+  scene.fog = new THREE.Fog(0x2a3a55, 70, 160);
 
   // lighting: cool terminal light + warm spots
   scene.add(new THREE.HemisphereLight(0xdde8ff, 0x8a8078, 0.5));
-  scene.add(new THREE.AmbientLight(0xd8e2f2, 0.85));
+  scene.add(new THREE.AmbientLight(0xc8d4e8, 0.55));
   const sun = new THREE.DirectionalLight(0xfff2d8, 0.9);
   sun.position.set(8, 14, -6);
   sun.castShadow = true;
@@ -32,7 +32,7 @@ export async function airportScene(game) {
   };
 
   // floor: polished terrazzo-ish
-  const floor = new THREE.Mesh(new THREE.BoxGeometry(60, 0.2, 26), new THREE.MeshStandardMaterial({ map: concrete('#a8aec0', 8, 3.5), roughness: 0.35, metalness: 0.15 }));
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(60, 0.2, 26), new THREE.MeshStandardMaterial({ map: concrete('#6e7688', 8, 3.5), roughness: 0.35, metalness: 0.15 }));
   floor.position.y = -0.1;
   floor.receiveShadow = true;
   scene.add(floor);
@@ -45,6 +45,21 @@ export async function airportScene(game) {
     arch.scale.y = 0.5;
     scene.add(arch);
   }
+
+  // ceiling slab + glowing light strips (instant airport feel)
+  const ceilSlab = new THREE.Mesh(new THREE.BoxGeometry(60, 0.3, 26), mat(0x2c3242));
+  ceilSlab.position.y = 7;
+  scene.add(ceilSlab);
+  for (const lz of [-6, 0, 6]) {
+    for (let lx = -26; lx <= 26; lx += 4) {
+      const strip = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.08, 0.8), new THREE.MeshBasicMaterial({ color: 0xfff4dc }));
+      strip.position.set(lx, 6.8, lz);
+      scene.add(strip);
+    }
+  }
+  const hallGlow = new THREE.PointLight(0xfff0d8, 30, 40, 1.2);
+  hallGlow.position.set(0, 5.5, 0);
+  scene.add(hallGlow);
 
   // window wall (north, -z): glass panels with snowy airfield beyond
   const windowWall = new THREE.Mesh(new THREE.BoxGeometry(60, 7, 0.3), new THREE.MeshLambertMaterial({ color: 0x6f87a8, transparent: true, opacity: 0.35 }));
@@ -362,10 +377,88 @@ export async function airportScene(game) {
   }
 
   // player: Christian, arriving near baggage claim
+  // --- richness pass: columns with holiday wreaths, hanging garlands, coffee kiosk, extra seating ---
+  function wreath(x, z, y) {
+    const w = new THREE.Group();
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.13, 8, 18), mat(0x1f5c2e));
+    w.add(ring);
+    for (let i = 0; i < 8; i++) {
+      const ba = (i / 8) * Math.PI * 2;
+      const berry = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 5), mat(0xc02030));
+      berry.position.set(Math.cos(ba) * 0.45, Math.sin(ba) * 0.45, 0.12);
+      w.add(berry);
+    }
+    const bow = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.1), mat(0xd02038));
+    bow.position.set(0, -0.52, 0.1);
+    w.add(bow);
+    w.position.set(x, y, z);
+    scene.add(w);
+  }
+  // structural columns down the hall with wreaths
+  for (const cx of [-18, -6, 6, 18]) {
+    const col = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.46, 7, 12), mat(0xb8bcc8));
+    col.position.set(cx, 3.5, 6.5);
+    scene.add(col);
+    wreath(cx, 6.0, 3.4);
+    bounds.push({ minX: cx - 0.5, maxX: cx + 0.5, minZ: 6.0, maxZ: 7.0 });
+  }
+  // garland swags strung between columns
+  for (const [x1, x2] of [[-18, -6], [-6, 6], [6, 18]]) {
+    const gm = new THREE.Mesh(new THREE.TorusGeometry((x2 - x1) / 2, 0.09, 6, 20, Math.PI), mat(0x1f5c2e));
+    gm.position.set((x1 + x2) / 2, 4.6, 6.4);
+    gm.rotation.x = Math.PI;
+    gm.scale.y = 0.35;
+    scene.add(gm);
+  }
+  // coffee cafe mid-hall with lit sign
+  const cafe = new THREE.Group();
+  const kbase = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.1, 1.4), mat(0x5a3c28));
+  kbase.position.y = 0.55;
+  cafe.add(kbase);
+  const ktop = new THREE.Mesh(new THREE.BoxGeometry(2.9, 0.1, 1.7), mat(0x2e1e14));
+  ktop.position.y = 1.14;
+  cafe.add(ktop);
+  const kCanv = document.createElement('canvas');
+  kCanv.width = 256; kCanv.height = 64;
+  const kc = kCanv.getContext('2d');
+  kc.fillStyle = '#241408'; kc.fillRect(0, 0, 256, 64);
+  kc.font = 'bold 34px Georgia'; kc.fillStyle = '#ffd98a'; kc.textAlign = 'center';
+  kc.fillText('☕ POTOMAC ROAST', 128, 44);
+  const kTex = new THREE.CanvasTexture(kCanv);
+  kTex.colorSpace = THREE.SRGBColorSpace;
+  const ksign = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.6), new THREE.MeshBasicMaterial({ map: kTex }));
+  ksign.position.set(0, 2.2, 0);
+  cafe.add(ksign);
+  const kpost = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.1, 0.12), mat(0x333));
+  // cups on counter
+  for (const cx of [-0.8, -0.3, 0.4]) {
+    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.04, 0.12, 8), mat(0xf0ece2));
+    cup.position.set(cx, 1.25, 0.3);
+    cafe.add(cup);
+  }
+  cafe.position.set(-2, 0, -3.5);
+  scene.add(cafe);
+  const klight = new THREE.PointLight(0xffd890, 6, 7);
+  klight.position.set(-2, 2.4, -3.5);
+  scene.add(klight);
+  bounds.push({ minX: -3.5, maxX: -0.5, minZ: -4.4, maxZ: -2.6 });
+  // extra seating rows facing the windows
+  for (const sx of [14, 22, -14]) {
+    for (let si = 0; si < 4; si++) {
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.5, 0.6), mat(0x24355e));
+      seat.position.set(sx + si * 0.75, 0.28, -7.5);
+      scene.add(seat);
+      const sback = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.65, 0.12), mat(0x1d2c4e));
+      sback.position.set(sx + si * 0.75, 0.68, -7.85);
+      scene.add(sback);
+    }
+    bounds.push({ minX: sx - 0.4, maxX: sx + 2.9, minZ: -8.1, maxZ: -7.1 });
+  }
   const christian = makePerson({
     photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088,
   });
   christian.group.position.set(8, 0, 6);
+  christian.group.rotation.y = Math.PI;
   christian.group.rotation.y = Math.PI;
   scene.add(christian.group);
 

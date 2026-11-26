@@ -4,7 +4,7 @@ import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
 import { brickWall, concrete } from '../engine/textures.js';
-import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, choice, GuideMarker } from '../engine/core.js';
 
 // Scene 4 — the swap. A Baltimore brewery venue: brick + string lights +
 // shade sails outside the window, clothing racks everywhere, DJ booth,
@@ -299,6 +299,8 @@ export async function swapScene(game) {
   followCam.snap(christian.group.position);
   const player = new PlayerController(christian, input, bounds);
   const interactions = new Interactions();
+  const guide = new GuideMarker(scene);
+  guide.setTarget(-4, 8);
   // Kylie's Run Club flyer by the entrance — unlocks the track race
   interactions.add({
     pos: new THREE.Vector3(-14.5, 0, 9.5), radius: 2.2, label: 'Run Club flyer',
@@ -362,6 +364,7 @@ export async function swapScene(game) {
         await dialogue.play(camLines);
       }
       state.met = true;
+      guide.setTarget(6, 8);
       showObjective('Hang the clothes on the marked rack — 4 pieces.', 5000);
       hangInt.hidden = false;
       player.frozen = false;
@@ -400,6 +403,7 @@ export async function swapScene(game) {
           { speaker: 'Stacy', text: 'You’re the best. Okay — enjoy the party! DJ’s actually good tonight.' },
         ]);
         hangInt.done = true;
+        guide.clear();
         danceInt.hidden = false;
         yogaInt.hidden = false;
         stacy2Int.hidden = false;
@@ -521,6 +525,7 @@ export async function swapScene(game) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       player.update(dt);
       pickups.update(dt, christian.group.position);
+      guide.update(dt);
       followCam.update(dt, christian.group.position);
 
       // NPCs browse: shuffle around racks

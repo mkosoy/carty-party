@@ -8,9 +8,9 @@ import { showObjective, choice } from '../engine/core.js';
 export async function runclubScene(game) {
   const { scene, camera, input, dialogue, faces } = game;
 
-  scene.background = new THREE.Color(0x2a3450);
-  scene.fog = new THREE.Fog(0x2a3450, 30, 90);
-  scene.add(new THREE.AmbientLight(0x8090b0, 0.85));
+  scene.background = new THREE.Color(0x35426a);
+  scene.fog = new THREE.Fog(0x35426a, 40, 110);
+  scene.add(new THREE.AmbientLight(0x98a8c8, 1.25));
   const dusk = new THREE.DirectionalLight(0xffc890, 0.7);
   dusk.position.set(-20, 14, -8);
   dusk.castShadow = true;
@@ -105,7 +105,7 @@ export async function runclubScene(game) {
       bulb.position.set(lx - 0.6 + b * 0.4, 8.8, lz);
       scene.add(bulb);
     }
-    const flood = new THREE.PointLight(0xffe8c0, 30, 30);
+    const flood = new THREE.PointLight(0xffe8c0, 55, 38);
     flood.position.set(lx, 8.6, lz);
     scene.add(flood);
   }

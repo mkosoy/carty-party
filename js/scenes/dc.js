@@ -82,10 +82,17 @@ export async function dcScene(game) {
   const rink = new THREE.Mesh(new THREE.BoxGeometry(16, 0.12, 11), new THREE.MeshLambertMaterial({ color: 0xbfe0ff }));
   rink.position.set(0, 0.06, 6);
   scene.add(rink);
+  // rink boards: white with a red kick-strip and yellow top cap, like a real rink
   for (const [w, d, x, z] of [[16.6, 0.4, 0, 0.3], [16.6, 0.4, 0, 11.7], [0.4, 11.8, -8.2, 6], [0.4, 11.8, 8.2, 6]]) {
-    const rail = new THREE.Mesh(new THREE.BoxGeometry(w, 0.7, d), mat(0xc85050));
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(w, 0.7, d), mat(0xe8ecf0));
     rail.position.set(x, 0.35, z);
     scene.add(rail);
+    const kick = new THREE.Mesh(new THREE.BoxGeometry(w === 0.4 ? 0.42 : w, 0.16, d === 0.4 ? 0.42 : d), mat(0xc84040));
+    kick.position.set(x, 0.1, z);
+    scene.add(kick);
+    const cap = new THREE.Mesh(new THREE.BoxGeometry(w === 0.4 ? 0.46 : w, 0.06, d === 0.4 ? 0.46 : d), mat(0xe8c840));
+    cap.position.set(x, 0.72, z);
+    scene.add(cap);
   }
 
   // snow

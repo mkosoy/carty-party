@@ -58,6 +58,25 @@ export async function houseScene(game) {
   };
   boundsByFloor.upper = boundsByFloor.ground.map((b) => ({ ...b }));
   boundsByFloor.basement = boundsByFloor.ground.map((b) => ({ ...b }));
+  // furniture collision so you can't walk through the couch, table, tree, beds
+  boundsByFloor.ground.push(
+    { minX: -5.4, maxX: -2.6, minZ: 2.9, maxZ: 4.2 },   // couch
+    { minX: 0.3, maxX: 2.7, minZ: -4.4, maxZ: -2.6 },   // dining table
+    { minX: 5.2, maxX: 7.2, minZ: -6.2, maxZ: -4.6 },   // tv stand wall side
+    { minX: -7.6, maxX: -5.6, minZ: -6.2, maxZ: -4.2 }, // tree corner
+    { minX: 2.6, maxX: 4.4, minZ: 1.6, maxZ: 3.2 },     // cookie table
+  );
+  boundsByFloor.upper.push(
+    { minX: -6.8, maxX: -5.6, minZ: -5.3, maxZ: -3.1 }, // olivia's bed
+    { minX: -6.8, maxX: -5.6, minZ: 3.1, maxZ: 5.3 },   // olivia2's bed
+    { minX: -7.9, maxX: -6.7, minZ: -2.7, maxZ: -1.7 }, // dresser n
+    { minX: -7.9, maxX: -6.7, minZ: 1.7, maxZ: 2.7 },   // dresser s
+  );
+  boundsByFloor.basement.push(
+    { minX: -6.1, maxX: -3.9, minZ: -5.6, maxZ: -4.8 }, // workbench
+    { minX: 2.8, maxX: 5.9, minZ: -5.6, maxZ: -4.9 },   // shelves
+    { minX: -7.5, maxX: -6.5, minZ: 3.0, maxZ: 5.0 },   // washer/dryer
+  );
 
   // ---- furnishing helpers ----
   function box(parent, w, h, d, c, x, y, z) {

@@ -513,6 +513,20 @@ export async function airportScene(game) {
     },
   });
 
+  // coffee at the cafe — a little moment of life
+  interactions.add({
+    pos: new THREE.Vector3(-2, 0, -3.5), radius: 2.2, label: 'Order a coffee', once: true,
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'One large coffee, please. It\'s going to be a long day.' },
+        { speaker: 'Agent', text: 'Holiday travel, huh? You look like you\'ve got a whole saga ahead of you. Good luck out there.' },
+      ]);
+      showObjective('☕ coffee acquired. Warmth +10.', 2500);
+      player.frozen = false;
+    },
+  });
+
   // the pilot — uniformed, waiting by the windows with his roller bag
   const pilot = makePerson({
     photo: faces.pilot, top: 0x1c2a4a, bottom: 0x14181f, hair: 0x3a2e22, hairStyle: 'short', skin: 0xe0b090, name: 'The Pilot',

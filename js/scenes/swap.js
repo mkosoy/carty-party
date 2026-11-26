@@ -520,6 +520,21 @@ export async function swapScene(game) {
   pickups.add(makeRecordMesh(), -6, -9, 'record--6--9', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
   pickups.add(makeRecordMesh(), 13, 7, 'record-13-7', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
 
+  // browsing the racks — the whole point of the swap
+  interactions.add({
+    pos: new THREE.Vector3(-8, 0, -6), radius: 2.4, label: 'Browse the racks',
+    action: async () => {
+      player.frozen = true;
+      const finds = [
+        [{ speaker: 'Christian', text: 'A vintage Wootton letterman jacket. In perfect condition. Who gives this away?' }],
+        [{ speaker: 'Christian', text: 'This cardigan has seen things. Tre would love it — wait, he already has one.' }],
+        [{ speaker: 'Stacy', text: 'Babe. BABE. Look at this film camera strap — it matches one of yours!' }],
+      ];
+      await dialogue.play(finds[Math.floor(Math.random() * finds.length)]);
+      player.frozen = false;
+    },
+  });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

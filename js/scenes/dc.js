@@ -336,6 +336,20 @@ export async function dcScene(game) {
   guide.setTarget(2.5, 12);
   showObjective('Welcome to DC! Follow the golden light — Mark & Kylie are waiting by the tree. Explore freely: cameras and vinyl are hidden around the plaza.', 7000);
 
+  // hot cocoa at the stall — pure holiday
+  interactions.add({
+    pos: new THREE.Vector3(-12, 0, 8), radius: 2.4, label: 'Hot cocoa',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'One cocoa, extra marshmallows. It\'s freezing out here.' },
+        { speaker: 'Stacy', text: 'This is the best part of winter in DC and I will not be taking questions.' },
+      ]);
+      showObjective('☕ cocoa acquired. Holiday spirit +10.', 2500);
+      player.frozen = false;
+    },
+  });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

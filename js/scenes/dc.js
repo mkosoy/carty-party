@@ -99,6 +99,135 @@ export async function dcScene(game) {
   const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.14 }));
   scene.add(snow);
 
+
+  // ---- DC richness pass ----
+  // reflective ice surface with skate-mark streaks
+  const iceCanvas = document.createElement('canvas');
+  iceCanvas.width = 256; iceCanvas.height = 176;
+  const ic = iceCanvas.getContext('2d');
+  const iceG = ic.createLinearGradient(0, 0, 256, 176);
+  iceG.addColorStop(0, '#cfe8ff'); iceG.addColorStop(0.5, '#b8d8f8'); iceG.addColorStop(1, '#d8ecff');
+  ic.fillStyle = iceG; ic.fillRect(0, 0, 256, 176);
+  ic.strokeStyle = 'rgba(255,255,255,0.5)';
+  for (let m = 0; m < 60; m++) {
+    ic.lineWidth = 0.6 + Math.random();
+    ic.beginPath();
+    const mx = Math.random() * 256, my = Math.random() * 176;
+    ic.moveTo(mx, my);
+    ic.quadraticCurveTo(mx + 20 - Math.random() * 40, my + 14 - Math.random() * 28, mx + 40 - Math.random() * 80, my + 28 - Math.random() * 56);
+    ic.stroke();
+  }
+  const iceTex = new THREE.CanvasTexture(iceCanvas);
+  iceTex.colorSpace = THREE.SRGBColorSpace;
+  rink.material = new THREE.MeshStandardMaterial({ map: iceTex, roughness: 0.15, metalness: 0.35 });
+
+  // lamp posts ringing the plaza with warm light
+  for (const [lx, lz] of [[-11, 14], [11, 14], [-11, -2], [11, -2], [-11, -16], [11, -16]]) {
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 3.4, 8), mat(0x2a2a32));
+    pole.position.set(lx, 1.7, lz);
+    scene.add(pole);
+    const lampHead = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffe0a8 }));
+    lampHead.position.set(lx, 3.5, lz);
+    scene.add(lampHead);
+    const glow = new THREE.PointLight(0xffd9a0, 9, 9);
+    glow.position.set(lx, 3.3, lz);
+    scene.add(glow);
+  }
+
+  // skyline blocks
+  for (let b = 0; b < 8; b++) {
+    const blk = new THREE.Mesh(new THREE.BoxGeometry(2 + Math.random() * 2, 3 + Math.random() * 5, 2), new THREE.MeshBasicMaterial({ color: 0x0a1018 }));
+    blk.position.set(-16 + b * 5, 2, -30 - Math.random() * 6);
+    scene.add(blk);
+  }
+
+  // hot cocoa stall near the rink
+  const stall = new THREE.Group();
+  const stallBody = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.1, 1.2), mat(0x6a4a2e));
+  stallBody.position.y = 0.55;
+  stall.add(stallBody);
+  const awning = new THREE.Mesh(new THREE.BoxGeometry(2.7, 0.08, 1.5), mat(0xc04040));
+  awning.position.y = 2.0;
+  stall.add(awning);
+  for (const px of [-1.2, 1.2]) {
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.6, 6), mat(0x4a3524));
+    post.position.set(px, 1.2, 0.5);
+    stall.add(post);
+  }
+  // striped awning edge
+  for (let i = 0; i < 6; i++) {
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.18, 1.5), mat(i % 2 ? 0xe8e0d0 : 0xc04040));
+    stripe.position.set(-1.1 + i * 0.44, 1.9, 0);
+    stall.add(stripe);
+  }
+  const stallSign = document.createElement('canvas');
+  stallSign.width = 256; stallSign.height = 64;
+  const ssc = stallSign.getContext('2d');
+  ssc.fillStyle = '#3a2a1a'; ssc.fillRect(0, 0, 256, 64);
+  ssc.fillStyle = '#ffe0a8'; ssc.font = 'bold 34px Georgia'; ssc.textAlign = 'center';
+  ssc.fillText('HOT COCOA', 128, 44);
+  const ssTex = new THREE.CanvasTexture(stallSign);
+  ssTex.colorSpace = THREE.SRGBColorSpace;
+  const signMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 0.45), new THREE.MeshBasicMaterial({ map: ssTex }));
+  signMesh.position.set(0, 1.55, 0.62);
+  stall.add(signMesh);
+  // mugs on the counter
+  for (let i = 0; i < 3; i++) {
+    const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.1, 8), mat(0xc05050));
+    mug.position.set(-0.6 + i * 0.5, 1.15, 0.3);
+    stall.add(mug);
+  }
+  stall.position.set(-12, 0, 8);
+  stall.rotation.y = Math.PI / 2;
+  scene.add(stall);
+
+  // benches around the rink
+  for (const [bx, bz, rot] of [[-10, 4, Math.PI / 2], [10, 8, -Math.PI / 2]]) {
+    const bench = new THREE.Group();
+    const seat = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.08, 0.45), mat(0x5a4030));
+    seat.position.y = 0.45;
+    bench.add(seat);
+    const back = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.5, 0.08), mat(0x5a4030));
+    back.position.set(0, 0.75, -0.2);
+    bench.add(back);
+    for (const lx of [-0.7, 0.7]) {
+      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.45, 0.4), mat(0x3a2a20));
+      leg.position.set(lx, 0.22, 0);
+      bench.add(leg);
+    }
+    bench.position.set(bx, 0, bz);
+    bench.rotation.y = rot;
+    scene.add(bench);
+  }
+
+  // a few spectator NPCs watching the rink + one shuffling skater
+  const spectators = [];
+  const specLooks = [
+    { top: 0xa04040, bottom: 0x2c2c34, skin: 0xe8c098, hair: 0x3a2a1a, hairStyle: 'long' },
+    { top: 0x3a5a8a, bottom: 0x2c3a55, skin: 0x8a5a3a, hair: 0x111111, hairStyle: 'short' },
+    { top: 0xd0a040, bottom: 0x3a3a44, skin: 0xd8a878, hair: 0x5a3a1a, hairStyle: 'curly' },
+  ];
+  specLooks.forEach((look, i) => {
+    const sp = makePerson(look);
+    sp.group.position.set(-10 + i * 9.5, 0, 13.5 + (i % 2));
+    sp.group.rotation.y = Math.PI;
+    scene.add(sp.group);
+    spectators.push(sp);
+  });
+  const skater = makePerson({ top: 0xd07ac0, bottom: 0x2c2c34, skin: 0xe8c098, hair: 0x2a1a12, hairStyle: 'bun' });
+  skater.group.position.set(3, 0.12, 6);
+  scene.add(skater.group);
+
+  // festive wreath garlands on the rink rails
+  for (let i = 0; i < 8; i++) {
+    const wreathB = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), mat(0x2e6234));
+    wreathB.position.set(-7 + i * 2, 0.75, 0.3);
+    scene.add(wreathB);
+    const bow = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), mat(0xc04040));
+    bow.position.set(-7 + i * 2, 0.68, 0.32);
+    scene.add(bow);
+  }
+
   // characters
   const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, name: 'Christian', });
   christian.group.position.set(0, 0, 16);
@@ -192,6 +321,14 @@ export async function dcScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       player.update(dt);
+      // skater glides around the rink
+      if (typeof skater !== 'undefined') {
+        const t = performance.now() * 0.0004;
+        skater.group.position.x = Math.cos(t) * 5;
+        skater.group.position.z = 6 + Math.sin(t) * 3.5;
+        skater.group.rotation.y = -t - Math.PI / 2;
+        skater.animateWalk(dt, 2.2);
+      }
       followCam.update(dt, christian.group.position);
 
       // skating glide: reduce friction feel by letting rotation lag (already handled); add sparkle

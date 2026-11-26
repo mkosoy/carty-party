@@ -116,6 +116,143 @@ export async function houseScene(game) {
     ground.add(bulb);
   }
 
+
+  // ---- richness pass: holiday townhouse detail ----
+  // christmas tree in the corner with lights + ornaments + star
+  const treeG = new THREE.Group();
+  const treeMat = mat(0x2e5230);
+  for (let i = 0; i < 3; i++) {
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.9 - i * 0.22, 0.85, 10), treeMat);
+    cone.position.y = 0.6 + i * 0.55;
+    cone.castShadow = true;
+    treeG.add(cone);
+  }
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 0.4, 8), mat(0x5a4028));
+  trunk.position.y = 0.2;
+  treeG.add(trunk);
+  const star = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffe9a0 }));
+  star.position.y = 2.35;
+  treeG.add(star);
+  const ornColors = [0xd04a4a, 0x4a7ad0, 0xe8c060, 0xd07ac0];
+  for (let i = 0; i < 14; i++) {
+    const orn = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), new THREE.MeshBasicMaterial({ color: ornColors[i % 4] }));
+    const a = i * 2.4, r = 0.75 - (i % 3) * 0.18, h = 0.7 + (i % 4) * 0.4;
+    orn.position.set(Math.cos(a) * r, h, Math.sin(a) * r);
+    treeG.add(orn);
+  }
+  treeG.position.set(-6.8, 0.1, -4.6);
+  ground.add(treeG);
+  const treeLight = new THREE.PointLight(0xffd080, 8, 6);
+  treeLight.position.set(-6.8, 1.6, -4.6);
+  ground.add(treeLight);
+  // presents under the tree
+  box(ground, 0.4, 0.3, 0.4, 0xc04a4a, -6.2, 0.15, -3.9);
+  box(ground, 0.3, 0.25, 0.3, 0x4a6ac0, -7.1, 0.12, -3.8);
+  box(ground, 0.35, 0.2, 0.35, 0x50a060, -6.5, 0.1, -4.1);
+
+  // fireplace on the north wall with warm glow
+  box(ground, 1.8, 1.3, 0.5, 0x8a7a6a, 2.5, 0.65, -5.7);
+  box(ground, 1.0, 0.8, 0.3, 0x1a1210, 2.5, 0.5, -5.55);
+  const fire = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.5, 6), new THREE.MeshBasicMaterial({ color: 0xff8030 }));
+  fire.position.set(2.5, 0.4, -5.5);
+  ground.add(fire);
+  const fireLight = new THREE.PointLight(0xff7020, 12, 7);
+  fireLight.position.set(2.5, 0.9, -5.2);
+  ground.add(fireLight);
+  // mantel stockings
+  for (let i = 0; i < 3; i++) box(ground, 0.16, 0.3, 0.1, 0xc04040, 2.0 + i * 0.45, 1.15, -5.5);
+
+  // bookshelf with colorful book spines
+  box(ground, 0.35, 2.0, 1.4, 0x6a4a30, 7.6, 1.0, -3.5);
+  for (let sh = 0; sh < 4; sh++) {
+    for (let b = 0; b < 6; b++) {
+      const bc = [0xa04a3a, 0x3a6aa0, 0x50a060, 0xc0a040, 0x8050a0, 0xc06040][(sh + b) % 6];
+      box(ground, 0.2, 0.32, 0.16, bc, 7.45, 0.45 + sh * 0.45, -4.05 + b * 0.2);
+    }
+  }
+
+  // baseboard trim along walls
+  for (const [w, d, x, z] of [[16, 0.08, 0, -5.82], [16, 0.08, 0, 5.82]]) {
+    box(ground, w, 0.22, d, 0xe8e0d0, x, 0.2, z);
+  }
+  box(ground, 0.08, 0.22, 12, 0xe8e0d0, -7.82, 0.2, 0);
+  box(ground, 0.08, 0.22, 12, 0xe8e0d0, 7.82, 0.2, 0);
+
+  // ceiling light fixture (visible warm disc)
+  const fix = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 8), new THREE.MeshBasicMaterial({ color: 0xfff0d0 }));
+  fix.position.set(0, 3.25, 0);
+  fix.scale.y = 0.5;
+  ground.add(fix);
+
+  // dining table + chairs by the kitchen
+  box(ground, 1.8, 0.08, 1.0, 0x7a5a38, 3.5, 0.75, 2.5);
+  for (const [lx, lz] of [[2.8, 2.1], [4.2, 2.1], [2.8, 2.9], [4.2, 2.9]]) {
+    box(ground, 0.09, 0.75, 0.09, 0x5a4028, lx, 0.37, lz);
+  }
+  for (const [cx, cz] of [[3.5, 1.4], [3.5, 3.6], [2.4, 2.5], [4.6, 2.5]]) {
+    box(ground, 0.45, 0.06, 0.45, 0x8a6a48, cx, 0.45, cz);
+    box(ground, 0.45, 0.5, 0.06, 0x8a6a48, cx, 0.75, cz + (cz > 2.5 ? 0.2 : -0.2));
+  }
+  // cookies + milk on the table (it's the holidays)
+  const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.02, 12), mat(0xe8e0d0));
+  plate.position.set(3.3, 0.8, 2.4);
+  ground.add(plate);
+  for (let i = 0; i < 3; i++) {
+    const ck = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.02, 8), mat(0x9a6a3a));
+    ck.position.set(3.24 + i * 0.07, 0.82, 2.38 + (i % 2) * 0.05);
+    ground.add(ck);
+  }
+  box(ground, 0.09, 0.14, 0.09, 0xf0f0f0, 3.8, 0.86, 2.6);
+
+  // garland over the window + wreath on the door wall
+  const wreath = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.09, 8, 16), mat(0x2e6234));
+  wreath.position.set(-6.5, 2.2, 5.83);
+  ground.add(wreath);
+  const bowM = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), mat(0xc04040));
+  bowM.position.set(-6.5, 1.9, 5.83);
+  ground.add(bowM);
+
+  // BASEMENT richness: washer/dryer, storage shelves with boxes, Tre's computer glow
+  box(basement, 0.9, 1.0, 0.8, 0xd8d8d8, -6.5, 0.5, -5.2);
+  box(basement, 0.9, 1.0, 0.8, 0xc8c8c8, -5.5, 0.5, -5.2);
+  const wd = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.05, 16), mat(0x2a2a32));
+  wd.rotation.x = Math.PI / 2;
+  wd.position.set(-6.5, 0.55, -4.78);
+  basement.add(wd);
+  box(basement, 2.2, 0.06, 0.5, 0x6a5a48, 5.5, 1.2, -5.5);
+  box(basement, 2.2, 0.06, 0.5, 0x6a5a48, 5.5, 1.9, -5.5);
+  for (let i = 0; i < 5; i++) {
+    box(basement, 0.4, 0.35, 0.4, 0xa08050, 4.7 + (i % 3) * 0.7, i < 3 ? 1.42 : 2.12, -5.5);
+  }
+  // exposed pipes along basement ceiling
+  for (let i = 0; i < 3; i++) {
+    const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 15, 8), mat(0x707078));
+    pipe.rotation.z = Math.PI / 2;
+    pipe.position.set(0, 3.2 - i * 0.01, -4 + i * 3.5);
+    basement.add(pipe);
+  }
+
+  // UPPER richness: hallway runner rug, door frames, wall art
+  const runner = new THREE.Mesh(new THREE.BoxGeometry(10, 0.02, 1.2), mat(0x9a5a4a));
+  runner.position.set(0, 0.12, 0);
+  upper.add(runner);
+  for (const [x, z, ry] of [[-5.5, -5.83, 0], [-5, 5.83, 0]]) {
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.2, 0.1), mat(0x7a5a3a));
+    frame.position.set(x, 1.1, z);
+    upper.add(frame);
+    const door = new THREE.Mesh(new THREE.BoxGeometry(0.9, 2.0, 0.06), mat(0xd8cbb8));
+    door.position.set(x, 1.0, z + (z > 0 ? -0.04 : 0.04));
+    upper.add(door);
+  }
+  // nursery hint: crib visible through the hall
+  box(upper, 1.2, 0.7, 0.7, 0xd8c8b0, 5.5, 0.45, 4.5);
+  for (let i = 0; i < 5; i++) box(upper, 0.05, 0.7, 0.05, 0xc8b8a0, 5.0 + i * 0.25, 0.35, 4.15);
+  // small wall frames with color art
+  for (let i = 0; i < 4; i++) {
+    box(upper, 0.5, 0.4, 0.04, 0x6a5a48, -2 + i * 1.6, 2.0, -5.85);
+    box(upper, 0.4, 0.3, 0.05, [0x8ab0d0, 0xd0a0a0, 0xa0d0a8, 0xd0c890][i], -2 + i * 1.6, 2.0, -5.82);
+  }
+
   // UPPER: hallway with two bedroom doors, nursery across the hall
   box(upper, 1.1, 2.2, 0.15, 0x8a5a3a, -4, 1.1, -5.9);  // olivia's door (north-left)
   box(upper, 1.1, 2.2, 0.15, 0x8a5a3a, -4, 1.1, 5.9);   // olivia2 door (south-left)

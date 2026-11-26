@@ -80,6 +80,22 @@ export class Music {
     o.start(t); lfo.start(t);
     o.stop(t + dur + 0.1); lfo.stop(t + dur + 0.1);
   }
+  hat(t, vol = 0.06, open = false) {
+    const dur = open ? 0.09 : 0.03;
+    const buf = this.noiseBuf || (this.noiseBuf = (() => { const b = this.ctx.createBuffer(1, 4410, this.ctx.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < 4410; i++) d[i] = Math.random() * 2 - 1; return b; })());
+    const s = this.ctx.createBufferSource();
+    s.buffer = buf;
+    const f = this.ctx.createBiquadFilter();
+    f.type = 'highpass';
+    f.frequency.value = 7000;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    s.connect(f); f.connect(g); g.connect(this.master);
+    s.start(t);
+    s.stop(t + dur + 0.02);
+  }
+
   kick(t, vol = 0.5) {
     const c = this.ctx;
     const o = c.createOscillator();
@@ -133,14 +149,14 @@ export class Music {
         melody2: [-1, -1, 12, -1, -1, 14, -1, -1, 10, -1, -1, 7, -1, -1, 5, -1],
         bellVol: 0.2, padVol: 0.08, bassN: -12,
       },
-      swap: {
+      swap: { hats: true,
         chords: [[0, 4, 7], [-3, 0, 4], [5, 8, 12], [-2, 2, 5]],
         melody: [12, 12, -1, 12, 14, -1, 12, 10, -1, 10, 12, -1, 7, -1, 10, -1],
         melody2: [14, -1, 14, -1, 17, -1, 14, -1, 12, -1, 14, -1, 10, -1, 12, -1],
         melody3: [12, -1, 10, 12, -1, 12, -1, -1, 14, 12, 10, -1, 7, -1, -1, -1],
         bellVol: 0.2, padVol: 0.05, bassN: -17,
       },
-      miami: {
+      miami: { hats: true,
         chords: [[0, 3, 7], [0, 3, 7], [-4, 0, 3], [-2, 2, 5]],
         melody: [12, -1, -1, -1, 15, -1, -1, -1, 12, -1, -1, 14, -1, -1, 10, -1],
         melody2: [-1, -1, 15, -1, -1, 17, -1, -1, 15, -1, -1, -1, 12, -1, 14, -1],
@@ -153,7 +169,7 @@ export class Music {
         melody2: [-1, 9, -1, -1, 12, -1, -1, 9, -1, -1, 7, -1, 5, -1, 4, -1],
         bellVol: 0.18, padVol: 0.05, bassN: -12,
       },
-      runclub: {
+      runclub: { hats: true,
         chords: [[0, 4, 7], [0, 4, 7], [5, 9, 12], [3, 7, 10]],
         melody: [12, 7, 12, 7, 14, 7, 14, 7, 15, 7, 15, 12, 14, 12, 10, 7],
         melody2: [15, 12, 15, 12, 17, 15, 17, 15, 19, 15, 19, 17, 15, 14, 12, 10],
@@ -194,6 +210,7 @@ export class Music {
         bar++;
       }
       if (step % 4 === 0) this.bass(N((pat.chords[(bar - 1 + pat.chords.length) % pat.chords.length]?.[0] ?? 0) - 24), t, stepDur * 3, 0.1);
+      if (!pat.dubstep && pat.hats && step % 2 === 1) this.hat(t, step % 8 === 7 ? 0.075 : 0.045, step % 8 === 7);
       if (pat.dubstep) {
         const root = (pat.chords[(bar - 1 + pat.chords.length) % pat.chords.length]?.[0] ?? 0);
         if (step % 2 === 0) this.kick(t, 0.5); // driving four-on-floor at 2x step rate

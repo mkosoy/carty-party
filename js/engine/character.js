@@ -55,11 +55,11 @@ export function makePerson({
   const u = H / 1.78;
 
   // ---- torso: tapered, shoulders, hem band ----
-  const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.175 * u, 0.148 * u, 0.62 * u, 14), mat(top));
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.152 * u, 0.13 * u, 0.62 * u, 16), mat(top));
   torso.position.y = 1.13 * u;
   torso.scale.z = 0.72;
   g.add(torso);
-  const shoulders = new THREE.Mesh(new THREE.SphereGeometry(0.185 * u, 24, 18), mat(top));
+  const shoulders = new THREE.Mesh(new THREE.SphereGeometry(0.163 * u, 24, 18), mat(top));
   shoulders.position.y = 1.44 * u;
   shoulders.scale.set(1, 0.55, 0.72);
   g.add(shoulders);

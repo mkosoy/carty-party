@@ -12,8 +12,8 @@ export async function dentistScene(game) {
   const { scene, camera, input, dialogue, faces } = game;
 
   scene.background = new THREE.Color(0x20262e);
-  scene.add(new THREE.AmbientLight(0xf0f4ff, 1.0));
-  const lamp = new THREE.PointLight(0xf4faff, 40, 30);
+  scene.add(new THREE.AmbientLight(0xf0f4ff, 0.42));
+  const lamp = new THREE.PointLight(0xf4faff, 18, 30);
   lamp.position.set(0, 4, 0);
   lamp.castShadow = true;
   scene.add(lamp);

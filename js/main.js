@@ -93,9 +93,9 @@ const game = {
     this.scene = new THREE.Scene();
     // cinematic baseline lighting: soft sky fill + warm key with shadows.
     // scenes add their own mood lighting on top of this floor.
-    const hemi = new THREE.HemisphereLight(0xbcc8e0, 0x40382c, 0.55);
+    const hemi = new THREE.HemisphereLight(0xbcc8e0, 0x40382c, 0.32);
     this.scene.add(hemi);
-    const key = new THREE.DirectionalLight(0xfff0d8, 1.1);
+    const key = new THREE.DirectionalLight(0xfff0d8, 0.65);
     key.position.set(6, 10, 4);
     key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048);

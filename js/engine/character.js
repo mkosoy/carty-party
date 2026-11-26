@@ -281,7 +281,12 @@ export function makePerson({
       legR.rotation.x = -swing;
       armL.rotation.x = -swing * 0.75;
       armR.rotation.x = swing * 0.75;
-      torso.position.y = baseTorsoY + Math.abs(Math.sin(api.walkPhase)) * 0.025 * u * s;
+      // fluidity pass: forward lean with speed, torso twist counter to stride,
+      // slight hip sway — reads as momentum instead of a rigid sliding capsule
+      torso.position.y = baseTorsoY + Math.abs(Math.sin(api.walkPhase)) * 0.03 * u * s;
+      torso.rotation.x = 0.06 * s;
+      torso.rotation.y = Math.sin(api.walkPhase) * 0.07 * s;
+      if (api.shouldersMesh) api.shouldersMesh.rotation.y = Math.sin(api.walkPhase) * 0.05 * s;
     },
     animateIdle(t) {
       const b = Math.sin(t * 1.6) * 0.012 * u;
@@ -291,6 +296,9 @@ export function makePerson({
       // gentle sway keeps the resting posture alive
       armL.rotation.z = 0.14 + Math.sin(t * 1.1) * 0.02;
       armR.rotation.z = -0.14 - Math.sin(t * 1.1 + 0.5) * 0.02;
+      // ease posture back to neutral so the walk lean doesn't stick
+      torso.rotation.x *= 0.85;
+      torso.rotation.y *= 0.85;
     },
     sit() {
       legL.rotation.x = -Math.PI / 2;

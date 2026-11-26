@@ -327,6 +327,10 @@ export async function swapScene(game) {
       await dialogue.play([{ speaker: 'DJ', text: 'Yo — you want a turn on the decks? The booth is yours, bronco. Make something.' }]);
       const recs = (window.__inventory && window.__inventory.records) || 0;
       const res = await runDJMinigame(recs);
+      if (res.perform) {
+        state.djPerforming = true;
+        showObjective('🎤 your set is live — the crowd is coming over. Walk away whenever, the music keeps spinning.', 5000);
+      }
       if (res.published) {
         await dialogue.play([
           { speaker: 'DJ', text: 'You PUBLISHED it?? Bold. SoundCloud is gonna feel that one.' },
@@ -337,7 +341,7 @@ export async function swapScene(game) {
     },
   });
 
-  const state = { met: false, hung: 0, dancing: false, danceScore: 0 };
+  const state = { met: false, hung: 0, dancing: false, danceScore: 0, djPerforming: false };
 
   // --- Stacy ---
   interactions.add({
@@ -540,12 +544,38 @@ export async function swapScene(game) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       player.update(dt);
       pickups.update(dt, christian.group.position);
-      guide.update(dt);
+      guide.update(dt, christian.group.position);
       followCam.update(dt, christian.group.position);
 
-      // NPCs browse: shuffle around racks
-      for (const n of npcs) {
+      // NPCs browse: shuffle around racks — unless christian is performing,
+      // then the party migrates to the booth and everyone dances
+      for (let ni = 0; ni < npcs.length; ni++) {
+        const n = npcs[ni];
         n.t += dt;
+        if (state.djPerforming) {
+          if (!n.danceSpot) {
+            // fan out in an arc facing the dj booth at (13.4, 4.6)
+            const aa = -0.6 + ni * 0.42;
+            n.tx = 13.4 - Math.cos(aa) * (2.2 + (ni % 2) * 1.2);
+            n.tz = 4.6 + Math.sin(aa) * (2.6 + (ni % 3));
+            n.danceSpot = true;
+          }
+          const dx = n.tx - n.p.group.position.x;
+          const dz = n.tz - n.p.group.position.z;
+          const dd = Math.hypot(dx, dz);
+          if (dd > 0.3) {
+            n.p.group.position.x += dx / dd * dt * 1.6;
+            n.p.group.position.z += dz / dd * dt * 1.6;
+            n.p.group.rotation.y = Math.atan2(dx, dz);
+            n.p.animateWalk(dt, 1.0);
+          } else {
+            // dancing in place facing the booth
+            n.p.group.rotation.y = Math.atan2(13.4 - n.p.group.position.x, 4.6 - n.p.group.position.z);
+            n.p.group.position.y = Math.abs(Math.sin(n.t * 4.4 + ni * 1.7)) * 0.12;
+            n.p.animateWalk(dt, 1.3);
+          }
+          continue;
+        }
         if (n.t > 4) {
           n.t = 0;
           const home = rackPositions[Math.floor(Math.random() * rackPositions.length)];

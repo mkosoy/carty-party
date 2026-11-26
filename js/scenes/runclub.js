@@ -75,8 +75,8 @@ export async function runclubScene(game) {
     scene.add(m);
     return m;
   }
-  bigSign('WOOTTON', 'P A T R I O T S', 8, 4, 0, 2.6, -13.4);
-  bigSign("KYLIE'S RUN CLUB", 'marathon prep — respect the grind', 6, 3, -14, 2.2, 8, Math.PI / 4);
+  bigSign('WOOTTON', 'P A T R I O T S', 8, 4, 0, 4.4, -13.4);
+  bigSign("KYLIE'S RUN CLUB", 'marathon prep — respect the grind', 5, 2.5, -17.5, 4.6, 12, Math.PI / 4);
 
   // bleachers along one straightaway
   for (let r = 0; r < 4; r++) {
@@ -196,6 +196,8 @@ export async function runclubScene(game) {
   }));
   const BASE_SPEED = 2.1;      // theta units per second scaled
   const SPEED_SCALE = 0.55;    // theta rad per second base
+  let boostTimer = 0;
+  let prevTheta = 0;
   let raceStarted = false;
   let raceDone = false;
   let startT = 0;
@@ -219,7 +221,7 @@ export async function runclubScene(game) {
     await new Promise((r) => setTimeout(r, 900));
     showObjective('1', 900);
     await new Promise((r) => setTimeout(r, 900));
-    showObjective('GO! SPACE / tap to hurdle!', 2200);
+    showObjective('GO! SPACE / tap to jump hurdles — clean jumps make you FASTER!', 3000);
     raceStarted = true;
     startT = performance.now();
     lapStartT = startT;
@@ -229,7 +231,15 @@ export async function runclubScene(game) {
   const hud = document.createElement('div');
   hud.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:40;color:#ffe9b8;font-family:Georgia,serif;font-size:20px;text-shadow:0 2px 6px #000;background:rgba(10,14,26,.55);padding:8px 18px;border-radius:12px;';
   document.body.appendChild(hud);
-  const cleanupH = () => hud.remove();
+  const restartBtn = document.createElement('button');
+  restartBtn.textContent = '↻ restart race';
+  restartBtn.style.cssText = 'position:fixed;top:12px;left:14px;z-index:40;background:rgba(10,14,26,.55);border:1px solid rgba(255,233,184,.35);color:#ffe9b8;font-family:Georgia,serif;font-size:14px;padding:6px 14px;border-radius:16px;cursor:pointer';
+  restartBtn.addEventListener('click', async () => {
+    const { runclubScene } = await import('./runclub.js');
+    game.switchScene(runclubScene);
+  });
+  document.body.appendChild(restartBtn);
+  const cleanupH = () => { hud.remove(); restartBtn.remove(); };
   window.addEventListener('beforeunload', cleanupH);
 
   let t = 0;
@@ -250,6 +260,17 @@ export async function runclubScene(game) {
       }
 
       if (raceStarted && !raceDone) {
+        boostTimer = Math.max(0, boostTimer - dt);
+        // clean hurdle jump = speed boost. detect crossings while airborne.
+        for (const th of hurdleThetas) {
+          for (let lap = 0; lap < LAPS; lap++) {
+            const ht = th + lap * Math.PI * 2;
+            if (prevTheta < ht && theta + speed * dt >= ht && kylieY > 0.3) {
+              boostTimer = 1.7;
+              showObjective('⚡ clean jump — speed boost!', 900);
+            }
+          }
+        }
         // hurdle collision: check nearest hurdle angular distance
         hurdleCooldown -= dt;
         let slowed = false;
@@ -264,8 +285,10 @@ export async function runclubScene(game) {
             }
           }
         }
-        const targetSpeed = slowed || hurdleCooldown > 0.6 ? SPEED_SCALE * 0.45 : SPEED_SCALE;
+        const boosted = boostTimer > 0 && hurdleCooldown <= 0.6;
+        const targetSpeed = slowed || hurdleCooldown > 0.6 ? SPEED_SCALE * 0.45 : SPEED_SCALE * (boosted ? 1.45 : 1);
         speed += (targetSpeed - speed) * Math.min(1, dt * (slowed ? 8 : 2.2));
+        prevTheta = theta;
         theta += speed * dt;
         lastTheta = theta;
 
@@ -299,8 +322,11 @@ export async function runclubScene(game) {
               ]);
               showObjective(`finished ${place === 2 ? '2nd' : place === 3 ? '3rd' : '4th'} — retry for the lap record!`, 5000);
             }
-            const c = await choice(['Walk the track again', 'Head back to the swap']);
-            if (c === 1) {
+            const c = await choice(['🏁 Race again', 'Head back to the swap']);
+            if (c === 0) {
+              const { runclubScene } = await import('./runclub.js');
+              game.switchScene(runclubScene);
+            } else if (c === 1) {
               const { swapScene } = await import('./swap.js');
               game.switchScene(swapScene);
             }

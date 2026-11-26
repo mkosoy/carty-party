@@ -629,7 +629,7 @@ export async function airportScene(game) {
       elapsed += dt;
       player.update(dt);
       pickups.update(dt, christian.group.position);
-      guide.update(dt);
+      guide.update(dt, christian.group.position);
       followCam.update(dt, christian.group.position);
 
       // snow fall

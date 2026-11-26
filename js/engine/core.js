@@ -98,6 +98,21 @@ export class GuideMarker {
     this.group.visible = false;
     scene.add(this.group);
     this.target = null;
+    // breadcrumb trail: little gold arrows marching along the floor toward
+    // the target, so you always know which way to walk
+    this.arrows = [];
+    for (let i = 0; i < 5; i++) {
+      const geo = new THREE.ConeGeometry(0.16, 0.42, 4);
+      geo.rotateX(Math.PI / 2); // cone axis now points along +z, so yaw alone aims it
+      const arrow = new THREE.Mesh(
+        geo,
+        new THREE.MeshBasicMaterial({ color: 0xffd663, transparent: true, opacity: 0.85 })
+      );
+      arrow.visible = false;
+      scene.add(arrow);
+      this.arrows.push(arrow);
+    }
+    this.trailT = 0;
   }
   setTarget(x, z) {
     this.group.position.set(x, 0, z);
@@ -107,15 +122,44 @@ export class GuideMarker {
   clear() {
     this.group.visible = false;
     this.target = null;
+    for (const a of (this.arrows || [])) a.visible = false;
   }
-  update(dt) {
-    if (!this.group.visible) return;
+  update(dt, playerPos) {
+    this.trailT = (this.trailT || 0) + dt;
+    if (!this.group.visible) {
+      for (const a of (this.arrows || [])) a.visible = false;
+      return;
+    }
     const t = performance.now() / 1000;
     this.diamond.rotation.y += dt * 2.2;
-    this.diamond.position.y = 2.6 + Math.sin(t * 2.4) * 0.22;
+    this.diamond.position.y = 5.9 + Math.sin(t * 2.4) * 0.22;
     const pulse = 1 + Math.sin(t * 3) * 0.18;
     this.ring.scale.set(pulse, pulse, 1);
     this.ring.material.opacity = 0.5 + Math.sin(t * 3) * 0.25;
+    // breadcrumb arrows marching from the player toward the target
+    if (this.target && playerPos) {
+      const dx = this.target.x - playerPos.x;
+      const dz = this.target.z - playerPos.z;
+      const d = Math.hypot(dx, dz);
+      if (d > 2.0) {
+        const ux = dx / d, uz = dz / d;
+        const ang = Math.atan2(dx, dz);
+        for (let i = 0; i < this.arrows.length; i++) {
+          const span = this.arrows.length * 1.25;
+          const f = ((this.trailT * 2.0 + i * 1.25) % span) + 1.0;
+          const dist = Math.min(f, d - 1.0);
+          const a = this.arrows[i];
+          a.visible = dist > 0.5;
+          if (a.visible) {
+            a.position.set(playerPos.x + ux * dist, 0.07, playerPos.z + uz * dist);
+            a.rotation.set(0, ang, 0);
+            a.material.opacity = 0.95 - (i / this.arrows.length) * 0.4;
+          }
+        }
+      } else {
+        for (const a of this.arrows) a.visible = false;
+      }
+    }
   }
 }
 

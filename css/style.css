@@ -139,3 +139,12 @@ body.touch #touch-controls { display: block; }
 .mg-btn:hover { transform: translateY(-2px) scale(1.04); border-color: rgba(232,182,76,.9); }
 
 .mg-emoji { width: 30px; height: 30px; }
+
+#menu-button {
+  position: fixed; top: 12px; right: 14px; z-index: 40;
+  background: rgba(10,14,26,0.55); border: 1px solid rgba(255,233,184,0.35);
+  color: #ffe9b8; font-family: Georgia, serif; font-size: 14px;
+  padding: 6px 14px; border-radius: 16px; cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+#menu-button.hidden { display: none; }

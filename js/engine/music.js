@@ -117,42 +117,53 @@ export class Music {
       airport: {
         chords: [[0, 3, 7], [-4, 0, 3], [-2, 2, 5], [-4, 0, 5]],
         melody: [12, -1, 7, -1, 10, -1, 7, -1, 12, -1, 15, -1, 10, -1, 7, -1],
+        melody2: [-1, -1, 10, -1, 12, -1, 15, -1, 12, -1, 10, -1, 7, -1, -1, -1],
+        melody3: [7, -1, 10, -1, 12, -1, -1, -1, 15, -1, 12, -1, 10, -1, 7, -1],
         bellVol: 0.24, padVol: 0.07, bassN: -12,
       },
       drive: {
         chords: [[0, 4, 7], [0, 4, 7], [-3, 0, 5], [-2, 2, 7]],
         melody: [7, 12, 7, 12, 10, 12, 10, 12, 5, 10, 5, 10, 7, 12, 14, 12],
+        melody2: [12, 7, 12, 7, 14, 12, 14, 12, 10, 5, 10, 5, 12, 14, 16, 14],
         bellVol: 0.16, padVol: 0.05, bassN: -5,
       },
       house: {
         chords: [[0, 4, 7], [5, 8, 12], [3, 7, 10], [0, 4, 7]],
         melody: [-1, 7, -1, -1, 12, -1, 10, -1, -1, 7, -1, -1, 5, -1, -1, -1],
+        melody2: [-1, -1, 12, -1, -1, 14, -1, -1, 10, -1, -1, 7, -1, -1, 5, -1],
         bellVol: 0.2, padVol: 0.08, bassN: -12,
       },
       swap: {
         chords: [[0, 4, 7], [-3, 0, 4], [5, 8, 12], [-2, 2, 5]],
         melody: [12, 12, -1, 12, 14, -1, 12, 10, -1, 10, 12, -1, 7, -1, 10, -1],
+        melody2: [14, -1, 14, -1, 17, -1, 14, -1, 12, -1, 14, -1, 10, -1, 12, -1],
+        melody3: [12, -1, 10, 12, -1, 12, -1, -1, 14, 12, 10, -1, 7, -1, -1, -1],
         bellVol: 0.2, padVol: 0.05, bassN: -17,
       },
       miami: {
         chords: [[0, 3, 7], [0, 3, 7], [-4, 0, 3], [-2, 2, 5]],
         melody: [12, -1, -1, -1, 15, -1, -1, -1, 12, -1, -1, 14, -1, -1, 10, -1],
+        melody2: [-1, -1, 15, -1, -1, 17, -1, -1, 15, -1, -1, -1, 12, -1, 14, -1],
         bellVol: 0.16, padVol: 0.05, bassN: -5,
         dubstep: true, stepDur: 0.155,
       },
       dentist: {
         chords: [[0, 4, 7], [2, 5, 9], [0, 4, 7], [-2, 2, 5]],
         melody: [7, -1, 12, -1, 9, -1, 7, -1, 5, -1, 7, -1, 4, -1, -1, -1],
+        melody2: [-1, 9, -1, -1, 12, -1, -1, 9, -1, -1, 7, -1, 5, -1, 4, -1],
         bellVol: 0.18, padVol: 0.05, bassN: -12,
       },
       runclub: {
         chords: [[0, 4, 7], [0, 4, 7], [5, 9, 12], [3, 7, 10]],
         melody: [12, 7, 12, 7, 14, 7, 14, 7, 15, 7, 15, 12, 14, 12, 10, 7],
+        melody2: [15, 12, 15, 12, 17, 15, 17, 15, 19, 15, 19, 17, 15, 14, 12, 10],
         bellVol: 0.18, padVol: 0.05, bassN: -7,
       },
       dc: {
         chords: [[0, 3, 7], [-4, 0, 3], [-2, 2, 5], [0, 3, 7]],
         melody: [12, -1, -1, 15, -1, -1, 14, -1, 12, -1, 10, -1, 7, -1, -1, -1],
+        melody2: [-1, 15, -1, -1, 14, -1, 12, -1, -1, 14, -1, -1, 15, -1, -1, -1],
+        melody3: [7, -1, 10, -1, 12, -1, -1, -1, 15, -1, 14, -1, 12, -1, 10, -1],
         bellVol: 0.28, padVol: 0.09, bassN: -12,
       },
     };
@@ -162,7 +173,10 @@ export class Music {
     const tick = () => {
       if (!this.ctx) return;
       const t = this.ctx.currentTime + 0.06;
-      const mel = pat.melody[step % 16];
+      // rotate up to three melody variants bar by bar so loops stay fresh
+      const variant = Math.floor(step / 16) % 3;
+      const melSeq = variant === 1 && pat.melody2 ? pat.melody2 : variant === 2 && pat.melody3 ? pat.melody3 : pat.melody;
+      const mel = melSeq[step % 16];
       if (mel >= 0) this.bell(N(mel), t, pat.bellVol);
       if (step % 16 === 0) {
         const chord = pat.chords[bar % pat.chords.length];

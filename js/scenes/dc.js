@@ -363,7 +363,7 @@ export async function dcScene(game) {
         skater.group.rotation.y = -t - Math.PI / 2;
         skater.animateWalk(dt, 2.2);
       }
-      if (typeof guide !== 'undefined') guide.update(dt);
+      if (typeof guide !== 'undefined') guide.update(dt, christian.group.position);
       followCam.update(dt, christian.group.position);
 
       // skating glide: reduce friction feel by letting rotation lag (already handled); add sparkle

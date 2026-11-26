@@ -8,12 +8,13 @@ export function runDJMinigame(records = 0) {
     overlay.style.cssText = 'position:fixed;inset:0;z-index:60;background:linear-gradient(160deg,#12081e 0%,#1e0a2e 55%,#0a1226 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:Georgia,serif;';
     overlay.innerHTML = `
       <div style="color:#ffe9b8;font-size:26px;text-shadow:0 0 18px #c050ff;margin-bottom:2px">🎧 the swap DJ booth</div>
-      <div style="color:#b090d0;font-size:14px;font-style:italic;margin-bottom:14px">tap pads to preview · tap grid cells to write your loop · records unlock banks</div>
+      <div style="color:#b090d0;font-size:14px;font-style:italic;margin-bottom:4px">a crowd-pleaser is already loaded — just hit <b style="color:#ffe9b8">▶ play loop</b></div><div style="color:#b090d0;font-size:13px;font-style:italic;margin-bottom:14px">or make it yours: tap grid cells to add/remove sounds, tap pads to preview</div>
       <div id="dj-pads" style="display:grid;grid-template-columns:repeat(8,1fr);gap:7px;margin-bottom:14px"></div>
       <div id="dj-grid" style="display:grid;grid-template-columns:repeat(16,1fr);gap:4px;margin-bottom:14px"></div>
       <div style="display:flex;gap:12px;align-items:center">
         <button id="dj-play" style="background:#c050ff;border:none;color:#fff;font-size:18px;padding:10px 26px;border-radius:24px;cursor:pointer;font-family:Georgia,serif">▶ play loop</button>
         <button id="dj-clear" style="background:#3a2a50;border:none;color:#c0a0e0;font-size:14px;padding:8px 18px;border-radius:20px;cursor:pointer;font-family:Georgia,serif">clear</button>
+        <button id="dj-perform" style="background:#e0308a;border:none;color:#fff;font-size:15px;padding:10px 20px;border-radius:24px;cursor:pointer;font-family:Georgia,serif">🎤 perform for the crowd</button>
         <button id="dj-publish" style="background:#ff7720;border:none;color:#fff;font-size:15px;padding:10px 20px;border-radius:24px;cursor:pointer;font-family:Georgia,serif">☁ publish to soundcloud</button>
       </div>
       <div id="dj-status" style="color:#90e0c0;font-size:14px;margin-top:12px;height:22px;font-style:italic"></div>
@@ -203,11 +204,30 @@ export function runDJMinigame(records = 0) {
       window.__inventory.published = true;
     });
 
+    let performing = false;
+    overlay.querySelector('#dj-perform').addEventListener('click', () => {
+      const notes = state.flat().filter(Boolean).length;
+      if (notes < 4) {
+        status.textContent = 'the crowd deserves better than silence — write a few notes or use the loaded set.';
+        return;
+      }
+      if (!playing) playBtn.click();
+      performing = true;
+      status.textContent = '🎤 performing! the floor is yours — close the booth and walk away whenever, the music keeps spinning.';
+      setTimeout(() => {
+        overlay.remove();
+        resolve({ published: !!window.__inventory?.published, perform: true });
+      }, 1400);
+    });
     overlay.querySelector('#dj-exit').addEventListener('click', () => {
-      if (timer) clearInterval(timer);
-      AC.close().catch(() => {});
+      if (!performing) {
+        if (timer) clearInterval(timer);
+        AC.close().catch(() => {});
+      }
+      // when performing the loop keeps playing after you leave the decks —
+      // the audio context and timer stay alive on purpose
       overlay.remove();
-      resolve({ published: !!window.__inventory?.published });
+      resolve({ published: !!window.__inventory?.published, perform: performing });
     });
   });
 }

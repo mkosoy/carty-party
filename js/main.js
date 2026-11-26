@@ -58,6 +58,8 @@ const game = {
   scene: null,
   sceneApi: null,
   async switchScene(factory) {
+    const mb = document.getElementById('menu-button');
+    if (mb) mb.classList.remove('hidden');
     window.__game = this;
     setTimeout(() => { try { const n = factory.name.replace('Scene',''); if (music.scene !== n) music.play(n); } catch {} }, 50);
     if (this.sceneApi?.dispose) this.sceneApi.dispose();

@@ -514,7 +514,7 @@ export async function houseScene(game) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, floor: typeof floor !== "undefined" ? floor : null, self: this };
       player.update(dt);
       pickups.update(dt, christian.group.position);
-      guide.update(dt);
+      guide.update(dt, christian.group.position);
       const it = performance.now() / 1000;
       olivia.animateIdle(it);
       olivia2.animateIdle(it + 1.3);

@@ -398,6 +398,7 @@ export async function miamiScene(game) {
   pickups.add(makeCameraMesh(), -11, 5.5, 'camera-miami', (id) => { inv.cameras++; showObjective('📷 vintage camera for Stacy!', 2500); });
   pickups.add(makeRecordMesh(), 11.5, 6, 'record-miami', (id) => { inv.records++; showObjective('🎵 vinyl record — new sound unlocked!', 2500); });
 
+  const interactions = new Interactions();
   interactions.add({
     pos: new THREE.Vector3(13.4, 0, 2), radius: 2.4, label: 'Order a drink',
     action: async () => {
@@ -410,11 +411,21 @@ export async function miamiScene(game) {
 
   return {
     update(dt) {
-      window.__sceneHooks = { interactions: null, player, christian: olivia, self: this };
+      window.__sceneHooks = { interactions, player, christian: olivia, self: this };
       t += dt;
 
       // the player controls olivia — wasd/joystick walks her around the club
       player.update(dt);
+      // interaction prompts (bar etc.)
+      const nearI = interactions.nearest(olivia.group.position);
+      const promptEl = document.getElementById('interact-prompt');
+      if (nearI && !player.frozen) {
+        promptEl.textContent = 'E — ' + nearI.label;
+        promptEl.classList.remove('hidden');
+      } else if (promptEl) {
+        promptEl.classList.add('hidden');
+      }
+      if (nearI && !player.frozen && input.consumeInteract()) nearI.action();
       // the stage is a raised platform: ramp her up inside its circle
       const sd = Math.hypot(olivia.group.position.x, olivia.group.position.z + 4.5);
       const groundY = sd < 2.8 ? 0.55 : 0;

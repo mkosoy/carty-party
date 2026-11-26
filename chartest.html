@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>body{margin:0}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+</head><body>
+<script type="module">
+import * as THREE from 'three';
+import { makePerson } from './js/engine/character.js';
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x8899aa);
+scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+const dl = new THREE.DirectionalLight(0xfff0e0, 2.0);
+dl.position.set(3, 6, 8);
+scene.add(dl);
+const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 100);
+camera.position.set(0, 1.5, 4.2);
+camera.lookAt(0, 1.2, 0);
+const cast = [
+  { photo: 'assets/faces/christian.png', top: 0x8a6d4b, hair: 0x54382a, hairStyle: 'short' },
+  { photo: 'assets/faces/stacy.png', top: 0x1a1a1a, hair: 0x1e1410, hairStyle: 'long' },
+  { photo: 'assets/faces/kylieSolo.png', top: 0xe8e0d0, hair: 0xd8b878, hairStyle: 'long' },
+  { photo: 'assets/faces/olivia.png', top: 0x1a1a1a, hair: 0x1e1410, hairStyle: 'long' },
+  { photo: 'assets/faces/olivia.png', top: 0xc05a7a, hair: 0x6a4a26, hairStyle: 'bun' },
+  { photo: 'assets/faces/mark.png', top: 0x3a5a8a, hair: 0x54382a, hairStyle: 'short' },
+  { photo: 'assets/faces/jim.png', top: 0x2c3140, hair: 0xb8b0a4, hairStyle: 'short' },
+  { photo: null, top: 0x7ab06a, skin: 0x8a5a3a, hair: 0x14100c, hairStyle: 'short' },
+];
+cast.forEach((c, i) => {
+  const p = makePerson(c);
+  p.group.position.set((i - 3.5) * 0.85, 0, 0);
+  p.group.rotation.y = 0;
+  scene.add(p.group);
+});
+renderer.render(scene, camera);
+setTimeout(() => renderer.render(scene, camera), 1500);
+setTimeout(() => renderer.render(scene, camera), 3000);
+</script></body></html>

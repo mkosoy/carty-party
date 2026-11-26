@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Carty Party: A MoCo Holiday</title>
+<link rel="stylesheet" href="css/style.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="game-container"></div>
+
+<div id="hud">
+  <div id="objective-banner" class="hidden"></div>
+  <div id="interact-prompt" class="hidden">E</div>
+</div>
+
+<div id="dialogue-box" class="hidden">
+  <div style="display:flex;align-items:flex-start;gap:10px"><img id="dialogue-portrait" style="display:none;width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35);flex:none"><div style="flex:1"><div id="dialogue-speaker"></div>
+  <div id="dialogue-text"></div></div></div>
+  <div id="dialogue-advance">▼ tap / E</div>
+</div>
+
+<div id="phone-overlay" class="hidden">
+  <div id="phone-caller"></div>
+  <div id="phone-status">incoming call…</div>
+</div>
+
+<div id="choice-box" class="hidden"></div>
+
+<div id="touch-controls">
+  <div id="joystick-zone"><div id="joystick-base"><div id="joystick-stick"></div></div></div>
+  <div id="action-button">E</div>
+</div>
+
+<div id="title-screen">
+  <canvas id="title-snow"></canvas>
+  <div id="title-inner">
+    <div id="title-lights"></div>
+    <p class="title-kicker">a game for the county</p>
+    <h1><span>Carty</span> <span>Party</span></h1>
+    <h2>~ A MoCo Holiday ~</h2>
+    <div id="title-cast">
+      <div class="cast-chip"><img src="assets/photos/christian.jpeg" alt="Christian"><span>Christian</span></div>
+      <div class="cast-chip"><img id="cast-stacy" alt="Stacy"><span>Stacy</span></div>
+      <div class="cast-chip"><img id="cast-olivia" alt="Olivia"><span>Olivia ×2</span></div>
+      <div class="cast-chip"><img id="cast-kylie" alt="Kylie"><span>Kylie ❤️</span></div>
+      <div class="cast-chip"><img id="cast-mark" alt="Mark"><span>Mark</span></div>
+    </div>
+    <button id="start-button">✈ Land at Dulles</button>
+    <p class="title-sub">Dulles → MoCo → Yo Yogi → the swap → DC<br>
+    <span class="title-small">WASD / joystick to move · E to interact · best with sound on</span></p>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

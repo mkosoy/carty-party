@@ -143,6 +143,7 @@ export async function dcScene(game) {
   });
 
   // ice-skating finale: free skating on the rink, faster and slidey, Olivia joins
+  let oliviaSaidHi = false;
   const rinkInt = interactions.add({
     pos: new THREE.Vector3(0, 0, 6), radius: 7, label: 'Skate!',
     action: async () => {
@@ -153,8 +154,8 @@ export async function dcScene(game) {
       showObjective('Skate around! Feel the glide. When you’re ready, press E at the center to end the night.', 6000);
       centerInt.hidden = false;
       // olivia waves you over once
-      if (!this._oliviaSaidHi) {
-        this._oliviaSaidHi = true;
+      if (!oliviaSaidHi) {
+        oliviaSaidHi = true;
         dialogue.play([
           { speaker: 'Olivia', text: 'Christian! You made it! — yes, THAT Olivia. The real one. Probably.' },
         ]);

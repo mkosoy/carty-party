@@ -97,6 +97,114 @@ export async function driveScene(game) {
   car.position.set(0, 0, 0);
   scene.add(car);
 
+  // ---- drive richness pass ----
+  // guardrails both sides
+  for (const sx of [-1, 1]) {
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.5, 400), mat(0x9aa0a8));
+    rail.position.set(sx * 7.6, 0.55, -100);
+    scene.add(rail);
+    const posts = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.5, 400), mat(0x777d85));
+    posts.position.set(sx * 7.7, 0.3, -100);
+    scene.add(posts);
+    decor.push(rail, posts);
+  }
+  // green highway signs (very I-270): MoCo exits
+  function roadSign(text, x, z) {
+    const g = new THREE.Group();
+    const c = document.createElement('canvas');
+    c.width = 512; c.height = 200;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#0a5c2e';
+    ctx.fillRect(0, 0, 512, 200);
+    ctx.strokeStyle = '#e8e8e8';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(6, 6, 500, 188);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 52px Arial';
+    ctx.textAlign = 'center';
+    const lines = text.split('|');
+    lines.forEach((ln, i) => ctx.fillText(ln, 256, 78 + i * 62));
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    const panel = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 2), new THREE.MeshBasicMaterial({ map: t }));
+    panel.position.y = 4.6;
+    g.add(panel);
+    for (const px of [-2.2, 2.2]) {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 4.8, 6), mat(0x6a7078));
+      post.position.set(px, 2.3, -0.1);
+      g.add(post);
+    }
+    g.position.set(x, 0, z);
+    scene.add(g);
+    decor.push(g);
+    return g;
+  }
+  roadSign('Rockville 2|Gaithersburg 5', 5.5, -60);
+  roadSign('Yo Yogi Sushi|NEXT RIGHT', 5.5, -160);
+  roadSign('Baltimore 28|Washington 22', -5.5, -230);
+  // yo yogi billboard on the right shoulder — the payoff landmark
+  const bbC = document.createElement('canvas');
+  bbC.width = 512; bbC.height = 256;
+  const bx = bbC.getContext('2d');
+  const bbG = bx.createLinearGradient(0, 0, 0, 256);
+  bbG.addColorStop(0, '#c02838'); bbG.addColorStop(1, '#801828');
+  bx.fillStyle = bbG; bx.fillRect(0, 0, 512, 256);
+  bx.fillStyle = '#ffe9c8';
+  bx.font = 'bold 72px Georgia';
+  bx.textAlign = 'center';
+  bx.fillText('YO YOGI', 256, 110);
+  bx.font = 'italic 34px Georgia';
+  bx.fillText('sushi worth speeding for', 256, 165);
+  bx.font = '28px Arial';
+  bx.fillText('🍣 since 1987 🍣', 256, 215);
+  const bbT = new THREE.CanvasTexture(bbC);
+  bbT.colorSpace = THREE.SRGBColorSpace;
+  const bb = new THREE.Mesh(new THREE.PlaneGeometry(7, 3.5), new THREE.MeshBasicMaterial({ map: bbT }));
+  bb.position.set(11, 4.5, -120);
+  bb.rotation.y = -0.4;
+  scene.add(bb);
+  decor.push(bb);
+  const bbPole = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 3.2, 8), mat(0x5a5048));
+  bbPole.position.set(11, 1.6, -120);
+  scene.add(bbPole);
+  decor.push(bbPole);
+  // overpass in the distance
+  const op = new THREE.Mesh(new THREE.BoxGeometry(22, 1, 3), mat(0x8a8f98));
+  op.position.set(0, 5.5, -200);
+  scene.add(op);
+  for (const ox of [-8, 8]) {
+    const leg = new THREE.Mesh(new THREE.BoxGeometry(1, 5, 2), mat(0x787d85));
+    leg.position.set(ox, 2.5, -200);
+    scene.add(leg);
+  }
+  decor.push(op);
+  // car detail: headlights glow, taillights, grill
+  const headL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.15, 0.05), new THREE.MeshBasicMaterial({ color: 0xfff2c0 }));
+  headL.position.set(-0.6, 0.6, -2.12);
+  car.add(headL);
+  const headR = headL.clone();
+  headR.position.x = 0.6;
+  car.add(headR);
+  const tailL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.12, 0.05), new THREE.MeshBasicMaterial({ color: 0xd03030 }));
+  tailL.position.set(-0.6, 0.6, 2.12);
+  car.add(tailL);
+  const tailR = tailL.clone();
+  tailR.position.x = 0.6;
+  car.add(tailR);
+  // side mirrors
+  for (const mx of [-1.0, 1.0]) {
+    const mir = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.15, 0.2), mat(0x8a2f2f));
+    mir.position.set(mx, 1.0, -0.6);
+    car.add(mir);
+  }
+  // distant mountains / tree line silhouette strip
+  for (let i = 0; i < 20; i++) {
+    const tr = new THREE.Mesh(new THREE.ConeGeometry(2 + Math.random() * 2, 4 + Math.random() * 3, 6), mat(0x4a5a52));
+    tr.position.set(-60 + i * 6.5, 2, -285 + Math.random() * 10);
+    scene.add(tr);
+  }
+
+
   camera.position.set(0, 4.4, 8.5);
   camera.lookAt(0, 0.8, -6);
 

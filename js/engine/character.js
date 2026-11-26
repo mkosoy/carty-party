@@ -55,7 +55,7 @@ export function makePerson({
   const u = H / 1.78;
 
   // ---- torso: tapered, shoulders, hem band ----
-  const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.185 * u, 0.155 * u, 0.62 * u, 14), mat(top));
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.175 * u, 0.148 * u, 0.62 * u, 14), mat(top));
   torso.position.y = 1.13 * u;
   torso.scale.z = 0.72;
   g.add(torso);
@@ -117,18 +117,34 @@ export function makePerson({
   // ---- arms: sleeve + cuff + hand ----
   function makeArm(side) {
     const pivot = new THREE.Group();
-    pivot.position.set(side * 0.225 * u, 1.42 * u, 0);
-    const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.048 * u, 0.5 * u, 4, 10), mat(top));
-    arm.position.y = -0.28 * u;
-    pivot.add(arm);
-    const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.052 * u, 0.052 * u, 0.04 * u, 8), mat(new THREE.Color(top).multiplyScalar(0.8).getHex()));
-    cuff.position.y = -0.52 * u;
-    pivot.add(cuff);
+    pivot.position.set(side * 0.215 * u, 1.42 * u, 0);
+    // shoulder cap
+    const cap = new THREE.Mesh(new THREE.SphereGeometry(0.06 * u, 10, 8), mat(top));
+    pivot.add(cap);
+    // upper arm: slightly tapered sleeve down to the elbow
+    const upper = new THREE.Mesh(new THREE.CapsuleGeometry(0.05 * u, 0.2 * u, 4, 10), mat(top));
+    upper.position.y = -0.15 * u;
+    pivot.add(upper);
+    // elbow joint group so the forearm carries a natural slight bend
+    const elbow = new THREE.Group();
+    elbow.position.y = -0.3 * u;
+    pivot.add(elbow);
+    const elbowBall = new THREE.Mesh(new THREE.SphereGeometry(0.042 * u, 8, 8), mat(top));
+    elbow.add(elbowBall);
+    const forearm = new THREE.Mesh(new THREE.CapsuleGeometry(0.042 * u, 0.2 * u, 4, 10), mat(top));
+    forearm.position.y = -0.13 * u;
+    elbow.add(forearm);
+    const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.047 * u, 0.047 * u, 0.04 * u, 8), mat(new THREE.Color(top).multiplyScalar(0.8).getHex()));
+    cuff.position.y = -0.25 * u;
+    elbow.add(cuff);
     const hand = new THREE.Mesh(new THREE.SphereGeometry(0.047 * u, 10, 8), smoothMat(skin));
-    hand.position.y = -0.58 * u;
-    hand.scale.set(0.85, 1.15, 0.9);
-    pivot.add(hand);
-    pivot.rotation.z = side * 0.07;
+    hand.position.y = -0.31 * u;
+    hand.scale.set(0.85, 1.2, 0.9);
+    elbow.add(hand);
+    // natural relaxed bend at the elbow, slight outward hang
+    elbow.rotation.x = -0.18;
+    elbow.rotation.z = side * 0.05;
+    pivot.rotation.z = side * 0.09;
     g.add(pivot);
     return pivot;
   }

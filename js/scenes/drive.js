@@ -130,11 +130,11 @@ export async function driveScene(game) {
     tex.colorSpace = THREE.SRGBColorSpace;
     const sg = new THREE.Group();
     const panel = new THREE.Mesh(new THREE.BoxGeometry(6.4, 2.4, 0.15), new THREE.MeshBasicMaterial({ map: tex }));
-    panel.position.y = 7.6;
+    panel.position.y = 9.2;
     sg.add(panel);
     for (const gx of [-2.8, 2.8]) {
-      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 7.6, 6), mat(0x6a7078));
-      post.position.set(gx, 3.8, 0);
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 9.2, 6), mat(0x6a7078));
+      post.position.set(gx, 4.6, 0);
       sg.add(post);
     }
     sg.position.set(0, 0, -40 - i * 52);
@@ -444,6 +444,8 @@ export async function driveScene(game) {
   let cruiseTimer = 0;
   let radioBanner = 0;
 
+
+  window.__sceneHint = '\u2190 \u2192 steer \u00b7 avoid the hazards \u00b7 grab turkeys for speed boost';
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

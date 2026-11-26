@@ -115,7 +115,8 @@ const game = {
       document.body.appendChild(hint);
     }
     const touch = 'ontouchstart' in window;
-    hint.textContent = touch ? 'left thumb — move · right thumb — camera · tap ✦ to interact' : 'WASD — move · drag mouse — camera · E — interact · space — jump';
+    hint.textContent = window.__sceneHint || (touch ? 'left thumb — move · right thumb — camera · tap ✦ to interact' : 'WASD — move · drag mouse — camera · E — interact · space — jump');
+    window.__sceneHint = null;
     hint.style.opacity = '1';
     clearTimeout(window.__hintT);
     window.__hintT = setTimeout(() => { hint.style.opacity = '0'; }, 14000);

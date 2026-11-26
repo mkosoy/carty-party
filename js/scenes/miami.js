@@ -222,6 +222,101 @@ export async function miamiScene(game) {
   }, 700);
 
   let t = 0;
+  // --- realism pass: ceiling, truss rigs, VIP booths, bottle service, DJ booth ---
+  const ceiling = new THREE.Mesh(new THREE.BoxGeometry(30.5, 0.3, 22.5), mat(0x060510));
+  ceiling.position.y = 7;
+  scene.add(ceiling);
+  // truss bars crisscrossing the ceiling with light cans
+  const trussMat = new THREE.MeshLambertMaterial({ color: 0x1a1a22 });
+  for (const tz of [-7, -3, 1, 5]) {
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(26, 0.22, 0.22), trussMat);
+    bar.position.set(0, 6.6, tz);
+    scene.add(bar);
+    for (const cx of [-10, -5, 0, 5, 10]) {
+      const can = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 0.42, 8), mat(0x22222c));
+      can.position.set(cx, 6.35, tz);
+      scene.add(can);
+    }
+  }
+  // VIP booths along side walls: couches + tables with glowing bottles
+  function vipBooth(x, z, ry) {
+    const grp = new THREE.Group();
+    grp.position.set(x, 0, z);
+    grp.rotation.y = ry;
+    const couch = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.55, 1.1), mat(0x4a1020));
+    couch.position.y = 0.28;
+    grp.add(couch);
+    const back = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.8, 0.25), mat(0x5a1626));
+    back.position.set(0, 0.7, -0.45);
+    grp.add(back);
+    for (const sx of [-1.1, 0, 1.1]) {
+      const cushion = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.14, 0.95), mat(0x5a1626));
+      cushion.position.set(sx, 0.6, 0.05);
+      grp.add(cushion);
+    }
+    const table = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.5, 0.5, 12), new THREE.MeshStandardMaterial({ color: 0x14141e, roughness: 0.3, metalness: 0.6 }));
+    table.position.set(0, 0.25, 1.15);
+    grp.add(table);
+    // bottles with glowing necks (sparklers vibe)
+    for (const [bx, bz, bc] of [[-0.18, 1.0, 0xffd070], [0.14, 1.25, 0x70c0ff], [0.05, 0.95, 0xff70b0]]) {
+      const bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.065, 0.34, 8), new THREE.MeshStandardMaterial({ color: 0x0a2015, roughness: 0.1, metalness: 0.4 }));
+      bottle.position.set(bx, 0.67, bz);
+      grp.add(bottle);
+      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.03, 0.14, 6), new THREE.MeshBasicMaterial({ color: bc }));
+      neck.position.set(bx, 0.9, bz);
+      grp.add(neck);
+    }
+    // ice bucket
+    const bucket = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.2, 10), new THREE.MeshStandardMaterial({ color: 0xb8c0cc, roughness: 0.25, metalness: 0.9 }));
+    bucket.position.set(0.32, 0.6, 1.1);
+    grp.add(bucket);
+    scene.add(grp);
+    const pad = Math.abs(x) > 12 ? { minX: x - 2.4, maxX: x + 2.4, minZ: z - 1.9, maxZ: z + 1.9 } : null;
+    if (pad) bounds.push(pad);
+  }
+  vipBooth(-13.2, -6, Math.PI / 2);
+  vipBooth(-13.2, 2, Math.PI / 2);
+  vipBooth(13.2, -6, -Math.PI / 2);
+  vipBooth(13.2, 2, -Math.PI / 2);
+  vipBooth(13.2, 7.5, -Math.PI / 2);
+  vipBooth(-13.2, 7.5, Math.PI / 2);
+  // DJ booth center-back on the platform: decks, mixer, dj figure nodding
+  const djBooth = new THREE.Group();
+  djBooth.position.set(0, 0.55, -8.6);
+  const deckTable = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.9, 0.8), mat(0x101018));
+  deckTable.position.y = 0.45;
+  djBooth.add(deckTable);
+  for (const dx of [-0.8, 0.8]) {
+    const platter = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.05, 20), new THREE.MeshStandardMaterial({ color: 0x080808, roughness: 0.2, metalness: 0.7 }));
+    platter.position.set(dx, 0.93, 0);
+    djBooth.add(platter);
+    const label = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.055, 12), new THREE.MeshBasicMaterial({ color: 0xff2a8a }));
+    label.position.set(dx, 0.93, 0);
+    djBooth.add(label);
+  }
+  const mixer = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.06, 0.55), mat(0x1c1c26));
+  mixer.position.set(0, 0.93, 0);
+  djBooth.add(mixer);
+  scene.add(djBooth);
+  const djChar = makePerson({ skin: 0xc98d64, hair: 0x14100c, hairStyle: 'short', top: 0x101010, bottom: 0x181818, height: 1.0 });
+  djChar.group.position.set(0, 0.55, -9.3);
+  scene.add(djChar.group);
+  const headphones = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.03, 8, 16, Math.PI), mat(0x222222));
+  headphones.position.set(0, 0.55 + 1.72 * 0.95, -9.3);
+  headphones.rotation.z = Math.PI;
+  scene.add(headphones);
+  bounds.push({ minX: -1.8, maxX: 1.8, minZ: -9.6, maxZ: -8.0 });
+  // light shafts: big soft additive cones under the moving heads for haze volume
+  const shafts = [];
+  for (let i = 0; i < 4; i++) {
+    const cone = new THREE.Mesh(
+      new THREE.ConeGeometry(1.6, 6, 12, 1, true),
+      new THREE.MeshBasicMaterial({ color: [0xff2a8a, 0x20c0ff, 0x9a40ff, 0x20ff80][i], transparent: true, opacity: 0.06, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false })
+    );
+    cone.position.set(-6 + i * 4, 3.8, -2);
+    scene.add(cone);
+    shafts.push(cone);
+  }
   return {
     update(dt) {
       window.__sceneHooks = { interactions: null, player: null, christian: olivia, self: this };
@@ -240,6 +335,14 @@ export async function miamiScene(game) {
         f.p.animateWalk(dt, 1.4);
       });
 
+      // dj nods with the beat
+      djChar.group.position.y = 0.55 + Math.abs(Math.sin(t * 3.6)) * 0.05;
+      djChar.animateWalk(dt, 0.8);
+      // haze shafts sway
+      for (let i = 0; i < shafts.length; i++) {
+        shafts[i].rotation.z = Math.sin(t * 0.9 + i * 1.7) * 0.28;
+        shafts[i].rotation.x = Math.cos(t * 0.7 + i) * 0.18;
+      }
       // crowd dancing
       for (const c of crowd) {
         c.p.group.position.y = Math.abs(Math.sin(t * c.rate * 2 + c.phase)) * 0.12;

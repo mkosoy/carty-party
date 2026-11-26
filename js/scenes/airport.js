@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Pickups } from '../engine/core.js';
+import { npcFacePlayer, Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
 import { concrete } from '../engine/textures.js';

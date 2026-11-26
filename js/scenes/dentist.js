@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, choice , Pickups } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, choice , Pickups , npcFacePlayer } from '../engine/core.js';
 import { sfxChime } from '../engine/sfx.js';
 import { carpet, paintedWall } from '../engine/textures.js';
 

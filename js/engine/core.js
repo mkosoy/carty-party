@@ -419,3 +419,18 @@ export function choice(options) {
     window.addEventListener('keydown', keyHandler);
   });
 }
+
+// NPCs turn to face the player when close — makes the world feel aware.
+export function npcFacePlayer(npc, player, radius = 3.4, lerp = 5, dt = 0.016) {
+  if (!npc?.group || !player?.group) return;
+  const dx = player.group.position.x - npc.group.position.x;
+  const dz = player.group.position.z - npc.group.position.z;
+  const dist = Math.hypot(dx, dz);
+  if (dist < radius) {
+    const target = Math.atan2(dx, dz);
+    let diff = target - npc.group.rotation.y;
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+    npc.group.rotation.y += diff * Math.min(1, lerp * dt);
+  }
+}

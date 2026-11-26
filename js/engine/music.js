@@ -56,6 +56,42 @@ export class Music {
       o.start(t); o.stop(t + dur + 0.1);
     }
   }
+  wobble(freq, t, dur, vol = 0.3, rate = 6) {
+    const c = this.ctx;
+    const o = c.createOscillator();
+    o.type = 'sawtooth';
+    o.frequency.value = freq;
+    const f = c.createBiquadFilter();
+    f.type = 'lowpass';
+    f.Q.value = 9;
+    f.frequency.value = 650;
+    const lfo = c.createOscillator();
+    lfo.type = 'square';
+    lfo.frequency.value = rate;
+    const lfoG = c.createGain();
+    lfoG.gain.value = 480;
+    lfo.connect(lfoG); lfoG.connect(f.frequency);
+    const g = c.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.02);
+    g.gain.setValueAtTime(vol, t + dur * 0.75);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(f); f.connect(g); g.connect(this.master);
+    o.start(t); lfo.start(t);
+    o.stop(t + dur + 0.1); lfo.stop(t + dur + 0.1);
+  }
+  kick(t, vol = 0.5) {
+    const c = this.ctx;
+    const o = c.createOscillator();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(135, t);
+    o.frequency.exponentialRampToValueAtTime(36, t + 0.11);
+    const g = c.createGain();
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+    o.connect(g); g.connect(this.master);
+    o.start(t); o.stop(t + 0.3);
+  }
   bass(freq, t, dur, vol = 0.3) {
     const c = this.ctx;
     const o = c.createOscillator();
@@ -74,7 +110,7 @@ export class Music {
     if (this.scene === sceneName) return;
     this.stop();
     this.scene = sceneName;
-    const stepDur = 0.34;
+    let stepDur = 0.34;
     let step = 0;
     const N = (n) => 440 * Math.pow(2, (n - 9) / 12); // semitone number -> freq
     const patterns = {
@@ -99,9 +135,10 @@ export class Music {
         bellVol: 0.2, padVol: 0.05, bassN: -17,
       },
       miami: {
-        chords: [[0, 3, 7], [-2, 2, 5], [0, 3, 7], [3, 7, 10]],
-        melody: [12, -1, 12, 15, -1, 12, -1, 19, 17, -1, 15, -1, 12, -1, 10, 12],
-        bellVol: 0.22, padVol: 0.06, bassN: -5,
+        chords: [[0, 3, 7], [0, 3, 7], [-4, 0, 3], [-2, 2, 5]],
+        melody: [12, -1, -1, -1, 15, -1, -1, -1, 12, -1, -1, 14, -1, -1, 10, -1],
+        bellVol: 0.16, padVol: 0.05, bassN: -5,
+        dubstep: true, stepDur: 0.155,
       },
       dentist: {
         chords: [[0, 4, 7], [2, 5, 9], [0, 4, 7], [-2, 2, 5]],
@@ -120,6 +157,7 @@ export class Music {
       },
     };
     const pat = patterns[sceneName] || patterns.airport;
+    stepDur = pat.stepDur || stepDur;
     let bar = 0;
     const tick = () => {
       if (!this.ctx) return;
@@ -133,6 +171,31 @@ export class Music {
         bar++;
       }
       if (step % 4 === 0) this.bass(N((pat.chords[(bar - 1 + pat.chords.length) % pat.chords.length]?.[0] ?? 0) - 24), t, stepDur * 3, 0.1);
+      if (pat.dubstep) {
+        const root = (pat.chords[(bar - 1 + pat.chords.length) % pat.chords.length]?.[0] ?? 0);
+        if (step % 2 === 0) this.kick(t, 0.5); // driving four-on-floor at 2x step rate
+        // wobble bass hits: syncopated riddim pattern with octave jumps
+        const wobSteps = [0, 3, 6, 8, 11, 14];
+        const si = step % 16;
+        if (wobSteps.includes(si)) {
+          const oct = (si === 8 || si === 11) ? -12 : -24;
+          this.wobble(N(root + oct), t, stepDur * (si === 8 ? 4.5 : 2.6), 0.34, si % 4 === 0 ? 5 : 8);
+        }
+        // snare-ish noise click on the backbeat
+        if (step % 8 === 4) {
+          const nb = this.ctx.createBufferSource();
+          const buf = this.ctx.createBuffer(1, 2205, 22050);
+          const d = buf.getChannelData(0);
+          for (let i = 0; i < 2205; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / 2205);
+          nb.buffer = buf;
+          const nf = this.ctx.createBiquadFilter();
+          nf.type = 'highpass'; nf.frequency.value = 1800;
+          const ng = this.ctx.createGain();
+          ng.gain.value = 0.22;
+          nb.connect(nf); nf.connect(ng); ng.connect(this.master);
+          nb.start(t);
+        }
+      }
       step++;
     };
     tick();

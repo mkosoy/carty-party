@@ -160,7 +160,7 @@ export function makePerson({
   headGroup.position.y = 1.67 * u;
   g.add(headGroup);
 
-  const headR = 0.125 * u;
+  const headR = 0.14 * u;
   const head = new THREE.Mesh(new THREE.SphereGeometry(headR, 24, 18), mat(skin, 0.7));
   head.scale.set(0.9, 1.1, 0.95);
   headGroup.add(head);
@@ -259,6 +259,11 @@ export function makePerson({
     group: g,
     head,
     headGroup,
+    armL,
+    armR,
+    legL,
+    legR,
+    torso,
     walkPhase: 0,
     animateWalk(dt, speed) {
       api.walkPhase += dt * speed * 3.4;

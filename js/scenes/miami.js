@@ -9,8 +9,8 @@ export async function miamiScene(game) {
   const { scene, camera, input, dialogue, faces } = game;
 
   scene.background = new THREE.Color(0x05060e);
-  scene.fog = new THREE.Fog(0x0a0618, 12, 42);
-  scene.add(new THREE.AmbientLight(0x28203a, 1.2));
+  scene.fog = new THREE.Fog(0x120620, 11, 38);
+  scene.add(new THREE.AmbientLight(0x35204a, 1.15));
 
   const mat = (c) => new THREE.MeshLambertMaterial({ color: c });
   const glow = (c) => new THREE.MeshBasicMaterial({ color: c });
@@ -19,16 +19,18 @@ export async function miamiScene(game) {
   const floor = new THREE.Mesh(new THREE.BoxGeometry(30, 0.2, 22), new THREE.MeshStandardMaterial({ color: 0x0c0c14, roughness: 0.15, metalness: 0.7 }));
   floor.receiveShadow = true;
   scene.add(floor);
-  // LED dance-floor tiles: emissive grid that pulses
-  const tiles = [];
-  for (let x = -6; x <= 6; x += 2) {
-    for (let z = -3; z <= 5; z += 2) {
-      const tile = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.06, 1.7), new THREE.MeshBasicMaterial({ color: 0x181828 }));
-      tile.position.set(x, 0.14, z);
-      scene.add(tile);
-      tiles.push(tile);
-    }
+  // dark inset dance-floor panel with a thin neon border — no tile grid,
+  // the real club floor is glossy black that mirrors the lights
+  const inset = new THREE.Mesh(new THREE.BoxGeometry(15, 0.05, 9.5), new THREE.MeshStandardMaterial({ color: 0x06060c, roughness: 0.08, metalness: 0.85 }));
+  inset.position.set(0, 0.12, 1.5);
+  scene.add(inset);
+  const borderMat = new THREE.MeshBasicMaterial({ color: 0xff2a8a });
+  for (const [bw, bd, bx, bz] of [[15, 0.06, 0, -3.25], [15, 0.06, 0, 6.25], [0.06, 9.5, -7.5, 1.5], [0.06, 9.5, 7.5, 1.5]]) {
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(bw, 0.05, bd), borderMat);
+    strip.position.set(bx, 0.15, bz);
+    scene.add(strip);
   }
+  const tiles = [];
   // walls
   for (const [w, h, d, x, z] of [
     [30, 7, 0.4, 0, -11], [30, 7, 0.4, 0, 11], [0.4, 7, 22, -15, 0], [0.4, 7, 22, 15, 0],
@@ -67,16 +69,6 @@ export async function miamiScene(game) {
   const sign = new THREE.Mesh(new THREE.PlaneGeometry(8, 2), new THREE.MeshBasicMaterial({ map: signT, transparent: true }));
   sign.position.set(0, 6.2, -10.6);
   scene.add(sign);
-
-  // central dance platform (olivia's stage)
-  const stage = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.4, 0.5, 24), new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.3, metalness: 0.6 }));
-  stage.position.set(0, 0.25, -4.5);
-  scene.add(stage);
-  // neon ring around the stage
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(2.3, 0.06, 8, 40), glow(0xff2a8a));
-  ring.rotation.x = Math.PI / 2;
-  ring.position.set(0, 0.52, -4.5);
-  scene.add(ring);
 
   // laser beams: thin emissive planes sweeping
   const lasers = [];
@@ -153,7 +145,7 @@ export async function miamiScene(game) {
     const a = (i / 12) * Math.PI * 2;
     const rx = Math.cos(a) * (4.5 + (i % 3)), rz = Math.sin(a) * 3.5 + 1;
     n.group.position.set(rx, 0, rz);
-    n.group.rotation.y = Math.PI + a * 0.3;
+    n.group.rotation.y = Math.atan2(rx - 0, rz - (-4.5)) + Math.PI + (Math.random() - 0.5) * 0.4;
     scene.add(n.group);
     crowd.push({ p: n, phase: Math.random() * 6.28, rate: 1.6 + Math.random() * 1.2 });
   }
@@ -189,7 +181,7 @@ export async function miamiScene(game) {
 
   // olivia on the stage — the reward dance
   const olivia = makePerson({ photo: faces.olivia, top: 0xff2a8a, bottom: 0x1a1a22, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
-  olivia.group.position.set(0, 0.5, -4.5);
+  olivia.group.position.set(0, 0.55, -4.5);
   scene.add(olivia.group);
 
   // the philly fam cheering at the front of the stage
@@ -207,6 +199,7 @@ export async function miamiScene(game) {
     fam.push({ p: f, phase: i });
   });
 
+  const player = new PlayerController(olivia, input, bounds);
   const followCam = new FollowCam(camera);
   followCam.snap(olivia.group.position);
   camera.position.set(0, 3.2, 4);
@@ -215,13 +208,95 @@ export async function miamiScene(game) {
   // intro dialogue
   setTimeout(async () => {
     await dialogue.play([
-      { speaker: 'Olivia', text: 'E11EVEN. Miami. Every tooth clean, the whole philly fam here — this is the best night of my life.' },
+      { speaker: 'Olivia', text: 'Eleven. Miami. Every tooth clean, the whole philly fam here — this is the best night of my life.' },
       { speaker: 'The Fam', text: 'OLIVIA! OLIVIA! OLIVIA!' },
     ]);
     showObjective('🎉 You did it — Olivia dances at E11EVEN. Carty Party: A MoCo Holiday — bonus scene complete!', 8000);
   }, 700);
 
   let t = 0;
+  // --- E11EVEN signature: the mezzanine. A balcony level wraps the side and
+  // back walls with railings and vip silhouettes looking down at the stage ---
+  const mezzMat = new THREE.MeshStandardMaterial({ color: 0x12101e, roughness: 0.35, metalness: 0.4 });
+  const railMat = new THREE.MeshBasicMaterial({ color: 0xff2a8a });
+  function mezzanine(len, x, z, ry) {
+    const grp = new THREE.Group();
+    grp.position.set(x, 0, z);
+    grp.rotation.y = ry;
+    const deck = new THREE.Mesh(new THREE.BoxGeometry(len, 0.25, 2.6), mezzMat);
+    deck.position.y = 3.3;
+    grp.add(deck);
+    // fascia glow strip along the deck edge
+    const fascia = new THREE.Mesh(new THREE.BoxGeometry(len, 0.1, 0.08), railMat);
+    fascia.position.set(0, 3.22, 1.28);
+    grp.add(fascia);
+    // railing: top rail + posts
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(len, 0.05, 0.05), new THREE.MeshStandardMaterial({ color: 0x8888a0, metalness: 0.8, roughness: 0.3 }));
+    rail.position.set(0, 4.35, 1.15);
+    grp.add(rail);
+    const glass = new THREE.Mesh(new THREE.BoxGeometry(len, 0.75, 0.03), new THREE.MeshStandardMaterial({ color: 0x30284a, transparent: true, opacity: 0.35, roughness: 0.1, metalness: 0.6 }));
+    glass.position.set(0, 3.95, 1.15);
+    grp.add(glass);
+    for (let px = -len / 2 + 0.4; px < len / 2; px += 1.6) {
+      const post = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.95, 0.05), rail.material);
+      post.position.set(px, 3.9, 1.15);
+      grp.add(post);
+    }
+    // support columns to the floor
+    for (const cx of [-len / 2 + 0.5, 0, len / 2 - 0.5]) {
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 3.3, 10), mezzMat);
+      col.position.set(cx, 1.65, 1.0);
+      grp.add(col);
+    }
+    // vip silhouettes leaning on the rail
+    for (let vx = -len / 2 + 1.2; vx < len / 2 - 0.6; vx += 2.2) {
+      const vip = makePerson({ skin: [0xe8c098, 0x8a5a3a, 0xd8a878][Math.floor(Math.random() * 3)], hair: 0x16100e, hairStyle: Math.random() > 0.5 ? 'long' : 'short', top: [0xff4080, 0x20c0ff, 0xc0c0c8, 0x9a40ff][Math.floor(Math.random() * 4)], bottom: 0x1a1a22 });
+      vip.group.position.set(vx + (Math.random() - 0.5) * 0.5, 3.42, 0.5 + Math.random() * 0.4);
+      vip.group.rotation.y = Math.PI + (Math.random() - 0.5) * 0.6;
+      grp.add(vip.group);
+    }
+    scene.add(grp);
+  }
+  mezzanine(28, 0, -9.9, 0);          // behind the stage
+  mezzanine(20, -13.9, 0, Math.PI / 2);   // left wall
+  mezzanine(20, 13.9, 0, -Math.PI / 2);   // right wall
+
+  // --- theatrical main stage: wide raised platform with steps and trim,
+  // replacing the small cylinder — this is where Olivia performs ---
+  const stage = new THREE.Group();
+  stage.position.set(0, 0, -4.5);
+  const deckMain = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 2.8, 0.55, 24), new THREE.MeshStandardMaterial({ color: 0x14101e, roughness: 0.25, metalness: 0.6 }));
+  deckMain.position.y = 0.28;
+  stage.add(deckMain);
+  const trim = new THREE.Mesh(new THREE.TorusGeometry(2.62, 0.05, 8, 32), new THREE.MeshBasicMaterial({ color: 0xff2a8a }));
+  trim.rotation.x = Math.PI / 2;
+  trim.position.y = 0.56;
+  stage.add(trim);
+  const trim2 = new THREE.Mesh(new THREE.TorusGeometry(2.62, 0.03, 8, 32), new THREE.MeshBasicMaterial({ color: 0x20c0ff }));
+  trim2.rotation.x = Math.PI / 2;
+  trim2.position.y = 0.1;
+  stage.add(trim2);
+  // steps down to the dance floor at the front
+  for (let st = 0; st < 3; st++) {
+    const step = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.09, 0.4), mezzMat);
+    step.position.set(0, 0.45 - st * 0.17, 2.75 + st * 0.34);
+    stage.add(step);
+  }
+  // hydraulic pole centerpiece — E11EVEN's stage signature
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 5.6, 10), new THREE.MeshStandardMaterial({ color: 0xc0c8d8, metalness: 0.95, roughness: 0.15 }));
+  pole.position.set(0.9, 3.1, 0);
+  stage.add(pole);
+  // backlight spot aimed at the performer
+  const stageSpot = new THREE.SpotLight(0xff4a9a, 90, 16, 0.4, 0.5);
+  stageSpot.position.set(0, 6.4, -2.5);
+  stageSpot.target.position.set(0, 1.2, -4.5);
+  scene.add(stageSpot);
+  scene.add(stageSpot.target);
+  scene.add(stage);
+  bounds.push({ minX: -2.9, maxX: -0.85, minZ: -7.4, maxZ: -2.0 });
+  bounds.push({ minX: 0.85, maxX: 2.9, minZ: -7.4, maxZ: -2.0 });
+  bounds.push({ minX: -0.85, maxX: 0.85, minZ: -7.4, maxZ: -3.0 });
+
   // --- realism pass: ceiling, truss rigs, VIP booths, bottle service, DJ booth ---
   const ceiling = new THREE.Mesh(new THREE.BoxGeometry(30.5, 0.3, 22.5), mat(0x060510));
   ceiling.position.y = 7;
@@ -319,15 +394,52 @@ export async function miamiScene(game) {
   }
   return {
     update(dt) {
-      window.__sceneHooks = { interactions: null, player: null, christian: olivia, self: this };
+      window.__sceneHooks = { interactions: null, player, christian: olivia, self: this };
       t += dt;
 
-      // olivia dances on the stage: bounce + sway + spin bursts
-      const od = Math.sin(t * 5.2) * 0.12;
-      olivia.group.position.y = 0.5 + Math.abs(od);
-      olivia.group.rotation.y = Math.sin(t * 1.4) * 0.9;
-      olivia.group.rotation.z = Math.sin(t * 5.2) * 0.08;
-      olivia.animateWalk(dt, 1.8);
+      // the player controls olivia — wasd/joystick walks her around the club
+      player.update(dt);
+      // the stage is a raised platform: ramp her up inside its circle
+      const sd = Math.hypot(olivia.group.position.x, olivia.group.position.z + 4.5);
+      const groundY = sd < 2.8 ? 0.55 : 0;
+      if (player.grounded) olivia.group.position.y += (groundY - olivia.group.position.y) * Math.min(1, dt * 12);
+      const spd = Math.hypot(player.vel.x, player.vel.z);
+      // custom choreography whenever she isn't walking — this is her night
+      if (spd < 0.4 && player.grounded) {
+        const mv = Math.floor(t / 2.6) % 4;
+        if (mv === 0) {
+          // rave hands: arms alternating overhead
+          olivia.armL.rotation.x = Math.PI * 0.9 + Math.sin(t * 8) * 0.5;
+          olivia.armR.rotation.x = Math.PI * 0.9 - Math.sin(t * 8) * 0.5;
+          olivia.armL.rotation.z = 0.4; olivia.armR.rotation.z = -0.4;
+          olivia.group.rotation.z = Math.sin(t * 8) * 0.04;
+          olivia.group.position.y = groundY + Math.abs(Math.sin(t * 5)) * 0.1;
+        } else if (mv === 1) {
+          // hip sway, arms out wide
+          olivia.armL.rotation.x = 0.3; olivia.armR.rotation.x = 0.3;
+          olivia.armL.rotation.z = 1.3 + Math.sin(t * 4) * 0.35;
+          olivia.armR.rotation.z = -1.3 + Math.sin(t * 4) * 0.35;
+          olivia.group.rotation.z = Math.sin(t * 4) * 0.09;
+          olivia.group.position.y = groundY + Math.abs(Math.sin(t * 4)) * 0.05;
+        } else if (mv === 2) {
+          // bass-face pump: fast deep bounces, fists pumping down
+          olivia.armL.rotation.x = 2.2 + Math.sin(t * 10) * 0.6;
+          olivia.armR.rotation.x = 2.2 + Math.sin(t * 10) * 0.6;
+          olivia.armL.rotation.z = 0.2; olivia.armR.rotation.z = -0.2;
+          olivia.group.position.y = groundY + Math.abs(Math.sin(t * 10)) * 0.16;
+          olivia.group.rotation.z = 0;
+        } else {
+          // spin burst, arms in a T
+          olivia.armL.rotation.z = 1.5; olivia.armR.rotation.z = -1.5;
+          olivia.armL.rotation.x = 0; olivia.armR.rotation.x = 0;
+          olivia.group.rotation.y += dt * 7;
+          olivia.group.rotation.z = 0;
+          olivia.group.position.y = groundY + Math.abs(Math.sin(t * 6)) * 0.06;
+        }
+      } else {
+        olivia.armL.rotation.z = 0; olivia.armR.rotation.z = 0;
+        olivia.group.rotation.z = 0;
+      }
 
       // fam cheers bouncing
       fam.forEach((f) => {
@@ -350,11 +462,7 @@ export async function miamiScene(game) {
         c.p.animateWalk(dt, 1.2);
       }
 
-      // LED dance floor tiles pulse through colors
-      for (let i = 0; i < tiles.length; i++) {
-        const hue = (t * 0.3 + i * 0.13) % 1;
-        tiles[i].material.color.setHSL(hue, 0.85, 0.28 + Math.sin(t * 3 + i) * 0.08);
-      }
+
 
       // lasers sweep
       for (let i = 0; i < lasers.length; i++) {
@@ -389,12 +497,8 @@ export async function miamiScene(game) {
       }
       pos.needsUpdate = true;
 
-      // slow cinematic camera orbit
-      const camA = t * 0.12;
-      camera.position.x = Math.sin(camA) * 8;
-      camera.position.z = 2 + Math.cos(camA) * 6;
-      camera.position.y = 2.8 + Math.sin(t * 0.4) * 0.5;
-      camera.lookAt(0, 1.2, -4.5);
+      // third-person follow — you ARE olivia on the floor now
+      followCam.update(dt, olivia.group.position);
     },
     dispose() {},
   };

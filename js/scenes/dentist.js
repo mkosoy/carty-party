@@ -364,7 +364,7 @@ export async function dentistScene(game) {
         await dialogue.play([
           { speaker: 'Dr. Fritz', text: 'Every tooth — sparkling! Not a speck of glunk left. You know what that means…' },
           { speaker: 'Olivia', text: 'Miami??' },
-          { speaker: 'Dr. Fritz', text: 'MIAMI. With the philly fam. And tonight — you dance at E11EVEN. You earned it.' },
+          { speaker: 'Dr. Fritz', text: 'MIAMI. With the philly fam. And tonight — you dance at Eleven. You earned it.' },
         ]);
         const { miamiScene } = await import('./miami.js');
         game.switchScene(miamiScene);

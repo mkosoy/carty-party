@@ -117,13 +117,13 @@ export function npcFace({ skin = '#e8c098', eyeColor = '#3a2a1a', mouthCurve = 0
   // eyes
   for (const ex of [88, 168]) {
     x.fillStyle = 'rgba(255,255,255,0.92)';
-    x.beginPath(); x.ellipse(ex, 108, 16, 10, 0, 0, Math.PI * 2); x.fill();
+    x.beginPath(); x.ellipse(ex, 108, 19, 13, 0, 0, Math.PI * 2); x.fill();
     x.fillStyle = eyeColor;
-    x.beginPath(); x.arc(ex, 109, 6.5, 0, Math.PI * 2); x.fill();
+    x.beginPath(); x.arc(ex, 109, 8.5, 0, Math.PI * 2); x.fill();
     x.fillStyle = '#111';
-    x.beginPath(); x.arc(ex, 109, 3, 0, Math.PI * 2); x.fill();
+    x.beginPath(); x.arc(ex, 109, 4.2, 0, Math.PI * 2); x.fill();
     x.fillStyle = 'rgba(255,255,255,0.8)';
-    x.beginPath(); x.arc(ex - 2, 107, 1.6, 0, Math.PI * 2); x.fill();
+    x.beginPath(); x.arc(ex - 2.5, 106, 2.2, 0, Math.PI * 2); x.fill();
     // brows
     x.strokeStyle = 'rgba(40,25,15,0.75)';
     x.lineWidth = female ? 3 : 5;

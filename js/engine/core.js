@@ -9,14 +9,31 @@ export class FollowCam {
     this.lookOffset = new THREE.Vector3(0, 1.5, 0);
     this.pos = new THREE.Vector3();
     this.shake = 0;
+    this.yaw = 0;
+    this.pitch = 0;
   }
   setRoom(minX, maxX, minZ, maxZ) {
     this.room = { minX, maxX, minZ, maxZ };
   }
   update(dt, target) {
-    const desired = target.clone().add(this.offset);
+    // consume orbit input (mouse drag / touch drag on the right half)
+    const inp = window.__gameInput;
+    if (inp) {
+      this.yaw += inp.camDX;
+      this.pitch = Math.max(-0.4, Math.min(1.0, this.pitch + inp.camDY));
+      inp.camDX = 0; inp.camDY = 0;
+    }
+    // rotate the follow offset by the yaw, lift/drop with pitch
+    const cy = Math.cos(this.yaw), sy = Math.sin(this.yaw);
+    const dist = 1 - this.pitch * 0.35;
+    const rot = new THREE.Vector3(
+      (this.offset.x * cy - this.offset.z * sy) * dist,
+      this.offset.y + this.pitch * 3.2,
+      (this.offset.x * sy + this.offset.z * cy) * dist
+    );
+    const desired = target.clone().add(rot);
     if (this.room) {
-      const m = 0.45;
+      const m = 1.1;
       desired.x = Math.max(this.room.minX + m, Math.min(this.room.maxX - m, desired.x));
       desired.z = Math.max(this.room.minZ + m, Math.min(this.room.maxZ - m, desired.z));
     }
@@ -53,18 +70,18 @@ export class GuideMarker {
     this.scene = scene;
     this.group = new THREE.Group();
     const diamond = new THREE.Mesh(
-      new THREE.OctahedronGeometry(0.28),
+      new THREE.OctahedronGeometry(0.36),
       new THREE.MeshBasicMaterial({ color: 0xffd663 })
     );
-    diamond.position.y = 2.6;
+    diamond.position.y = 5.9;
     this.group.add(diamond);
     this.diamond = diamond;
     // light column down to the ground
     const col = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.18, 0.34, 2.6, 12, 1, true),
-      new THREE.MeshBasicMaterial({ color: 0xffd663, transparent: true, opacity: 0.14, side: THREE.DoubleSide, depthWrite: false })
+      new THREE.CylinderGeometry(0.3, 0.52, 5.6, 12, 1, true),
+      new THREE.MeshBasicMaterial({ color: 0xffd663, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false })
     );
-    col.position.y = 1.3;
+    col.position.y = 2.8;
     this.group.add(col);
     // pulsing ground ring
     const ring = new THREE.Mesh(
@@ -75,8 +92,8 @@ export class GuideMarker {
     ring.position.y = 0.06;
     this.group.add(ring);
     this.ring = ring;
-    const light = new THREE.PointLight(0xffd663, 6, 6);
-    light.position.y = 1.8;
+    const light = new THREE.PointLight(0xffd663, 11, 9);
+    light.position.y = 2.6;
     this.group.add(light);
     this.group.visible = false;
     scene.add(this.group);

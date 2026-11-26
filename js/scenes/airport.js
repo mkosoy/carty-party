@@ -376,6 +376,38 @@ export async function airportScene(game) {
     }
   }
 
+  // --- wayfinding signage: hanging airport signs so navigation is readable ---
+  function hangingSign(text, x, z, ry = 0) {
+    const cnv = document.createElement('canvas');
+    cnv.width = 512; cnv.height = 128;
+    const cx2 = cnv.getContext('2d');
+    cx2.fillStyle = '#1a2332';
+    cx2.fillRect(0, 0, 512, 128);
+    cx2.strokeStyle = '#3a4a62';
+    cx2.lineWidth = 6;
+    cx2.strokeRect(4, 4, 504, 120);
+    cx2.font = 'bold 52px Arial';
+    cx2.textAlign = 'center';
+    cx2.fillStyle = '#f0e8c8';
+    cx2.fillText(text, 256, 84);
+    const tex = new THREE.CanvasTexture(cnv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const grp = new THREE.Group();
+    const panel = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.85, 0.08), new THREE.MeshBasicMaterial({ map: tex }));
+    grp.add(panel);
+    for (const wx of [-1.4, 1.4]) {
+      const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.6, 6), mat(0x444a55));
+      wire.position.set(wx, 1.2, 0);
+      grp.add(wire);
+    }
+    grp.position.set(x, 5.2, z);
+    grp.rotation.y = ry;
+    scene.add(grp);
+  }
+  hangingSign('BAGGAGE CLAIM →', 10, 8, -0.5);
+  hangingSign('← GATES C', -8, 2, 0.4);
+  hangingSign('BAGGAGE CLAIM →', 13, 11, -0.2);
+
   // player: Christian, arriving near baggage claim
   // --- richness pass: columns with holiday wreaths, hanging garlands, coffee kiosk, extra seating ---
   function wreath(x, z, y) {
@@ -482,7 +514,7 @@ export async function airportScene(game) {
 
   interactions.add({
     pos: new THREE.Vector3(-6, 0, 10.8),
-    radius: 2.6,
+    radius: 3.6,
     label: 'Watch TV',
     once: true,
     action: async () => {
@@ -577,7 +609,7 @@ export async function airportScene(game) {
   });
   exitInteract.hidden = true;
 
-  showObjective('You just landed at Dulles. Stretch your legs — check out the terminal.', 7000);
+  showObjective('You just landed at Dulles — follow the gold beacon and catch the game on the terminal TV.', 8000);
 
   let phoneTimer = -1;
   let elapsed = 0;
@@ -586,10 +618,10 @@ export async function airportScene(game) {
   // collectibles: vintage cameras for Stacy + vinyl records
   const pickups = new Pickups(scene);
   const inv = inventory();
-  pickups.add(makeCameraMesh(), -8, -14, 'camera--8--14', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
-  pickups.add(makeCameraMesh(), 9, -18, 'camera-9--18', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
-  pickups.add(makeRecordMesh(), -12, -8, 'record--12--8', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
-  pickups.add(makeRecordMesh(), 12, -12, 'record-12--12', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
+  pickups.add(makeCameraMesh(), -8, -9, 'camera--8--14', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
+  pickups.add(makeCameraMesh(), 9, -5, 'camera-9--18', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
+  pickups.add(makeRecordMesh(), -12, -6, 'record--12--8', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
+  pickups.add(makeRecordMesh(), 6, -10, 'record-12--12', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
 
   return {
     update(dt) {

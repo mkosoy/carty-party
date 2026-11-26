@@ -22,6 +22,46 @@ export class Input {
     const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     if (isTouch) document.body.classList.add('touch');
 
+    // camera orbit input: mouse drag anywhere, or right-half touch drag on mobile.
+    // deltas accumulate here and the follow cam consumes them.
+    this.camDX = 0;
+    this.camDY = 0;
+    window.__gameInput = this;
+    let dragging = false, lx = 0, ly = 0;
+    window.addEventListener('mousedown', (e) => {
+      if (e.target.closest('button') || e.target.closest('#joystick-zone') || e.target.closest('.hud')) return;
+      dragging = true; lx = e.clientX; ly = e.clientY;
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      this.camDX += (e.clientX - lx) * 0.0052;
+      this.camDY += (e.clientY - ly) * 0.0042;
+      lx = e.clientX; ly = e.clientY;
+    });
+    window.addEventListener('mouseup', () => { dragging = false; });
+    let camTouchId = null, ctx0 = 0, cty0 = 0;
+    document.addEventListener('touchstart', (e) => {
+      for (const t of e.changedTouches) {
+        if (t.clientX < window.innerWidth * 0.45) continue;
+        if (t.target.closest('button') || t.target.closest('.hud') || t.target.closest('#joystick-zone')) continue;
+        if (camTouchId !== null) continue;
+        camTouchId = t.identifier; ctx0 = t.clientX; cty0 = t.clientY;
+      }
+    }, { passive: true });
+    document.addEventListener('touchmove', (e) => {
+      for (const t of e.changedTouches) {
+        if (t.identifier !== camTouchId) continue;
+        this.camDX += (t.clientX - ctx0) * 0.007;
+        this.camDY += (t.clientY - cty0) * 0.005;
+        ctx0 = t.clientX; cty0 = t.clientY;
+      }
+    }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      for (const t of e.changedTouches) {
+        if (t.identifier === camTouchId) camTouchId = null;
+      }
+    }, { passive: true });
+
     // Floating joystick: appears where the thumb lands in the left zone.
     const zone = document.getElementById('joystick-zone');
     const base = document.getElementById('joystick-base');

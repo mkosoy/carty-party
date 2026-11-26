@@ -52,6 +52,16 @@ export class FollowCam {
       desired.x = Math.max(this.room.minX + m, Math.min(this.room.maxX - m, desired.x));
       desired.z = Math.max(this.room.minZ + m, Math.min(this.room.maxZ - m, desired.z));
     }
+    // camera collision-lite: if the desired spot is inside a collision box, pull toward the player
+    const obs = window.__playerBounds;
+    if (obs && obs.length) {
+      let guard = 0;
+      const inside = (p) => obs.some((b) => p.x > b.minX - 0.15 && p.x < b.maxX + 0.15 && p.z > b.minZ - 0.15 && p.z < b.maxZ + 0.15 && p.y < 2.6);
+      while (inside(desired) && guard < 12) {
+        desired.lerp(target.clone().add(new THREE.Vector3(0, 1.8, 0)), 0.28);
+        guard++;
+      }
+    }
     this.pos.lerp(desired, Math.min(1, dt * 4.5));
     this.camera.position.copy(this.pos);
     if (this.room) {
@@ -215,6 +225,7 @@ export class PlayerController {
     this.person = person;
     this.input = input;
     this.bounds = bounds || []; // {minX,maxX,minZ,maxZ}
+    window.__playerBounds = this.bounds;
     this.speed = 4.1;
     this.vel = new THREE.Vector3();
     this.frozen = false;

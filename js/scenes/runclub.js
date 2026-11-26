@@ -76,7 +76,7 @@ export async function runclubScene(game) {
     return m;
   }
   bigSign('WOOTTON', 'P A T R I O T S', 8, 4, 0, 4.4, -13.4);
-  bigSign("KYLIE'S RUN CLUB", 'marathon prep — respect the grind', 5, 2.5, -17.5, 4.6, 12, Math.PI / 4);
+  bigSign("KYLIE'S RUN CLUB", 'marathon prep — respect the grind', 5, 2.5, -17.5, 4.6, 12, 2.2);
 
   // bleachers along one straightaway
   for (let r = 0; r < 4; r++) {

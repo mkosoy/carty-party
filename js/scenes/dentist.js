@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, choice } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, choice , Pickups } from '../engine/core.js';
 import { sfxChime } from '../engine/sfx.js';
 import { carpet, paintedWall } from '../engine/textures.js';
 
@@ -293,7 +294,14 @@ export async function dentistScene(game) {
       function pos(e) {
         const r = cv.getBoundingClientRect();
         const p = e.touches ? e.touches[0] : e;
-        return { x: (p.clientX - r.left) * (cv.width / r.width), y: (p.clientY - r.top) * (cv.height / r.height) };
+      
+  // collectibles hidden in this scene too
+  const pickups = new Pickups(scene);
+  const inv = inventory();
+  pickups.add(makeCameraMesh(), -5.5, 3.4, 'camera-dentist', (id) => { inv.cameras++; showObjective('📷 vintage camera for Stacy!', 2500); });
+  pickups.add(makeRecordMesh(), 5.2, -3.6, 'record-dentist', (id) => { inv.records++; showObjective('🎵 vinyl record — new sound unlocked!', 2500); });
+
+  return { x: (p.clientX - r.left) * (cv.width / r.width), y: (p.clientY - r.top) * (cv.height / r.height) };
       }
       function move(e) {
         const p = pos(e);

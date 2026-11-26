@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective , Pickups } from '../engine/core.js';
 
 // E11EVEN Miami — the reward. Olivia dances in the neon heart of the club:
 // laser grids, LED walls, smoke, a crowd moving with the beat, confetti
@@ -389,6 +390,13 @@ export async function miamiScene(game) {
     scene.add(cone);
     shafts.push(cone);
   }
+
+  // collectibles hidden in this scene too
+  const pickups = new Pickups(scene);
+  const inv = inventory();
+  pickups.add(makeCameraMesh(), -11, 5.5, 'camera-miami', (id) => { inv.cameras++; showObjective('📷 vintage camera for Stacy!', 2500); });
+  pickups.add(makeRecordMesh(), 11.5, 6, 'record-miami', (id) => { inv.records++; showObjective('🎵 vinyl record — new sound unlocked!', 2500); });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: null, player, christian: olivia, self: this };

@@ -126,7 +126,7 @@ export async function houseScene(game) {
     if (ry) f.rotation.y = ry;
     parent.add(f);
     const c = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, 0.07), mat(color));
-    c.position.set(x, y, z);
+    c.position.set(x + (ry ? 0.02 : 0), y, z + (ry ? 0 : (z > 0 ? -0.02 : 0.02)));
     if (ry) c.rotation.y = ry;
     parent.add(c);
   }

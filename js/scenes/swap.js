@@ -140,11 +140,11 @@ export async function swapScene(game) {
   }
 
   // player + Stacy (filming a tiktok with her friend near the entrance)
-  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088 });
+  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, name: 'Christian', });
   christian.group.position.set(0, 0, 4);
   scene.add(christian.group);
 
-  const stacy = makePerson({ photo: faces.stacy, top: 0x4a7a52, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098 });
+  const stacy = makePerson({ photo: faces.stacy, top: 0x4a7a52, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098, name: 'Stacy', });
   stacy.group.position.set(-4, 0, 8);
   scene.add(stacy.group);
   const friend = makePerson({ top: 0xd0a0b8, skin: 0xd8a878, hair: 0x5a3a1a, hairStyle: 'long' });

@@ -236,6 +236,13 @@ export async function airportScene(game) {
   const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.12 }));
   scene.add(snow);
 
+  // warmth pass: soft warm pools of light down the concourse
+  for (const lx of [-14, 0, 14]) {
+    const pl = new THREE.PointLight(0xffe2b8, 22, 22);
+    pl.position.set(lx, 5.6, 0);
+    scene.add(pl);
+  }
+
   // ---- density pass: detailed seating, gate counters, ads, travelers ----
   function seatRow(x, z, count, facing = 1) {
     const grp = new THREE.Group();

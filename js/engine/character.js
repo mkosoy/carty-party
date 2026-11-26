@@ -8,6 +8,29 @@ import { npcFace } from './textures.js';
 // on mobile.
 const texLoader = new THREE.TextureLoader();
 
+function makeNameTag(name) {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 64;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = 'rgba(10,14,24,0.55)';
+  const w = Math.max(90, ctx.measureText ? 100 : 100);
+  // pill background
+  ctx.beginPath();
+  ctx.roundRect(28, 8, 200, 48, 24);
+  ctx.fill();
+  ctx.fillStyle = '#ffe9b8';
+  ctx.font = 'bold 30px Georgia';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(name, 128, 33);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+  sp.scale.set(0.85, 0.21, 1);
+  sp.renderOrder = 5;
+  return sp;
+}
+
 export function makePerson({
   photo = null,
   skin = 0xd9a066,
@@ -20,6 +43,7 @@ export function makePerson({
   height = 1,
   jacket = false,       // open jacket layer over the torso
   collar = true,
+  name = null,
 } = {}) {
   const g = new THREE.Group();
   const mat = (c, rough = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0 });
@@ -199,6 +223,11 @@ export function makePerson({
 
   g.scale.setScalar(scale);
   g.traverse((o) => { if (o.isMesh) { o.castShadow = true; } });
+  if (name) {
+    const tag = makeNameTag(name);
+    tag.position.y = 2.12 * u;
+    g.add(tag);
+  }
 
   const baseTorsoY = torso.position.y;
   const api = {

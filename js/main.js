@@ -62,6 +62,7 @@ const game = {
     setTimeout(() => { try { const n = factory.name.replace('Scene',''); if (music.scene !== n) music.play(n); } catch {} }, 50);
     if (this.sceneApi?.dispose) this.sceneApi.dispose();
     this.scene = new THREE.Scene();
+    window.__sceneName = factory.name;
     this.sceneApi = await factory(this);
   },
 };

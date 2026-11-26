@@ -539,6 +539,22 @@ export async function swapScene(game) {
     },
   });
 
+  // baltimore identity: warehouse stencil sign + oriole-orange accents
+  const bmoreC = document.createElement('canvas');
+  bmoreC.width = 512; bmoreC.height = 96;
+  const bx = bmoreC.getContext('2d');
+  bx.fillStyle = '#1a1210';
+  bx.fillRect(0, 0, 512, 96);
+  bx.font = 'bold 56px Arial';
+  bx.textAlign = 'center';
+  bx.fillStyle = '#e86018';
+  bx.fillText('BALTIMORE', 256, 66);
+  const bmoreT = new THREE.CanvasTexture(bmoreC);
+  bmoreT.colorSpace = THREE.SRGBColorSpace;
+  const bmore = new THREE.Mesh(new THREE.PlaneGeometry(6, 1.1), new THREE.MeshBasicMaterial({ map: bmoreT, transparent: true }));
+  bmore.position.set(0, 4.6, -11.8);
+  scene.add(bmore);
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

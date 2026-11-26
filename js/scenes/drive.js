@@ -163,6 +163,27 @@ export async function driveScene(game) {
     w.position.set(wx, 0.34, wz);
     car.add(w);
   }
+  // car detail pass: sloped hood, windshield glass, glowing lights, mirrors
+  const hood = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.3, 1.1), mat(0x8a2f2f));
+  hood.position.set(0, 0.85, -1.5);
+  hood.rotation.x = 0.1;
+  car.add(hood);
+  const glassMat = new THREE.MeshStandardMaterial({ color: 0x8ab8d8, roughness: 0.1, metalness: 0.4 });
+  const windshield = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.42, 0.06), glassMat);
+  windshield.position.set(0, 1.08, -0.88);
+  windshield.rotation.x = 0.42;
+  car.add(windshield);
+  for (const sx of [-1, 1]) {
+    const mirror = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.12, 0.16), mat(0x8a2f2f));
+    mirror.position.set(sx * 1.0, 1.0, -0.6);
+    car.add(mirror);
+    const tail = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.12, 0.06), new THREE.MeshBasicMaterial({ color: 0xff2020 }));
+    tail.position.set(sx * 0.68, 0.62, 2.12);
+    car.add(tail);
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.06), new THREE.MeshBasicMaterial({ color: 0xfff2c0 }));
+    head.position.set(sx * 0.66, 0.62, -2.12);
+    car.add(head);
+  }
   car.position.set(0, 0, 0);
   scene.add(car);
 

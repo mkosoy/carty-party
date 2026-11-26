@@ -1,4 +1,4 @@
-import { sfxCamera, sfxVinyl } from './sfx.js';
+import { sfxCamera, sfxVinyl, sfxStep } from './sfx.js';
 import * as THREE from 'three';
 
 // Third-person follow camera with soft damping.
@@ -283,6 +283,12 @@ export class PlayerController {
       if (!this.collides(nx, g.position.z)) g.position.x = nx; else this.vel.x = 0;
       if (!this.collides(g.position.x, nz)) g.position.z = nz; else this.vel.z = 0;
       this.person.animateWalk(dt, Math.min(1, spd / this.speed) * 1.05);
+      // footsteps on each stride half-cycle
+      const phase = this.person.walkPhase || 0;
+      if (this.__lastStepPhase !== undefined && Math.floor(phase / Math.PI) !== Math.floor(this.__lastStepPhase / Math.PI)) {
+        try { sfxStep(spd > this.speed * 0.8); } catch {}
+      }
+      this.__lastStepPhase = phase;
     } else {
       this.vel.x = 0; this.vel.z = 0;
       this.person.animateIdle(performance.now() / 1000);

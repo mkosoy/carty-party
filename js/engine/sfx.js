@@ -62,3 +62,21 @@ export function sfxChime() {
     o.start(t + dt); o.stop(t + dt + 0.55);
   }
 }
+
+export function sfxStep(running = false) {
+  const AC = ac();
+  const t = AC.currentTime;
+  const len = 0.05;
+  const buf = AC.createBuffer(1, AC.sampleRate * len, AC.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2);
+  const src = AC.createBufferSource();
+  src.buffer = buf;
+  const f = AC.createBiquadFilter();
+  f.type = 'lowpass';
+  f.frequency.value = running ? 480 : 380;
+  const g = AC.createGain();
+  g.gain.value = 0.12;
+  src.connect(f); f.connect(g); g.connect(AC.destination);
+  src.start(t);
+}

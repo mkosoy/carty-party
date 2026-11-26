@@ -32,7 +32,7 @@ export async function airportScene(game) {
   };
 
   // floor: polished terrazzo-ish
-  const floor = new THREE.Mesh(new THREE.BoxGeometry(60, 0.2, 26), new THREE.MeshStandardMaterial({ map: concrete('#6e7688', 8, 3.5), roughness: 0.35, metalness: 0.15 }));
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(60, 0.2, 26), new THREE.MeshStandardMaterial({ map: concrete('#7d7a72', 8, 3.5), roughness: 0.35, metalness: 0.15 }));
   floor.position.y = -0.1;
   floor.receiveShadow = true;
   scene.add(floor);
@@ -708,6 +708,14 @@ export async function airportScene(game) {
   pickups.add(makeCameraMesh(), 9, -5, 'camera-9--18', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
   pickups.add(makeRecordMesh(), -12, -6, 'record--12--8', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
   pickups.add(makeRecordMesh(), 6, -10, 'record-12--12', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
+
+  // concourse carpet runners — dark blue walking lanes like real terminals
+  for (const rz of [-4, 4]) {
+    const runner = new THREE.Mesh(new THREE.BoxGeometry(54, 0.03, 2.6), new THREE.MeshStandardMaterial({ color: 0x2a3a5c, roughness: 0.95 }));
+    runner.position.set(0, 0.02, rz);
+    runner.receiveShadow = true;
+    scene.add(runner);
+  }
 
   return {
     update(dt) {

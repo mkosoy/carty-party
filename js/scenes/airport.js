@@ -513,6 +513,38 @@ export async function airportScene(game) {
     },
   });
 
+  // the pilot — uniformed, waiting by the windows with his roller bag
+  const pilot = makePerson({
+    photo: faces.pilot, top: 0x1c2a4a, bottom: 0x14181f, hair: 0x3a2e22, hairStyle: 'short', skin: 0xe0b090, name: 'The Pilot',
+  });
+  pilot.group.position.set(20, 0, -8);
+  pilot.group.rotation.y = Math.PI * 0.8;
+  scene.add(pilot.group);
+  // captain hat
+  const hat = new THREE.Group();
+  const hatTop = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.14, 0.09, 12), mat(0x101828));
+  const hatBrim = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.155, 0.02, 12), mat(0x0a0e18));
+  hatBrim.position.y = -0.045;
+  const hatBand = new THREE.Mesh(new THREE.CylinderGeometry(0.141, 0.141, 0.025, 12), new THREE.MeshBasicMaterial({ color: 0xd8b040 }));
+  hatBand.position.y = -0.02;
+  hat.add(hatTop, hatBrim, hatBand);
+  hat.position.set(0, 1.79 * 0.95 + 0.09, -8 * 0);
+  // attach relative to pilot head instead of world — parent to group
+  hat.position.set(0, 1.86, 0);
+  pilot.group.add(hat);
+  interactions.add({
+    pos: new THREE.Vector3(20, 0, -8), radius: 2.4, label: 'The Pilot', once: true,
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'The Pilot', text: 'Rough approach in that crosswind, huh? Dulles in December — never a dull moment.' },
+        { speaker: 'Christian', text: 'You got us down smooth. Appreciate it, captain.' },
+        { speaker: 'The Pilot', text: 'Enjoy the holidays. And drive safe — the 267 is a skating rink tonight.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+
   // exit door trigger — active only after the phone call finishes
   const exitInteract = interactions.add({
     pos: new THREE.Vector3(14, 0, 12),

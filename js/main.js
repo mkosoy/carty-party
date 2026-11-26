@@ -36,7 +36,7 @@ fetch('assets/voice/manifest.json').then((r) => r.ok ? r.json() : null).then((m)
   dialogue.faceMap = {
     'Christian': f('christian'), 'Stacy': f('stacy'), 'Olivia': f('olivia'),
     'Olivia #2': f('olivia2'), 'Olivia??': f('olivia2'), 'Jim': f('jim'),
-    'Mark': f('mark'), 'Kylie ❤️': f('kylie'), 'Tre': f('tre'),
+    'Mark': f('mark'), 'Kylie ❤️': f('kylie'), 'Tre': f('tre'), 'The Pilot': f('pilot'),
   };
 }
 
@@ -47,7 +47,7 @@ async function loadFaces() {
   return {
     christian: f('christian'), stacy: f('stacy'), kylie: f('kylie'),
     olivia: f('olivia'), jim: f('jim'), mark: f('mark'),
-    tre: f('tre'), olivia2: f('olivia2'),
+    tre: f('tre'), olivia2: f('olivia2'), pilot: f('pilot'),
   };
 }
 

@@ -580,6 +580,7 @@ export async function airportScene(game) {
   }
 
   const followCam = new FollowCam(camera);
+  followCam.setRoom(-29, 29, -11.8, 11.8, 7);
   followCam.snap(christian.group.position);
   const player = new PlayerController(christian, input, [
     ...bounds,

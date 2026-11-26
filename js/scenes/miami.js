@@ -202,6 +202,7 @@ export async function miamiScene(game) {
 
   const player = new PlayerController(olivia, input, bounds);
   const followCam = new FollowCam(camera);
+  followCam.setRoom(-14, 14, -9.5, 9.5, 6.5);
   followCam.snap(olivia.group.position);
   camera.position.set(0, 3.2, 4);
   camera.lookAt(0, 1, -4.5);
@@ -396,6 +397,16 @@ export async function miamiScene(game) {
   const inv = inventory();
   pickups.add(makeCameraMesh(), -11, 5.5, 'camera-miami', (id) => { inv.cameras++; showObjective('📷 vintage camera for Stacy!', 2500); });
   pickups.add(makeRecordMesh(), 11.5, 6, 'record-miami', (id) => { inv.records++; showObjective('🎵 vinyl record — new sound unlocked!', 2500); });
+
+  interactions.add({
+    pos: new THREE.Vector3(13.4, 0, 2), radius: 2.4, label: 'Order a drink',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Olivia', text: 'One water please. Hydration is the whole game at Eleven.' },
+        { speaker: 'Tre', text: 'Bartender knows us by name now. That might not be good.' },
+      ]);
+    },
+  });
 
   return {
     update(dt) {

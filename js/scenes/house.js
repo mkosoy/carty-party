@@ -570,6 +570,33 @@ export async function houseScene(game) {
     },
   });
 
+  interactions.add({
+    pos: new THREE.Vector3(-6.2, 0, 5.2), radius: 2, label: 'Warm up by the fire', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'That is a proper fire. Jim does not mess around with the fire.' },
+        { speaker: 'Jim', text: 'Thirty years of perfect fires, and all I get is grief about the thermostat.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(3.3, 0, 2.4), radius: 1.8, label: 'Take a cookie', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Okay these are genuinely incredible. Which Olivia made them??' },
+        { speaker: 'Jim', text: 'Yes.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-6.5, 0, -4.5), radius: 2, label: 'Admire the tree', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Every year the tree is somehow exactly the same and exactly perfect.' },
+      ]);
+    },
+  });
+
   // Dr. Fritz reminder card on the fridge — unlocks the dentist office
   interactions.add({
     pos: new THREE.Vector3(-7.2, 0, -3.2), radius: 2, label: 'Dr. Fritz reminder card', floor: 'ground',

@@ -12,8 +12,8 @@ export class FollowCam {
     this.yaw = 0;
     this.pitch = 0;
   }
-  setRoom(minX, maxX, minZ, maxZ) {
-    this.room = { minX, maxX, minZ, maxZ };
+  setRoom(minX, maxX, minZ, maxZ, maxY = 3.1) {
+    this.room = { minX, maxX, minZ, maxZ, maxY };
   }
   update(dt, target) {
     // consume orbit input (mouse drag / touch drag on the right half)
@@ -65,7 +65,7 @@ export class FollowCam {
     this.pos.lerp(desired, Math.min(1, dt * 4.5));
     this.camera.position.copy(this.pos);
     if (this.room) {
-      this.camera.position.y = Math.min(this.camera.position.y, 3.1);
+      this.camera.position.y = Math.min(this.camera.position.y, this.room.maxY);
     }
     if (this.shake > 0) {
       this.camera.position.x += (Math.random() - 0.5) * this.shake;

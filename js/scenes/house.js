@@ -281,8 +281,10 @@ export async function houseScene(game) {
   scene.add(christian.group);
 
   const jim = makePerson({ photo: faces.jim, top: 0x2c3140, bottom: 0x3c3c44, hair: 0xb8b0a4, hairStyle: 'receding', skin: 0xd8a878, name: 'Jim', });
-  jim.group.position.set(-3, 0, 2);
+  jim.group.position.set(-4, 0.62, 3.35);
   ground.add(jim.group);
+  jim.sit();
+  jim.group.position.y += 0.42 * 0.95; // undo sit()'s floor-level drop since he's on the seat
 
   const olivia = makePerson({ photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
   olivia.group.position.set(-5.5, 0, -3.4);
@@ -312,7 +314,7 @@ export async function houseScene(game) {
   const player = new PlayerController(christian, input, boundsByFloor.ground);
   const interactions = new Interactions();
   const guide = new GuideMarker(scene);
-  guide.setTarget(-3, 2);
+  guide.setTarget(-4, 3.2);
 
   // start: walk in the front door
   showFloor('ground');
@@ -340,7 +342,7 @@ export async function houseScene(game) {
   // --- Jim ---
   let jimDone = false;
   interactions.add({
-    pos: new THREE.Vector3(-3, 0, 2), radius: 2, label: 'Talk to Jim', floor: 'ground', once: true,
+    pos: new THREE.Vector3(-4, 0, 3.2), radius: 2.2, label: 'Talk to Jim', floor: 'ground', once: true,
     action: async () => {
       player.frozen = true;
       await dialogue.play([
@@ -513,6 +515,9 @@ export async function houseScene(game) {
       player.update(dt);
       pickups.update(dt, christian.group.position);
       guide.update(dt);
+      const it = performance.now() / 1000;
+      olivia.animateIdle(it);
+      olivia2.animateIdle(it + 1.3);
       followCam.update(dt, christian.group.position);
 
       const near = [...interactions.items].filter((i) => i.floor === floor && !i.hidden && !(i.once && i.done));

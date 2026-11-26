@@ -171,23 +171,32 @@ export class PlayerController {
     const { x, z } = this.input.axes();
     const g = this.person.group;
     const moving = Math.hypot(x, z) > 0.05;
+    const len = Math.min(1, Math.hypot(x, z));
+    // velocity smoothing: accelerate toward input direction, glide to stop
+    let tvx = 0, tvz = 0;
     if (moving) {
       const targetAngle = Math.atan2(x, z);
-      // shortest-arc rotation
+      tvx = Math.sin(targetAngle) * this.speed * len;
+      tvz = Math.cos(targetAngle) * this.speed * len;
+      // face movement direction with shortest-arc easing
       let diff = targetAngle - g.rotation.y;
       while (diff > Math.PI) diff -= Math.PI * 2;
       while (diff < -Math.PI) diff += Math.PI * 2;
       g.rotation.y += diff * Math.min(1, dt * 10);
-
-      const len = Math.min(1, Math.hypot(x, z));
-      const step = this.speed * len * dt;
-      const nx = g.position.x + Math.sin(targetAngle) * step;
-      const nz = g.position.z + Math.cos(targetAngle) * step;
+    }
+    const accel = moving ? 14 : 11;
+    this.vel.x += (tvx - this.vel.x) * Math.min(1, accel * dt);
+    this.vel.z += (tvz - this.vel.z) * Math.min(1, accel * dt);
+    const spd = Math.hypot(this.vel.x, this.vel.z);
+    if (spd > 0.12) {
+      const nx = g.position.x + this.vel.x * dt;
+      const nz = g.position.z + this.vel.z * dt;
       // axis-separated collision: try x, then z
-      if (!this.collides(nx, g.position.z)) g.position.x = nx;
-      if (!this.collides(g.position.x, nz)) g.position.z = nz;
-      this.person.animateWalk(dt, len);
+      if (!this.collides(nx, g.position.z)) g.position.x = nx; else this.vel.x = 0;
+      if (!this.collides(g.position.x, nz)) g.position.z = nz; else this.vel.z = 0;
+      this.person.animateWalk(dt, Math.min(1, spd / this.speed) * 1.05);
     } else {
+      this.vel.x = 0; this.vel.z = 0;
       this.person.animateIdle(performance.now() / 1000);
     }
   }

@@ -176,9 +176,13 @@ export function makePerson({
   if (photo) {
     texLoader.load(photo, (tex) => {
       tex.colorSpace = THREE.SRGBColorSpace;
-      const faceMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.02 });
-      const face = new THREE.Mesh(new THREE.PlaneGeometry(headR * 2.35, headR * 2.35), faceMat);
-      face.position.set(0, -headR * 0.02, headR * 0.96);
+      const faceMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.02, side: THREE.FrontSide });
+      // curved shell wrapping the front of the head instead of a floating plane.
+      // cylinder theta=0 sits at +z, so a segment centered there needs no rotation.
+      const wrap = 2.0; // radians of coverage
+      const geo = new THREE.CylinderGeometry(headR * 1.0, headR * 1.02, headR * 1.85, 18, 1, true, -wrap / 2, wrap);
+      const face = new THREE.Mesh(geo, faceMat);
+      face.position.set(0, -headR * 0.05, 0);
       headGroup.add(face);
     });
   } else {
@@ -186,8 +190,10 @@ export function makePerson({
     const female = hairStyle === 'long' || hairStyle === 'bun';
     const faceTex = npcFace({ skin: skinCss, female, mouthCurve: 0.3 + Math.random() * 0.5 });
     const faceMat = new THREE.MeshBasicMaterial({ map: faceTex, transparent: true, alphaTest: 0.02 });
-    const face = new THREE.Mesh(new THREE.PlaneGeometry(headR * 1.9, headR * 1.9), faceMat);
-    face.position.set(0, -headR * 0.02, headR * 0.95);
+    const wrap2 = 1.9;
+    const geo2 = new THREE.CylinderGeometry(headR * 1.0, headR * 1.02, headR * 1.7, 18, 1, true, -wrap2 / 2, wrap2);
+    const face = new THREE.Mesh(geo2, faceMat);
+    face.position.set(0, -headR * 0.05, 0);
     headGroup.add(face);
   }
 

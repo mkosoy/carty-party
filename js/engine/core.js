@@ -1,3 +1,4 @@
+import { sfxCamera, sfxVinyl } from './sfx.js';
 import * as THREE from 'three';
 
 // Third-person follow camera with soft damping.
@@ -124,6 +125,7 @@ export class Pickups {
       if (dx * dx + dz * dz < 0.55 && dy < 1.2) {
         it.taken = true;
         this.scene.remove(it.mesh);
+        try { (it.id || '').startsWith('camera') ? sfxCamera() : sfxVinyl(); } catch {}
         if (it.onPick) it.onPick(it.id);
       }
     }

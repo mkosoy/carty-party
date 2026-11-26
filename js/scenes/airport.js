@@ -50,11 +50,11 @@ export async function airportScene(game) {
   seatedSpots.forEach(([rx, si], ti) => {
     const p = travelerPalettes[ti % travelerPalettes.length];
     const tr = makePerson({ top: p.top, bottom: p.bottom, hair: p.hair, skin: p.skin, hairStyle: ti % 2 ? 'short' : 'long' });
-    tr.group.position.set(rx - 2 + (si + 2) * 1.05, 0.85, -7);
+    tr.group.position.set(rx - 2 + (si + 2) * 1.05, 1.28, -7);
     tr.group.rotation.y = Math.PI;
     scene.add(tr.group);
     tr.sit();
-    travelers.push({ tr, ph: ti * 1.7 });
+    travelers.push({ tr, ph: ti * 1.7, seated: true });
   });
   // two standing travelers chatting near the kiosk
   for (const [tx, tz, ry] of [[-13.5, 4, 0.8], [-12.6, 4.6, -2.2]]) {
@@ -63,7 +63,7 @@ export async function airportScene(game) {
     tr.group.position.set(tx, 0, tz);
     tr.group.rotation.y = ry;
     scene.add(tr.group);
-    travelers.push({ tr, ph: tx });
+    travelers.push({ tr, ph: tx, seated: false });
   }
 
   // curved-roof hint: a series of white arches overhead (Dulles' iconic curve)
@@ -680,7 +680,7 @@ export async function airportScene(game) {
       player.update(dt);
       pickups.update(dt, christian.group.position);
       guide.update(dt, christian.group.position);
-      travelers.forEach((tw) => tw.tr.animateIdle(elapsed + tw.ph));
+      travelers.forEach((tw) => { if (tw.seated) { if (tw.tr.torso) tw.tr.torso.position.y += Math.sin(elapsed * 1.4 + tw.ph) * 0.0004; } else tw.tr.animateIdle(elapsed + tw.ph); });
       followCam.update(dt, christian.group.position);
 
       // snow fall

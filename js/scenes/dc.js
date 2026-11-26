@@ -392,7 +392,7 @@ export async function dcScene(game) {
         prompt.classList.add('hidden');
       }
     },
-    dispose() {
+    dispose() { music.stop(); 
       document.getElementById('objective-banner').classList.add('hidden');
     },
   };

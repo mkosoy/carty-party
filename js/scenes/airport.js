@@ -37,6 +37,35 @@ export async function airportScene(game) {
   floor.receiveShadow = true;
   scene.add(floor);
 
+  // seated + standing travelers so the terminal feels inhabited
+  const travelerPalettes = [
+    { top: 0x6a5a7a, bottom: 0x3a3a44, hair: 0x2a1a10, skin: 0xd8a878 },
+    { top: 0x3a5a6a, bottom: 0x2c2c34, hair: 0x4a3a2a, skin: 0x8a5a3a },
+    { top: 0x8a4a4a, bottom: 0x4a4a52, hair: 0x1a1210, skin: 0xe8c098 },
+    { top: 0x4a6a4a, bottom: 0x3a3a44, hair: 0x6a5a4a, skin: 0xc89878 },
+    { top: 0x5a5a6a, bottom: 0x2c2c34, hair: 0x8a8078, skin: 0xd8a878 },
+  ];
+  const seatedSpots = [[-9, -2], [-9, 1], [0, 0], [0, 3], [9, -1]];
+  const travelers = [];
+  seatedSpots.forEach(([rx, si], ti) => {
+    const p = travelerPalettes[ti % travelerPalettes.length];
+    const tr = makePerson({ top: p.top, bottom: p.bottom, hair: p.hair, skin: p.skin, hairStyle: ti % 2 ? 'short' : 'long' });
+    tr.group.position.set(rx - 2 + (si + 2) * 1.05, 0.85, -7);
+    tr.group.rotation.y = Math.PI;
+    scene.add(tr.group);
+    tr.sit();
+    travelers.push({ tr, ph: ti * 1.7 });
+  });
+  // two standing travelers chatting near the kiosk
+  for (const [tx, tz, ry] of [[-13.5, 4, 0.8], [-12.6, 4.6, -2.2]]) {
+    const p = travelerPalettes[Math.floor(Math.random() * travelerPalettes.length)];
+    const tr = makePerson({ top: p.top, bottom: p.bottom, hair: p.hair, skin: p.skin, hairStyle: 'short' });
+    tr.group.position.set(tx, 0, tz);
+    tr.group.rotation.y = ry;
+    scene.add(tr.group);
+    travelers.push({ tr, ph: tx });
+  }
+
   // curved-roof hint: a series of white arches overhead (Dulles' iconic curve)
   for (let i = -3; i <= 3; i++) {
     const arch = new THREE.Mesh(new THREE.TorusGeometry(13, 0.35, 8, 24, Math.PI), mat(0xe8ecf2));
@@ -651,6 +680,7 @@ export async function airportScene(game) {
       player.update(dt);
       pickups.update(dt, christian.group.position);
       guide.update(dt, christian.group.position);
+      travelers.forEach((tw) => tw.tr.animateIdle(elapsed + tw.ph));
       followCam.update(dt, christian.group.position);
 
       // snow fall

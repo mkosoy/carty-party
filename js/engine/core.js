@@ -294,6 +294,36 @@ export class PlayerController {
       g.rotation.y += diff * Math.min(1, dt * 10);
       window.__playerFacing = targetAngle;
     }
+    // sprint dust: little puffs at your heels when going fast
+    const sprinting = moving && (this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight') || Math.hypot(this.input.joyX || 0, this.input.joyY || 0) > 0.94);
+    if (sprinting && this.grounded) {
+      this.puffT = (this.puffT || 0) - dt;
+      if (this.puffT <= 0) {
+        this.puffT = 0.16;
+        const sc = this.person.group.parent;
+        if (sc) {
+          const puff = new THREE.Mesh(
+            new THREE.SphereGeometry(0.09, 6, 6),
+            new THREE.MeshBasicMaterial({ color: 0xcccccc, transparent: true, opacity: 0.5 })
+          );
+          puff.position.set(g.position.x, 0.08, g.position.z);
+          sc.add(puff);
+          this.puffs = this.puffs || [];
+          this.puffs.push({ m: puff, t: 0, sc });
+        }
+      }
+    }
+    if (this.puffs && this.puffs.length) {
+      for (let pi = this.puffs.length - 1; pi >= 0; pi--) {
+        const p = this.puffs[pi];
+        p.t += dt;
+        p.m.scale.setScalar(1 + p.t * 3);
+        p.m.position.y += dt * 0.7;
+        p.m.material.opacity = Math.max(0, 0.5 - p.t * 1.1);
+        if (p.t > 0.5) { p.sc.remove(p.m); this.puffs.splice(pi, 1); }
+      }
+    }
+
     const accel = moving ? 14 : 11;
     this.vel.x += (tvx - this.vel.x) * Math.min(1, accel * dt);
     this.vel.z += (tvz - this.vel.z) * Math.min(1, accel * dt);

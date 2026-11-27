@@ -66,6 +66,39 @@ export async function airportScene(game) {
     travelers.push({ tr, ph: tx, seated: false });
   }
 
+  // walking travelers pulling rolling suitcases — the concourse should feel in motion
+  const walkers = [];
+  for (let wi = 0; wi < 4; wi++) {
+    const wp = travelerPalettes[(wi + 2) % travelerPalettes.length];
+    const wtr = makePerson({ top: wp.top, bottom: wp.bottom, hair: wp.hair, skin: wp.skin, hairStyle: wi % 2 ? 'long' : 'short' });
+    wtr.group.position.set(-20 + wi * 11, 0, 2.4 - (wi % 2) * 5);
+    scene.add(wtr.group);
+    // rolling suitcase trailing behind
+    const caseCol = [0x3a5f8a, 0x8a3a3a, 0x3a3a3a, 0x6a4a8a][wi];
+    const caseM = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.52, 0.22), mat(caseCol));
+    const handle = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.4, 0.03), mat(0x888888));
+    handle.position.set(0, 0.42, 0.1);
+    caseM.add(handle);
+    scene.add(caseM);
+    walkers.push({ tr: wtr, caseM, ph: wi * 2.3, dir: wi % 2 ? 1 : -1, lane: 2.4 - (wi % 2) * 5, speed: 1.1 + wi * 0.15 });
+  }
+  // trash bins + departures kiosk fill the empty concourse middle
+  for (const bx of [-8, 6]) {
+    const bin = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.24, 0.72, 10), mat(0x4a5568));
+    bin.position.set(bx, 0.36, 0.4);
+    scene.add(bin);
+  }
+  const infoKiosk = new THREE.Group();
+  const kioskBody = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.7, 0.24), mat(0x2a3444));
+  kioskBody.position.y = 0.85;
+  infoKiosk.add(kioskBody);
+  const kioskScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.74, 1.1), new THREE.MeshBasicMaterial({ color: 0x1a3a5c }));
+  kioskScreen.position.set(0, 1.0, 0.13);
+  infoKiosk.add(kioskScreen);
+  infoKiosk.position.set(0, 0, -1.5);
+  scene.add(infoKiosk);
+
+
     // a jet taking off beyond the windows, looping — the reason airports feel alive
   const jet = new THREE.Group();
   const jfus = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 4.5, 6, 10), mat(0xdfe4ea));
@@ -810,6 +843,16 @@ export async function airportScene(game) {
       jet.position.set(-40 + jt * 95, 2 + jt * jt * 26, -20 - jt * 6);
       jet.rotation.z = 0.12 + jt * 0.2;
       travelers.forEach((tw) => { if (tw.seated) { if (tw.tr.torso) tw.tr.torso.position.y += Math.sin(elapsed * 1.4 + tw.ph) * 0.0004; } else tw.tr.animateIdle(elapsed + tw.ph); });
+      walkers.forEach((w) => {
+        w.tr.group.position.x += w.dir * w.speed * dt;
+        if (w.tr.group.position.x > 22) w.dir = -1;
+        if (w.tr.group.position.x < -22) w.dir = 1;
+        w.tr.group.rotation.y = w.dir > 0 ? Math.PI / 2 : -Math.PI / 2;
+        w.tr.animateWalk(dt, 0.9);
+        // suitcase trails a step behind with a little lag sway
+        const back = w.dir > 0 ? -0.55 : 0.55;
+        w.caseM.position.set(w.tr.group.position.x + back + Math.sin(elapsed * 3 + w.ph) * 0.04, 0.26, w.lane);
+      });
       followCam.update(dt, christian.group.position);
 
       // snow fall

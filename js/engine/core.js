@@ -34,7 +34,10 @@ export class FollowCam {
         let d = targetYaw - this.yaw;
         while (d > Math.PI) d -= Math.PI * 2;
         while (d < -Math.PI) d += Math.PI * 2;
-        this.yaw += d * Math.min(1, dt * 2.1);
+        // angle-proportional catch-up: big offsets (strafing sideways) swing
+        // around decisively, small corrections stay gentle — no spiral since
+        // movement input is frozen in world space while held
+        this.yaw += d * Math.min(1, dt * (2.6 + Math.min(2.4, Math.abs(d) * 1.7)));
       }
     }
     window.__camYaw = this.yaw;

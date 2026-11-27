@@ -181,7 +181,7 @@ export async function miamiScene(game) {
   scene.add(cyanWash);
 
   // olivia on the stage — the reward dance
-  const olivia = makePerson({ photo: faces.olivia, outfit: 'tee', top: 0xff2a8a, bottom: 0x1a1a22, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
+  const olivia = makePerson({ photo: faces.olivia, outfit: 'dress', top: 0xff2a8a, bottom: 0x1a1a22, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
   olivia.group.position.set(0, 0.55, -4.5);
   scene.add(olivia.group);
 

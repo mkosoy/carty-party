@@ -159,7 +159,7 @@ export async function dentistScene(game) {
 
   // ---- cast ----
   // playing as Olivia
-  const olivia = makePerson({ photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
+  const olivia = makePerson({ outfit: 'dress', photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
   olivia.group.position.set(-3, 0, 2);
   scene.add(olivia.group);
 

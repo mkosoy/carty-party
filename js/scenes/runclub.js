@@ -244,7 +244,7 @@ export async function runclubScene(game) {
     return Math.atan2(dx, dz);
   }
 
-  const kylie = makePerson({ photo: faces.kylie, top: 0x5a7ab0, bottom: 0x222230, hair: 0xd8b878, hairStyle: 'long', skin: 0xe8c8a8, name: 'Kylie', });
+  const kylie = makePerson({ outfit: 'dress', photo: faces.kylie, top: 0x5a7ab0, bottom: 0x222230, hair: 0xd8b878, hairStyle: 'long', skin: 0xe8c8a8, name: 'Kylie', });
   scene.add(kylie.group);
   const rivals = [];
   const rivalLooks = [

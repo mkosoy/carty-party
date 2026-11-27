@@ -611,7 +611,7 @@ export async function swapScene(game) {
   christian.group.position.set(0, 0, 4);
   scene.add(christian.group);
 
-  const stacy = makePerson({ photo: faces.stacy, top: 0x4a7a52, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098, name: 'Stacy', });
+  const stacy = makePerson({ outfit: 'dress', photo: faces.stacy, top: 0x4a7a52, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098, name: 'Stacy', });
   stacy.group.position.set(-4, 0, 8);
   scene.add(stacy.group);
   const friend = makePerson({ top: 0xd0a0b8, skin: 0xd8a878, hair: 0x5a3a1a, hairStyle: 'long' });

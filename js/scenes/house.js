@@ -605,12 +605,12 @@ export async function houseScene(game) {
   window.__jim = jim;
   jim.group.position.y += 0.42 * 0.95; // undo sit()'s floor-level drop since he's on the seat
 
-  const olivia = makePerson({ photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
+  const olivia = makePerson({ outfit: 'dress', photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
   olivia.group.position.set(-5.5, 0, -3.4);
   olivia.group.rotation.y = Math.PI / 2;
   upper.add(olivia.group);
 
-  const olivia2 = makePerson({ photo: faces.olivia2, top: 0xd07a92, bottom: 0x777788, hair: 0x241812, hairStyle: 'bun', skin: 0xe8c098, name: 'Olivia??', });
+  const olivia2 = makePerson({ outfit: 'dress', photo: faces.olivia2, top: 0xd07a92, bottom: 0x777788, hair: 0x241812, hairStyle: 'bun', skin: 0xe8c098, name: 'Olivia??', });
   olivia2.group.position.set(-5, 0, 3.8);
   olivia2.group.rotation.y = Math.PI / 2;
   upper.add(olivia2.group);

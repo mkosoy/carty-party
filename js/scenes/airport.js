@@ -172,6 +172,53 @@ export async function airportScene(game) {
   hallGlow.position.set(0, 5.5, 0);
   scene.add(hallGlow);
 
+  // ===== REAL DULLES MATCH: Saarinen's signature curved roof + angled columns =====
+  // the leaning columns holding the catenary roof — the most recognizable thing at IAD
+  for (let cx = -27; cx <= 27; cx += 6) {
+    const col = new THREE.Mesh(new THREE.BoxGeometry(0.55, 9.5, 0.55), mat(0x8a8078));
+    col.position.set(cx, 4.75, -12.2);
+    col.rotation.x = 0.22;
+    scene.add(col);
+    const colIn = new THREE.Mesh(new THREE.BoxGeometry(0.55, 9.5, 0.55), mat(0x8a8078));
+    colIn.position.set(cx, 4.75, 12.2);
+    colIn.rotation.x = -0.22;
+    scene.add(colIn);
+  }
+  // the swooping curved ceiling — segments sag between columns like the real catenary slab
+  const roofMat = new THREE.MeshLambertMaterial({ color: 0x9a9288 });
+  for (let rx = -27; rx <= 27; rx += 6) {
+    const seg = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 2.8, 6, 10, 1, true, Math.PI, Math.PI), roofMat);
+    seg.rotation.z = Math.PI / 2;
+    seg.rotation.y = Math.PI / 2;
+    seg.position.set(rx - 3, 8.2, 0);
+    seg.scale.set(1, 1, 3.4);
+    scene.add(seg);
+  }
+  // united gate signage — dulles is a united hub
+  function iadGateSign(text, x, z) {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 128;
+    const x2 = c.getContext('2d');
+    x2.fillStyle = '#002244';
+    x2.fillRect(0, 0, 256, 128);
+    x2.fillStyle = '#ffffff';
+    x2.font = 'bold 44px Arial';
+    x2.textAlign = 'center';
+    x2.fillText(text, 128, 58);
+    x2.font = '22px Arial';
+    x2.fillStyle = '#8ab4e8';
+    x2.fillText('UNITED', 128, 94);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 1.1), new THREE.MeshBasicMaterial({ map: t }));
+    m.position.set(x, 4.6, z);
+    scene.add(m);
+  }
+  iadGateSign('C14', -12, -12.4);
+  iadGateSign('C16', -4, -12.4);
+  iadGateSign('C18', 4, -12.4);
+  iadGateSign('D22', 12, -12.4);
+
   // window wall (north, -z): glass panels with snowy airfield beyond
   const windowWall = new THREE.Mesh(new THREE.BoxGeometry(60, 7, 0.3), new THREE.MeshLambertMaterial({ color: 0x6f87a8, transparent: true, opacity: 0.35 }));
   windowWall.position.set(0, 3.5, -12.8);

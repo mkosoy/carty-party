@@ -483,6 +483,79 @@ export async function dentistScene(game) {
     });
   }
 
+  // ===== REAL ORTHO OFFICE MATCH: x-ray lightbox, diploma wall, ceiling tv, poster =====
+  // panoramic x-ray glowing on the lightbox — every ortho office has one
+  const xrayC = document.createElement('canvas');
+  xrayC.width = 256; xrayC.height = 128;
+  const xx2 = xrayC.getContext('2d');
+  xx2.fillStyle = '#b8d8e8';
+  xx2.fillRect(0, 0, 256, 128);
+  xx2.fillStyle = '#1a2a3a';
+  // jaw arc
+  xx2.beginPath();
+  xx2.ellipse(128, 90, 80, 42, 0, Math.PI, 0);
+  xx2.fill();
+  // teeth rows
+  xx2.fillStyle = '#e8f2f8';
+  for (let tx = 0; tx < 14; tx++) {
+    xx2.fillRect(52 + tx * 11, 62, 8, 16);
+    xx2.fillRect(52 + tx * 11, 86, 8, 14);
+  }
+  const xrayT = new THREE.CanvasTexture(xrayC);
+  xrayT.colorSpace = THREE.SRGBColorSpace;
+  const xrayLightbox = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 0.9), new THREE.MeshBasicMaterial({ map: xrayT }));
+  xrayLightbox.position.set(-6.5, 2.0, -7.85);
+  scene.add(xrayLightbox);
+  const xrGlow = new THREE.PointLight(0xb8d8e8, 1.4, 4);
+  xrGlow.position.set(-6.5, 1.8, -7.2);
+  scene.add(xrGlow);
+  // diploma wall — framed certificates in a row
+  for (let dp = 0; dp < 3; dp++) {
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.62, 0.04), mat(0x5a4028));
+    frame.position.set(2.5 + dp * 0.75, 2.3, -7.92);
+    scene.add(frame);
+    const cert = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.5), new THREE.MeshStandardMaterial({ color: 0xf0ead0, roughness: 0.9 }));
+    cert.position.set(2.5 + dp * 0.75, 2.3, -7.89);
+    scene.add(cert);
+    const seal = new THREE.Mesh(new THREE.CircleGeometry(0.05, 10), new THREE.MeshBasicMaterial({ color: 0xc0a030 }));
+    seal.position.set(2.5 + dp * 0.75, 2.14, -7.88);
+    scene.add(seal);
+  }
+  // ceiling-mounted tv over the chair — ortho offices distract you with daytime tv
+  const ctv = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.55, 0.1), mat(0x14141c));
+  ctv.position.set(0, 3.1, 0.5);
+  ctv.rotation.x = 0.5;
+  scene.add(ctv);
+  const ctvScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.45), new THREE.MeshBasicMaterial({ color: 0x4a6a9a }));
+  ctvScreen.position.set(0, 3.08, 0.56);
+  ctvScreen.rotation.x = 0.5;
+  scene.add(ctvScreen);
+  // braces colors poster — the pick-your-colors wall chart every kid knows
+  const bcC = document.createElement('canvas');
+  bcC.width = 128; bcC.height = 192;
+  const bx2 = bcC.getContext('2d');
+  bx2.fillStyle = '#ffffff';
+  bx2.fillRect(0, 0, 128, 192);
+  bx2.fillStyle = '#2a2a3a';
+  bx2.font = 'bold 15px Arial';
+  bx2.textAlign = 'center';
+  bx2.fillText('BRACES COLORS', 64, 22);
+  const cols2 = ['#e03040', '#3050e0', '#30b050', '#e0a020', '#9030c0', '#e05090', '#30c0c0', '#ff6800'];
+  cols2.forEach((col, bi) => {
+    bx2.fillStyle = col;
+    bx2.beginPath();
+    bx2.arc(24 + (bi % 4) * 28, 52 + Math.floor(bi / 4) * 34, 10, 0, 7);
+    bx2.fill();
+  });
+  bx2.fillStyle = '#888';
+  bx2.font = '11px Arial';
+  bx2.fillText('pick two for the holidays!', 64, 180);
+  const bcT = new THREE.CanvasTexture(bcC);
+  bcT.colorSpace = THREE.SRGBColorSpace;
+  const bcM = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 1.2), new THREE.MeshStandardMaterial({ map: bcT, roughness: 0.85 }));
+  bcM.position.set(6.5, 2.0, -7.85);
+  scene.add(bcM);
+
   interactions.add({
     pos: new THREE.Vector3(-4.5, 0, -3), radius: 2.0, label: 'Read the diplomas',
     action: async () => {

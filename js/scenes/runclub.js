@@ -165,6 +165,52 @@ export async function runclubScene(game) {
       }
     }
   }
+  // real spectators in the front rows — proper people, seated, watching the race
+  const specCfg = [
+    { x: -6, r: 0, top: 0x8a3a4a, bottom: 0x2a2a3a, hair: 0x2a1a12, skin: 0xd0a080 },
+    { x: -2, r: 0, top: 0x3a5a8a, bottom: 0x3a3a3a, hair: 0x4a3a20, skin: 0xc89878 },
+    { x: 2.5, r: 1, top: 0x4a7a4a, bottom: 0x2a2a2a, hair: 0x1a1a1a, skin: 0x8a5a3a },
+    { x: 6, r: 0, top: 0xd0d0d0, bottom: 0x4a4a5a, hair: 0x6a5a4a, skin: 0xe0b090 },
+    { x: 4.5, r: 2, top: 0x6a3a6a, bottom: 0x2a2a3a, hair: 0x3a2a1a, skin: 0xd0a080 },
+  ];
+  const spectators = [];
+  for (const cfg of specCfg) {
+    const spec = makePerson({ top: cfg.top, bottom: cfg.bottom, hair: cfg.hair, skin: cfg.skin });
+    spec.group.position.set(cfg.x, 0.55 + cfg.r * 0.5, -13.2 - cfg.r * 0.9);
+    spec.group.rotation.y = 0;
+    // seated pose: legs forward
+    if (spec.legL) { spec.legL.rotation.x = -Math.PI / 2.2; spec.legR.rotation.x = -Math.PI / 2.2; }
+    spec.group.scale.setScalar(0.9);
+    scene.add(spec.group);
+    spectators.push(spec);
+  }
+  // water station near the finish — folding table, cups, cooler
+  const wt = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 0.7), mat(0xd8d8d8));
+  wt.position.set(20.6, 0.75, 3);
+  scene.add(wt);
+  for (const [lx, lz] of [[20, 2.7], [21.2, 2.7], [20, 3.3], [21.2, 3.3]]) {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.75, 6), mat(0x8a8a8a));
+    leg.position.set(lx, 0.37, lz);
+    scene.add(leg);
+  }
+  const cooler = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.2, 0.5, 10), mat(0x3a7ac0));
+  cooler.position.set(20.2, 1.05, 3);
+  scene.add(cooler);
+  for (let cx = 0; cx < 4; cx++) {
+    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.03, 0.09, 8), mat(0xf0f0f0));
+    cup.position.set(20.7 + cx * 0.18, 0.84, 3.1);
+    scene.add(cup);
+  }
+  // cones along the inside lane edge near the finish
+  for (let i = 0; i < 5; i++) {
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.32, 8), mat(0xe86a20));
+    cone.position.set(15 - i * 1.2, 0.16, 7.6);
+    scene.add(cone);
+    const stripe = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.1, 0.06, 8), mat(0xf0f0f0));
+    stripe.position.set(15 - i * 1.2, 0.17, 7.6);
+    scene.add(stripe);
+  }
+
   // stadium light poles
   for (const [lx, lz] of [[-16, -12], [16, -12], [-16, 12], [16, 12]]) {
     const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 9, 8), mat(0x4a5058));
@@ -348,6 +394,11 @@ export async function runclubScene(game) {
   return {
     update(dt) {
       window.__sceneHooks = { christian: kylie, self: this };
+      // spectators sway and bounce a little as they watch
+      for (let si = 0; si < spectators.length; si++) {
+        const sp = spectators[si];
+        sp.group.position.y = 0.55 + specCfg[si].r * 0.5 + Math.sin(performance.now() * 0.002 + si * 1.7) * 0.03;
+      }
       t += dt;
 
       // jump input

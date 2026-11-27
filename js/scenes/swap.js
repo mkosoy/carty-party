@@ -193,9 +193,11 @@ export async function swapScene(game) {
     curated.add(leg);
   }
   const vintageColors = [0x8a2a3a, 0x2a4a6a, 0x6a5a2a, 0x4a2a5a, 0x2a5a4a, 0xaa6a3a];
+  const curatedTypes = ['coat', 'dress', 'coat', 'dress', 'coat', 'dress'];
   for (let i = 0; i < 6; i++) {
-    const item = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.0 + Math.random() * 0.3, 0.08), mat(vintageColors[i]));
-    item.position.set(-1.4 + i * 0.56, 1.2, 0);
+    const item = makeGarment(vintageColors[i], curatedTypes[i]);
+    item.position.set(-1.4 + i * 0.56, 1.66, 0);
+    item.rotation.y = (Math.random() - 0.5) * 0.2;
     curated.add(item);
     // little white price/name tag — real curated-rack detail (labeled with your name)
     const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.09, 0.12), new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }));
@@ -360,6 +362,74 @@ export async function swapScene(game) {
   sectionSign('VINTAGE', -1, 2);
   sectionSign('ACCESSORIES', 6, 2);
 
+
+  // garment generator: hanger hook + shaped clothing (shirt with sleeves, flared dress, lapelled coat)
+  function makeGarment(color, type) {
+    const gm = new THREE.Group();
+    const shade = (hex, f) => new THREE.Color(hex).multiplyScalar(f).getHex();
+    // wire hanger: hook + triangle shoulders
+    const hookMat = mat(0xb8bcc4, 0.4);
+    const hook = new THREE.Mesh(new THREE.TorusGeometry(0.045, 0.008, 6, 10, Math.PI * 1.4), hookMat);
+    hook.position.y = 0.06;
+    gm.add(hook);
+    const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.36, 4), hookMat);
+    wire.rotation.z = Math.PI / 2;
+    wire.position.y = -0.06;
+    gm.add(wire);
+    if (type === 'dress') {
+      const bodice = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.15, 0.3, 10), mat(color));
+      bodice.position.y = -0.28;
+      gm.add(bodice);
+      const skirt = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.32, 0.55, 10), mat(color));
+      skirt.position.y = -0.68;
+      gm.add(skirt);
+      for (const sx of [-0.09, 0.09]) {
+        const strap = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.14, 0.02), mat(shade(color, 0.85)));
+        strap.position.set(sx, -0.1, 0);
+        gm.add(strap);
+      }
+    } else if (type === 'coat') {
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.68, 0.07), mat(color));
+      body.position.y = -0.44;
+      gm.add(body);
+      for (const side of [-1, 1]) {
+        const sleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.05, 0.5, 8), mat(shade(color, 0.92)));
+        sleeve.position.set(side * 0.2, -0.42, 0);
+        sleeve.rotation.z = side * 0.18;
+        gm.add(sleeve);
+        const lapel = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.3, 0.02), mat(shade(color, 0.75)));
+        lapel.position.set(side * 0.07, -0.32, 0.045);
+        lapel.rotation.y = -side * 0.3;
+        gm.add(lapel);
+      }
+      for (let bi = 0; bi < 3; bi++) {
+        const btn = new THREE.Mesh(new THREE.SphereGeometry(0.012, 6, 6), mat(0x2a2a2a, 0.4));
+        btn.position.set(0, -0.4 - bi * 0.12, 0.045);
+        gm.add(btn);
+      }
+    } else {
+      // shirt: body + two angled sleeves + collar
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.45, 0.06), mat(color));
+      body.position.y = -0.33;
+      gm.add(body);
+      for (const side of [-1, 1]) {
+        const sleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.045, 0.28, 8), mat(shade(color, 0.92)));
+        sleeve.position.set(side * 0.18, -0.24, 0);
+        sleeve.rotation.z = side * 0.35;
+        gm.add(sleeve);
+      }
+      const collar2 = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.015, 6, 10), mat(shade(color, 0.78)));
+      collar2.position.y = -0.12;
+      collar2.rotation.x = Math.PI / 2;
+      gm.add(collar2);
+      // hem line
+      const hemline = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.02, 0.062), mat(shade(color, 0.82)));
+      hemline.position.y = -0.545;
+      gm.add(hemline);
+    }
+    return gm;
+  }
+
   // clothing racks — the heart of the swap (swap.season reference look)
   const rackPositions = [
     [-8, -4], [-1, -4], [6, -4],
@@ -377,11 +447,13 @@ export async function swapScene(game) {
       leg.position.set(lx, 0.85, 0);
       rack.add(leg);
     }
-    // hanging clothes
+    // hanging garments — shirts, dresses and coats with real shapes
+    const types = ['shirt', 'dress', 'coat', 'shirt', 'shirt', 'dress', 'coat', 'shirt'];
     for (let i = 0; i < 8; i++) {
       const c = clothColors[Math.floor(Math.random() * clothColors.length)];
-      const item = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.9 + Math.random() * 0.4, 0.08), mat(c));
-      item.position.set(-1.9 + i * 0.55, 1.25, 0);
+      const item = makeGarment(c, types[i]);
+      item.position.set(-1.9 + i * 0.55, 1.66, 0);
+      item.rotation.y = (Math.random() - 0.5) * 0.3;
       rack.add(item);
     }
     rack.position.set(rx, 0, rz);
@@ -650,8 +722,8 @@ export async function swapScene(game) {
       player.frozen = true;
       state.hung++;
       const c = clothColors[(state.hung * 3) % clothColors.length];
-      const item = new THREE.Mesh(new THREE.BoxGeometry(0.45, 1, 0.09), mat(c));
-      item.position.set(-1.5 + state.hung * 0.85, 1.25, 0);
+      const item = makeGarment(c, ['shirt', 'coat', 'dress', 'shirt'][state.hung % 4]);
+      item.position.set(-1.5 + state.hung * 0.85, 1.66, 0);
       dropRack.add(item);
       hungItems.push(item);
       if (state.hung >= 4) {
@@ -899,8 +971,8 @@ export async function swapScene(game) {
   const rackClothColors = [0xc04a5a, 0x4a6ac0, 0x50a060, 0xc0a040, 0x8a5ac0, 0x40a0a0, 0xd07030, 0x707070];
   for (let i = 0; i < 10; i++) {
     const ang = (i / 10) * Math.PI * 2;
-    const cl = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.9, 0.06), mat(rackClothColors[i % rackClothColors.length]));
-    cl.position.set(Math.cos(ang) * 1.55, 1.1, Math.sin(ang) * 1.55);
+    const cl = makeGarment(rackClothColors[i % rackClothColors.length], ['shirt', 'dress', 'coat'][i % 3]);
+    cl.position.set(Math.cos(ang) * 1.55, 1.56, Math.sin(ang) * 1.55);
     cl.rotation.y = -ang;
     rack.add(cl);
   }

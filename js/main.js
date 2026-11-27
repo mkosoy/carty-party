@@ -142,7 +142,11 @@ const game = {
       document.body.appendChild(hint);
     }
     const touch = 'ontouchstart' in window;
-    hint.textContent = window.__sceneHint || (touch ? 'left thumb — move · right thumb — camera · tap ✦ to interact' : 'WASD move · shift sprint · space jump · E interact · drag camera');
+    let hintText = window.__sceneHint || (touch ? 'left thumb — move · right thumb — camera · tap ✦ to interact' : 'WASD move · shift sprint · space jump · E interact · drag camera');
+    if (touch && window.__sceneHint) {
+      hintText = hintText.replace(/WASD — move · E — interact/, 'left thumb — move · tap ✦ — interact').replace(/WASD — move/, 'left thumb — move').replace(/E — interact/, '✦ — interact').replace(/drag — camera/, 'right thumb — camera');
+    }
+    hint.textContent = hintText;
     window.__sceneHint = null;
     hint.style.opacity = '1';
     clearTimeout(window.__hintT);

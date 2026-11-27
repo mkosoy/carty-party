@@ -763,7 +763,9 @@ export async function houseScene(game) {
     box(ground, 0.24, 0.04, 0.32, [0x8a3040, 0x2a4a6a, 0x4a6a3a][i], -2.5 + i * 0.3, 0.56 + i * 0.005, 1.55 + (i % 2) * 0.15);
   }
   box(ground, 0.09, 0.1, 0.09, 0xd8d0c0, -1.85, 0.6, 1.75);
-  solid(ctbl);
+  boundsByFloor.ground.push({ minX: -2.9, maxX: -1.5, minZ: 1.2, maxZ: 2.0 });
+  boundsByFloor.upper.push({ minX: -2.9, maxX: -1.5, minZ: 1.2, maxZ: 2.0 });
+  boundsByFloor.basement = boundsByFloor.basement.filter(() => true);
 
   return {
     update(dt) {

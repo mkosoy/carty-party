@@ -80,7 +80,21 @@ export async function driveScene(game) {
       const awning = new THREE.Mesh(new THREE.BoxGeometry(brick.geometry.parameters.width, 0.5, 0.6), mat([0xc04040, 0x3070c0, 0x40a060, 0xd0a030][Math.floor(Math.random() * 4)]));
       awning.position.set(0, 2.2, 2.1);
       sm.add(awning);
-      const band = new THREE.Mesh(new THREE.BoxGeometry(brick.geometry.parameters.width, 0.7, 0.15), mat(0xf0ead8));
+      // real moco storefront names on the sign band — instantly recognizable roadside texture
+      if (!window.__mocoStores) window.__mocoStores = ['RIO WASHINGTONIAN', 'KENTLANDS MARKET SQ', 'MONTGOMERY MALL', 'LAKEFOREST', 'COSTCO', 'CROWN FARM', 'PIKE & ROSE', 'GIANT FOOD', 'CLARKSBURG OUTLETS'];
+      const store = window.__mocoStores[Math.floor(Math.random() * window.__mocoStores.length)];
+      const bc = document.createElement('canvas');
+      bc.width = 512; bc.height = 48;
+      const bcx = bc.getContext('2d');
+      bcx.fillStyle = '#f0ead8';
+      bcx.fillRect(0, 0, 512, 48);
+      bcx.fillStyle = '#40342a';
+      bcx.font = 'bold 30px Georgia';
+      bcx.textAlign = 'center';
+      bcx.fillText(store, 256, 35);
+      const bt = new THREE.CanvasTexture(bc);
+      bt.colorSpace = THREE.SRGBColorSpace;
+      const band = new THREE.Mesh(new THREE.BoxGeometry(brick.geometry.parameters.width, 0.7, 0.15), new THREE.MeshStandardMaterial({ map: bt, roughness: 0.85 }));
       band.position.set(0, 3.2, 2.0);
       sm.add(band);
       const snowRoof = new THREE.Mesh(new THREE.BoxGeometry(brick.geometry.parameters.width + 0.2, 0.15, 4.2), mat(0xf4f8ff));
@@ -231,6 +245,10 @@ export async function driveScene(game) {
     return g;
   }
   roadSign('Rockville 2|Gaithersburg 5', 5.5, -60);
+  roadSign('Shady Grove Rd|EXIT 8', -5.5, -95);
+  roadSign('Quince Orchard|NEXT EXIT', 5.5, -125);
+  roadSign('Montgomery Village|Ave', 5.5, -195);
+  roadSign('Wootton Pkwy', -5.5, -145);
   roadSign('Yo Yogi Sushi|NEXT RIGHT', 5.5, -160);
   roadSign('Baltimore 28|Washington 22', -5.5, -230);
   // yo yogi billboard on the right shoulder — the payoff landmark

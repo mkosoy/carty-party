@@ -352,6 +352,13 @@ export async function houseScene(game) {
   box(ground, 0.08, 0.22, 12, 0xe8e0d0, -7.82, 0.2, 0);
   box(ground, 0.08, 0.22, 12, 0xe8e0d0, 7.82, 0.2, 0);
 
+  // warm ceiling planes — kills the void-dark look overhead
+  for (const [cf, cy] of [[ground, 3.35], [upper, 3.3]]) {
+    const cmesh = new THREE.Mesh(new THREE.BoxGeometry(15.8, 0.08, 11.8), new THREE.MeshStandardMaterial({ color: 0xe8ddc8, roughness: 0.95 }));
+    cmesh.position.set(0, cy, 0);
+    cf.add(cmesh);
+  }
+
   // ceiling light fixture (visible warm disc)
   const fix = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 8), new THREE.MeshBasicMaterial({ color: 0xfff0d0 }));
   fix.position.set(0, 3.25, 0);

@@ -347,6 +347,9 @@ export async function echostageScene(game) {
       ledT.needsUpdate = true;
       // ---- shift logic ----
       if (state.active) {
+        // walking away from the bar ends your shift early
+        const px = christian.group.position;
+        if (Math.hypot(px.x - 16.2, px.z - 0) > 4.5) state.timeLeft = Math.min(state.timeLeft, 0.01);
         state.timeLeft -= dt;
         spawnT -= dt;
         if (spawnT <= 0 && state.customers.length < 4) {

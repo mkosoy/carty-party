@@ -31,6 +31,15 @@ export async function airportScene(game) {
     bounds.push({ minX: b.min.x - pad, maxX: b.max.x + pad, minZ: b.min.z - pad, maxZ: b.max.z + pad });
   };
 
+    // designed lighting: cool diffuse terminal wash + warm pools at the coffee counter
+  const termWash = new THREE.DirectionalLight(0xc8d8f0, 0.5);
+  termWash.position.set(0, 8, -10);
+  scene.add(termWash);
+  for (const [px, pz, col] of [[-8, -2, 0xffd9a0], [8, -2, 0xffd9a0], [0, -8, 0xbcd0ff]]) {
+    const pool = new THREE.PointLight(col, 2.6, 9, 1.8);
+    pool.position.set(px, 3.4, pz);
+    scene.add(pool);
+  }
   // floor: polished terrazzo-ish
   const floor = new THREE.Mesh(new THREE.BoxGeometry(60, 0.2, 26), new THREE.MeshStandardMaterial({ map: concrete('#7d7a72', 8, 3.5), roughness: 0.35, metalness: 0.15 }));
   floor.position.y = -0.1;

@@ -9,8 +9,8 @@ export async function museumScene(game) {
 
   scene.background = new THREE.Color(0x11161f);
   scene.fog = new THREE.Fog(0x11161f, 24, 64);
-  scene.add(new THREE.AmbientLight(0x8a94a8, 1.0));
-  const key = new THREE.DirectionalLight(0xfff4e0, 0.8);
+  scene.add(new THREE.AmbientLight(0x9aa4b8, 1.5));
+  const key = new THREE.DirectionalLight(0xfff4e0, 1.15);
   key.position.set(6, 14, 4);
   key.castShadow = true;
   scene.add(key);
@@ -27,6 +27,12 @@ export async function museumScene(game) {
     const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(0x4a4640));
     wall.position.set(x, h / 2, z);
     scene.add(wall);
+  }
+  for (const [px, pz] of [[-8, -2], [0, 2], [8, -2]]) {
+    const pool = new THREE.Mesh(new THREE.CircleGeometry(2.6, 24), new THREE.MeshBasicMaterial({ color: 0xfff8e0, transparent: true, opacity: 0.1 }));
+    pool.rotation.x = -Math.PI / 2;
+    pool.position.set(px, 0.13, pz);
+    scene.add(pool);
   }
   const bounds = [
     { minX: -18, maxX: 18, minZ: -11.4, maxZ: -10.9 }, { minX: -18, maxX: 18, minZ: 10.9, maxZ: 11.4 },

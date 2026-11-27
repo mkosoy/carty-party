@@ -53,6 +53,7 @@ window.addEventListener('resize', () => {
 
 const input = new Input();
 const music = new Music();
+window.__music = music;
 const dialogue = new Dialogue(input);
 fetch('assets/voice/manifest.json').then((r) => r.ok ? r.json() : null).then((m) => {
   if (m) dialogue.voiceManifest = m;
@@ -122,6 +123,14 @@ const game = {
     window.__hintT = setTimeout(() => { hint.style.opacity = '0'; }, 14000);
   },
 };
+
+// M toggles music mute
+window.addEventListener('keydown', (e) => {
+  if ((e.key === 'm' || e.key === 'M') && window.__music?.master) {
+    window.__muteToggle = !window.__muteToggle;
+    window.__music.master.gain.value = window.__muteToggle ? 0 : 0.16;
+  }
+});
 
 const clock = new THREE.Clock();
 let loopStarted = false;

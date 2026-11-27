@@ -14,20 +14,21 @@ import { initTitle } from './title.js';
 
 const container = document.getElementById('game-container');
 
+window.__lowPower = (navigator.maxTouchPoints > 0 && Math.min(window.innerWidth, window.innerHeight) < 820) || (navigator.hardwareConcurrency || 8) <= 4;
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.15;
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.__lowPower ? 1.4 : 1.75));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = window.__lowPower ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement);
 
 // cinematic post pipeline: bloom for emissive/neon, vignette for focus
 const composer = new EffectComposer(renderer);
 let renderPass = null;
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.32, 0.55, 0.88);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.__lowPower ? window.innerWidth / 2 : window.innerWidth, window.__lowPower ? window.innerHeight / 2 : window.innerHeight), 0.32, 0.55, 0.88);
 const vignettePass = new ShaderPass(VignetteShader);
 vignettePass.uniforms.offset.value = 0.92;
 vignettePass.uniforms.darkness.value = 0.85;
@@ -103,7 +104,7 @@ const game = {
     const key = new THREE.DirectionalLight(0xfff0d8, 0.65);
     key.position.set(6, 10, 4);
     key.castShadow = true;
-    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.mapSize.set(window.__lowPower ? 1024 : 2048, window.__lowPower ? 1024 : 2048);
     key.shadow.camera.left = -18; key.shadow.camera.right = 18;
     key.shadow.camera.top = 18; key.shadow.camera.bottom = -18;
     key.shadow.bias = -0.0004;

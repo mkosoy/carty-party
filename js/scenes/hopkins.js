@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { sfxChime } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makeChatter } from '../engine/collectibles.js';
 
@@ -302,7 +302,7 @@ export async function hopkinsScene(game) {
   const chatter = makeChatter(scene, researchers, ['🧪','🌱','📊','💧','🔬']);
   setTimeout(() => phoneText('Stacy ❤️', 'label the samples BEFORE you put them in the cooler this time'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · collect samples on the clock';
-  showObjective("Hopkins field lab — Stacy's world. Start the study when ready.", 6000);
+  setObjective("Hopkins field lab — start the study when ready, collect 5 samples.");
 
   return {
     update(dt) {

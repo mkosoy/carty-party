@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { nightSky, skyDome } from '../engine/textures.js';
 import { makePerson } from '../engine/character.js';
-import { phoneText, showObjective, choice } from '../engine/core.js';
+import { phoneText, showObjective, setObjective, choice } from '../engine/core.js';
 
 // Kylie's Run Club — Wootton High School track. Marathon prep: hurdles,
 // racing three other runners, two laps, best lap time wins. SPACE / tap

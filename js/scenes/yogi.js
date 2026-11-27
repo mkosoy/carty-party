@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { sfxChime } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh, makeChatter } from '../engine/collectibles.js';
 
 // Yo Yogi Sushi — downtown crown / rio, Gaithersburg. The whole drive chapter
@@ -384,7 +384,7 @@ export async function yogiScene(game) {
       st.order = plateTypes[Math.floor(Math.random() * 4)];
       hud.style.display = 'block';
       grabRing.visible = true;
-      showObjective('press E when the right plate crosses the glowing zone!', 4000);
+      setObjective('press E when the right plate crosses the glowing zone!');
     },
   });
 
@@ -412,7 +412,7 @@ export async function yogiScene(game) {
   const chatter = makeChatter(scene, visitors, ['🍣','🍱','😋','🥢','💬']);
   setTimeout(() => phoneText('Kayla', 'you made it before 9. I am almost impressed. the belt waits for no one'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · grab sushi off the conveyor belt';
-  showObjective('Yo Yogi Sushi — you made it before 9. The belt is moving.', 6000);
+  setObjective('Yo Yogi — grab plates from the conveyor belt when they cross the glowing zone.');
 
   setTimeout(() => phoneText('Olivia', 'they close at 9. it is 8:40. order everything. trust me.'), 8000);
   setTimeout(() => phoneText('Jim', 'the unagi. you want the unagi. tell them jim sent you, it means nothing but say it anyway'), 17000);

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh, makeChatter } from '../engine/collectibles.js';
 import { sfxChime } from '../engine/sfx.js';
 
@@ -420,7 +420,7 @@ export async function museumScene(game) {
   const chatter = makeChatter(scene, visitors, ['✈️','🚀','🌕','🤔','📸']);
   setTimeout(() => phoneText('Mark', 'do NOT touch the x-15. actually you can&#39;t reach it. but don&#39;t think about it'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · explore the hall';
-  showObjective('Air & Space — wander the great hall. Mark knows every bolt here.', 6000);
+  setObjective('Air & Space — wander the great hall, find the flight simulator.');
 
   setTimeout(() => phoneText('Olivia', 'tell mark if he cries at the moon rock again I am telling everyone at the swap'), 11000);
   return {

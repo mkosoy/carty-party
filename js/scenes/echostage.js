@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { sfxChime } from '../engine/sfx.js';
 import { makeChatter } from '../engine/collectibles.js';
@@ -373,7 +373,7 @@ export async function echostageScene(game) {
       state.timeLeft = 75;
       overlay.style.display = 'block';
       hud.style.display = 'block';
-      showObjective('Pour drinks! Keys 1-4 or tap — match each order before patience runs out', 4000);
+      setObjective('Pour drinks! tap the drink buttons — match each order before patience runs out');
     },
   });
   interactions.add({
@@ -405,6 +405,7 @@ export async function echostageScene(game) {
   setTimeout(() => phoneText('Mark', 'if you&#39;re bartending I want a free pour. this is legally binding'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · 1-4 — pour drinks on shift';
 
+  setObjective('Echostage — explore the club, then start your shift behind the bar (east side).');
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian, self: this };

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { sfxChime, positionalLoop } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makeChatter } from '../engine/collectibles.js';
 
@@ -240,7 +240,7 @@ export async function shoppingScene(game) {
       if (gift && !st.got.has(item.id)) {
         st.got.add(item.id);
         sfxChime();
-        showObjective(`✅ ${gift.label} — ${st.got.size}/6`, 2000);
+        setObjective(`✅ ${gift.label} — ${st.got.size}/6 gifts`);
         if (st.got.size === 6) finish(true);
       } else {
         st.wrong++;
@@ -314,6 +314,7 @@ export async function shoppingScene(game) {
       st.active = true;
       st.timeLeft = 90;
       hud.style.display = 'block';
+      setObjective('The list: 6 gifts before closing — grab only what\'s on it. 0/6');
     },
   });
   interactions.add({
@@ -339,6 +340,7 @@ export async function shoppingScene(game) {
   window.__sceneHint = 'WASD — move · E — interact · grab the listed gifts, dodge the decoys';
 
   setTimeout(() => phoneText('Stacy ❤️', 'you are christmas shopping?? on the 23rd?? christian. the mall on the 23rd is a war zone'), 16000);
+  setObjective('Montgomery Mall — start the shopping run when ready (west side).');
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: kylie, self: this };

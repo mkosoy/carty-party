@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { phoneText, FollowCam, PlayerController, Interactions, showObjective, choice , Pickups , npcFacePlayer } from '../engine/core.js';
+import { phoneText, FollowCam, PlayerController, Interactions, showObjective, setObjective, choice , Pickups , npcFacePlayer } from '../engine/core.js';
 import { sfxChime } from '../engine/sfx.js';
 import { carpet, paintedWall } from '../engine/textures.js';
 
@@ -251,7 +251,7 @@ export async function dentistScene(game) {
       { speaker: 'Dr. Fritz', text: '…because if you\'re too slow, we bring in the OTHER Olivia. And nobody wants that confusion.' },
     ]);
     player.frozen = false;
-    showObjective('Sit in the dental chair (E) and clean every tooth! Walk away anytime to leave.', 5000);
+    setObjective('Sit in the dental chair and clean every tooth — walk away anytime to leave.');
   }, 600);
 
   // ---------------- the teeth minigame (DOM canvas overlay) ----------------

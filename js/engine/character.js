@@ -154,7 +154,7 @@ export function makePerson({
   }
   // scarf sometimes — it's a holiday game, scarves everywhere
   const scarfSeed = (typeof top === 'number' ? top : 0) * 13 + (typeof skin === 'number' ? skin : 0);
-  if (scarfSeed % 3 === 0 && outfit !== 'hoodie') {
+  if (scarfSeed % 3 === 0 && (outfit === 'shirt' || outfit === 'jacket' || outfit === 'sweater')) {
     const scarfColors = [0xc03838, 0x2a6a3a, 0xd0a030, 0x8a2a5a, 0x3a5a9a];
     const sc = scarfColors[Math.abs(scarfSeed) % scarfColors.length];
     const wrap = new THREE.Mesh(new THREE.TorusGeometry(0.075 * u, 0.028 * u, 8, 14), mat(sc));

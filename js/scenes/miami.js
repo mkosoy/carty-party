@@ -142,7 +142,7 @@ export async function miamiScene(game) {
     { top: 0xc0c0c8, bottom: 0x222230, skin: 0xd0a080, hair: 0x3a2a1a, hairStyle: 'short' },
   ];
   for (let i = 0; i < 12; i++) {
-    const n = makePerson(looks[i % looks.length]);
+    const n = makePerson({ ...looks[i % looks.length], outfit: 'tee' });
     const a = (i / 12) * Math.PI * 2;
     const rx = Math.cos(a) * (4.5 + (i % 3)), rz = Math.sin(a) * 3.5 + 1;
     n.group.position.set(rx, 0, rz);
@@ -181,7 +181,7 @@ export async function miamiScene(game) {
   scene.add(cyanWash);
 
   // olivia on the stage — the reward dance
-  const olivia = makePerson({ photo: faces.olivia, top: 0xff2a8a, bottom: 0x1a1a22, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
+  const olivia = makePerson({ photo: faces.olivia, outfit: 'tee', top: 0xff2a8a, bottom: 0x1a1a22, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
   olivia.group.position.set(0, 0.55, -4.5);
   scene.add(olivia.group);
 
@@ -252,7 +252,7 @@ export async function miamiScene(game) {
     }
     // vip silhouettes leaning on the rail
     for (let vx = -len / 2 + 1.2; vx < len / 2 - 0.6; vx += 2.2) {
-      const vip = makePerson({ skin: [0xe8c098, 0x8a5a3a, 0xd8a878][Math.floor(Math.random() * 3)], hair: 0x16100e, hairStyle: Math.random() > 0.5 ? 'long' : 'short', top: [0xff4080, 0x20c0ff, 0xc0c0c8, 0x9a40ff][Math.floor(Math.random() * 4)], bottom: 0x1a1a22 });
+      const vip = makePerson({ outfit: 'tee', skin: [0xe8c098, 0x8a5a3a, 0xd8a878][Math.floor(Math.random() * 3)], hair: 0x16100e, hairStyle: Math.random() > 0.5 ? 'long' : 'short', top: [0xff4080, 0x20c0ff, 0xc0c0c8, 0x9a40ff][Math.floor(Math.random() * 4)], bottom: 0x1a1a22 });
       vip.group.position.set(vx + (Math.random() - 0.5) * 0.5, 3.42, 0.5 + Math.random() * 0.4);
       vip.group.rotation.y = Math.PI + (Math.random() - 0.5) * 0.6;
       grp.add(vip.group);

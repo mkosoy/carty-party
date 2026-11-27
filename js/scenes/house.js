@@ -149,6 +149,62 @@ export async function houseScene(game) {
   }
   drawHouseTV();
   setInterval(drawHouseTV, 120);
+  // columbia md pride: merriweather post pavilion concert poster + lake kittamaqundi print
+  const merC = document.createElement('canvas');
+  merC.width = 256; merC.height = 340;
+  const mc = merC.getContext('2d');
+  mc.fillStyle = '#1a2a4a';
+  mc.fillRect(0, 0, 256, 340);
+  mc.fillStyle = '#f0d060';
+  mc.font = 'bold 26px Georgia';
+  mc.textAlign = 'center';
+  mc.fillText('MERRIWEATHER', 128, 70);
+  mc.fillText('POST', 128, 102);
+  mc.fillText('PAVILION', 128, 134);
+  mc.fillStyle = '#e8e8e8';
+  mc.font = 'italic 20px Georgia';
+  mc.fillText('columbia, maryland', 128, 180);
+  mc.fillText('summer concert series', 128, 210);
+  // pavilion roof swoosh
+  mc.strokeStyle = '#f0d060';
+  mc.lineWidth = 5;
+  mc.beginPath();
+  mc.moveTo(40, 260);
+  mc.quadraticCurveTo(128, 220, 216, 260);
+  mc.stroke();
+  const merT = new THREE.CanvasTexture(merC);
+  merT.colorSpace = THREE.SRGBColorSpace;
+  const merPoster = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 0.73), new THREE.MeshBasicMaterial({ map: merT }));
+  merPoster.position.set(1.8, 1.95, -5.8);
+  scene.add(merPoster);
+  const merFrame = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.83, 0.04), mat(0x2a2a2a));
+  merFrame.position.set(1.8, 1.95, -5.84);
+  scene.add(merFrame);
+  // lake kittamaqundi print — blue waves + people tree silhouette
+  const lkC = document.createElement('canvas');
+  lkC.width = 256; lkC.height = 200;
+  const lk = lkC.getContext('2d');
+  lk.fillStyle = '#7ab0c8';
+  lk.fillRect(0, 0, 256, 200);
+  lk.fillStyle = '#4a8aa8';
+  lk.fillRect(0, 100, 256, 100);
+  lk.fillStyle = '#2a4a3a';
+  lk.fillRect(0, 86, 256, 16);
+  lk.fillStyle = '#ffffff';
+  lk.font = 'bold 20px Georgia';
+  lk.textAlign = 'center';
+  lk.fillText('LAKE KITTAMAQUNDI', 128, 160);
+  lk.font = 'italic 14px Georgia';
+  lk.fillText('columbia · est. 1967', 128, 182);
+  const lkT = new THREE.CanvasTexture(lkC);
+  lkT.colorSpace = THREE.SRGBColorSpace;
+  const lkPrint = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.48), new THREE.MeshBasicMaterial({ map: lkT }));
+  lkPrint.position.set(2.8, 1.9, -5.8);
+  scene.add(lkPrint);
+  const lkFrame = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.56, 0.04), mat(0x2a2a2a));
+  lkFrame.position.set(2.8, 1.9, -5.84);
+  scene.add(lkFrame);
+
   // framed pictures on the wall
   for (const [fx, fy, fc] of [[-1.5, 1.9, 0xc0a060], [-0.5, 2.0, 0x6080a0], [0.6, 1.85, 0x7a9a5a]]) {
     box(ground, 0.5, 0.65, 0.05, 0x4a3524, fx, fy, -5.82);

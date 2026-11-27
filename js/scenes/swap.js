@@ -263,6 +263,34 @@ export async function swapScene(game) {
   scene.add(matcha);
   bounds.push({ minX: -6.2, maxX: -3.8, minZ: 7.0, maxZ: 8.6 });
 
+  // partner posters on the wall — reunion + echostage, the kind of cross-promo real events do
+  function poster(cfg, x, y, z, ry2) {
+    const pc = document.createElement('canvas');
+    pc.width = 256; pc.height = 384;
+    const pctx = pc.getContext('2d');
+    if (cfg.grad) {
+      const pg = pctx.createLinearGradient(0, 0, 0, 384);
+      pg.addColorStop(0, cfg.grad[0]); pg.addColorStop(1, cfg.grad[1]);
+      pctx.fillStyle = pg;
+    } else pctx.fillStyle = cfg.bg;
+    pctx.fillRect(0, 0, 256, 384);
+    pctx.fillStyle = cfg.fg;
+    pctx.textAlign = 'center';
+    pctx.font = 'bold 44px Georgia';
+    pctx.fillText(cfg.title, 128, 170);
+    pctx.font = 'italic 22px Georgia';
+    pctx.fillText(cfg.sub, 128, 212);
+    if (cfg.sub2) { pctx.font = '18px Arial'; pctx.fillText(cfg.sub2, 128, 248); }
+    const pt = new THREE.CanvasTexture(pc);
+    pt.colorSpace = THREE.SRGBColorSpace;
+    const pm = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 1.5), new THREE.MeshBasicMaterial({ map: pt }));
+    pm.position.set(x, y, z);
+    pm.rotation.y = ry2;
+    scene.add(pm);
+  }
+  poster({ grad: ['#ff7a4a', '#c04080'], fg: '#fff8ee', title: 'REUNION', sub: 'festival x wellness', sub2: '@experiencereunion' }, -15.8, 2.2, 2, Math.PI / 2);
+  poster({ bg: '#0a0a14', fg: '#40e8ff', title: 'ECHOSTAGE', sub: 'dc nightlife', sub2: 'after the swap?' }, -15.8, 2.2, 4.4, Math.PI / 2);
+
   // mirror corner — swaps always need somewhere to check the fit
   const mirrorFrame = new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.1, 0.08), mat(0xc8a040));
   mirrorFrame.position.set(15.8, 1.35, -1);

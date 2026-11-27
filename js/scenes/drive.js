@@ -316,6 +316,7 @@ export async function driveScene(game) {
   roadSign('Wootton Pkwy', -5.5, -145);
   roadSign('NIH Walter Reed|NEXT RIGHT', 5.5, -30);
   roadSign('Strathmore', -5.5, -78);
+  roadSign('Columbia|US-29 S', 5.5, -175);
   roadSign('Yo Yogi Sushi|NEXT RIGHT', 5.5, -160);
   roadSign('Baltimore 28|Washington 22', -5.5, -230);
   // NIH / walter reed campus — bethesda stretch, low brick campus behind a fence line
@@ -385,6 +386,45 @@ export async function driveScene(game) {
   bbPole.position.set(11, 1.6, -120);
   scene.add(bbPole);
   decor.push(bbPole);
+  // real DMV billboards along the route: reunion, echostage, johns hopkins
+  function adBillboard(cfg, x, z, ry) {
+    const c = document.createElement('canvas');
+    c.width = 512; c.height = 256;
+    const ctx2 = c.getContext('2d');
+    if (cfg.grad) {
+      const gr = ctx2.createLinearGradient(0, 0, 512, 256);
+      gr.addColorStop(0, cfg.grad[0]); gr.addColorStop(1, cfg.grad[1]);
+      ctx2.fillStyle = gr;
+    } else ctx2.fillStyle = cfg.bg;
+    ctx2.fillRect(0, 0, 512, 256);
+    ctx2.fillStyle = cfg.fg;
+    ctx2.textAlign = 'center';
+    ctx2.font = 'bold ' + (cfg.size || 64) + 'px ' + (cfg.font || 'Georgia');
+    ctx2.fillText(cfg.title, 256, cfg.sub ? 115 : 140);
+    if (cfg.sub) {
+      ctx2.font = 'italic 30px Georgia';
+      ctx2.fillText(cfg.sub, 256, 168);
+    }
+    if (cfg.sub2) {
+      ctx2.font = '26px Arial';
+      ctx2.fillText(cfg.sub2, 256, 212);
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(6.4, 3.2), new THREE.MeshBasicMaterial({ map: t }));
+    m.position.set(x, 4.4, z);
+    m.rotation.y = ry;
+    scene.add(m);
+    decor.push(m);
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 3.2, 8), mat(0x5a5048));
+    pole.position.set(x, 1.6, z);
+    scene.add(pole);
+    decor.push(pole);
+  }
+  adBillboard({ grad: ['#ff7a4a', '#c04080'], fg: '#fff8ee', title: 'REUNION', sub: 'music festival meets wellness retreat', sub2: '@experiencereunion', size: 68 }, -12, -45, 0.4);
+  adBillboard({ bg: '#0a0a14', fg: '#40e8ff', title: 'ECHOSTAGE', sub: 'dc — voted top club in the world', sub2: 'queens chapel rd NE', size: 66 }, 12, -88, -0.4);
+  adBillboard({ bg: '#002d72', fg: '#ffffff', title: 'JOHNS HOPKINS', sub: 'university — baltimore est. 1876', sub2: 'go blue jays', size: 56, font: 'Georgia' }, -12, -132, 0.4);
+
   // overpass in the distance
   const op = new THREE.Mesh(new THREE.BoxGeometry(22, 1, 3), mat(0x8a8f98));
   op.position.set(0, 5.5, -200);

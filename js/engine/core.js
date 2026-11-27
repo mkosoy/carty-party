@@ -362,11 +362,30 @@ export class PlayerController {
     }
   }
   updateVisibility() {
-    // hysteresis so it doesn't flicker at the threshold
+    // progressive fade instead of binary pop: at normal distance fully
+    // opaque, fading out as the camera is forced in — a crush closeup never
+    // fills the screen with your own back, and there's no jarring vanish.
     const d = window.__camDistXZ;
     if (d === undefined) return;
-    if (this.person.group.visible && d < 1.0) this.person.group.visible = false;
-    else if (!this.person.group.visible && d > 2.0) this.person.group.visible = true;
+    if (!this._fadeMats) {
+      this._fadeMats = [];
+      const seen = new Set();
+      this.person.group.traverse((o) => {
+        if (o.isMesh && o.material && !seen.has(o.material)) {
+          seen.add(o.material);
+          if (o.material.transparent !== true) { o.material.transparent = true; }
+          this._fadeMats.push(o.material);
+        }
+      });
+    }
+    const FADE_START = 2.7, FADE_END = 1.5;
+    let op = 1;
+    if (d < FADE_START) op = Math.max(0, (d - FADE_END) / (FADE_START - FADE_END));
+    // small hysteresis: don't bother writing when unchanged
+    if (this._lastFadeOp !== undefined && Math.abs(op - this._lastFadeOp) < 0.02) return;
+    this._lastFadeOp = op;
+    for (const m of this._fadeMats) m.opacity = op;
+    this.person.group.visible = op > 0.02;
   }
   update(dt) {
     this.updateVisibility();

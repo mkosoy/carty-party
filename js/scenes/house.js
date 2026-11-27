@@ -552,6 +552,16 @@ export async function houseScene(game) {
   const mantelGarland = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.1, 0.1), mat(0x1e5a2e));
   mantelGarland.position.set(-6.0, 1.82, 5.82);
   ground.add(mantelGarland);
+  // dining area rug anchoring the table zone
+  const diningRug = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 1.9, 0.02, 24), mat(0x6a3a4a));
+  diningRug.scale.set(1.3, 1, 1);
+  diningRug.position.set(3, 0.02, -3);
+  ground.add(diningRug);
+  const diningRugInner = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 0.022, 24), mat(0x7a4a5a));
+  diningRugInner.scale.set(1.3, 1, 1);
+  diningRugInner.position.set(3, 0.021, -3);
+  ground.add(diningRugInner);
+
   // dining chairs — four wooden chairs tucked around the table
   for (const [cx, cz, cry] of [[2.2, -3.0, 0], [3.8, -3.0, Math.PI], [3.0, -2.3, Math.PI / 2], [3.0, -3.7, -Math.PI / 2]]) {
     const seat = box(ground, 0.42, 0.06, 0.42, 0x6a4a2a, cx, 0.46, cz);

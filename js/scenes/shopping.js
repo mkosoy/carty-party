@@ -176,9 +176,25 @@ export async function shoppingScene(game) {
     { id: 'decoy2', label: 'tinsel box', color: 0x9090a0 },
     { id: 'decoy3', label: 'fruitcake??', color: 0x704820 },
   ];
-  function giftMesh(color) {
+  function giftMesh(color, emoji) {
+    const g = new THREE.Group();
     const m = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.32, 0.4), new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.28, roughness: 0.4 }));
-    return m;
+    g.add(m);
+    if (emoji) {
+      const c = document.createElement('canvas');
+      c.width = 64; c.height = 64;
+      const x2 = c.getContext('2d');
+      x2.font = '46px serif';
+      x2.textAlign = 'center';
+      x2.fillText(emoji, 32, 48);
+      const t = new THREE.CanvasTexture(c);
+      t.colorSpace = THREE.SRGBColorSpace;
+      const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false }));
+      spr.scale.set(0.5, 0.5, 1);
+      spr.position.y = 0.42;
+      g.add(spr);
+    }
+    return g;
   }
   const pickups = new Pickups(scene);
   const spots = [[-8, -6.5], [-1, -6.5], [6, -6.5], [-8, 3.2], [-1, 3.2], [10, -1], [12, 8.5], [-5, 8.5], [3, 8.5]];
@@ -186,7 +202,7 @@ export async function shoppingScene(game) {
   const st = { active: false, done: false, timeLeft: 0, got: new Set(), wrong: 0 };
   allItems.forEach((item, i) => {
     const [sx, sz] = spots[i % spots.length];
-    pickups.add(giftMesh(item.color), sx, sz, item.id, () => {
+    pickups.add(giftMesh(item.color, item.label.split(' ')[0]), sx, sz, item.id, () => {
       if (!st.active) return;
       const gift = GIFTS.find((g) => g.id === item.id);
       if (gift && !st.got.has(item.id)) {

@@ -125,6 +125,7 @@ const game = {
     key.shadow.bias = -0.0004;
     this.scene.add(key);
     window.__sceneName = factory.name;
+    window.__currentScene = factory.name.replace('Scene','');
     this.sceneApi = await factory(this);
     rebuildComposer();
     // chapter title card: scene name fades in/out on entry

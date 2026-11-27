@@ -868,6 +868,25 @@ export async function driveScene(game) {
 
   return {
     update(dt) {
+    // winter exhaust: little white puffs trailing the car, freezing air
+    if (!this._exhaust) this._exhaust = [];
+    this._exT = (this._exT || 0) + dt;
+    if (this._exT > 0.22 && typeof car !== 'undefined') {
+      this._exT = 0;
+      const puff = new THREE.Mesh(new THREE.SphereGeometry(0.09, 6, 6), new THREE.MeshBasicMaterial({ color: 0xe8eef4, transparent: true, opacity: 0.5 }));
+      puff.position.set(car.position.x - 0.3 + Math.random() * 0.2, 0.25, car.position.z + 1.9);
+      scene.add(puff);
+      this._exhaust.push({ m: puff, life: 0 });
+    }
+    for (let ei = this._exhaust.length - 1; ei >= 0; ei--) {
+      const p = this._exhaust[ei];
+      p.life += dt;
+      p.m.position.z += dt * 10; // scrolls back with the world
+      p.m.position.y += dt * 0.8;
+      p.m.scale.setScalar(1 + p.life * 2.2);
+      p.m.material.opacity = Math.max(0, 0.5 - p.life * 0.55);
+      if (p.life > 0.9) { scene.remove(p.m); this._exhaust.splice(ei, 1); }
+    }
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       chaseCam(dt);
       // snow everywhere always

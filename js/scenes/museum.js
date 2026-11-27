@@ -1,0 +1,190 @@
+import * as THREE from 'three';
+import { makePerson, playerIdentity } from '../engine/character.js';
+import { FollowCam, PlayerController, Interactions, showObjective } from '../engine/core.js';
+
+// Smithsonian Air & Space — Mark's home turf. The great hall: suspended
+// aircraft overhead, rockets, lunar lander, interactive exhibits.
+export async function museumScene(game) {
+  const { scene, camera, input, dialogue, faces } = game;
+
+  scene.background = new THREE.Color(0x11161f);
+  scene.fog = new THREE.Fog(0x11161f, 24, 64);
+  scene.add(new THREE.AmbientLight(0x8a94a8, 1.0));
+  const key = new THREE.DirectionalLight(0xfff4e0, 0.8);
+  key.position.set(6, 14, 4);
+  key.castShadow = true;
+  scene.add(key);
+
+  const mat = (c) => new THREE.MeshLambertMaterial({ color: c });
+
+  // great hall: marble floor, tall walls, skylight strips
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(36, 0.2, 22), new THREE.MeshStandardMaterial({ color: 0xb0a89a, roughness: 0.3, metalness: 0.15 }));
+  floor.receiveShadow = true;
+  scene.add(floor);
+  for (const [w, h, d, x, z] of [
+    [36, 8, 0.4, 0, -11], [36, 8, 0.4, 0, 11], [0.4, 8, 22, -18, 0], [0.4, 8, 22, 18, 0],
+  ]) {
+    const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(0x4a4640));
+    wall.position.set(x, h / 2, z);
+    scene.add(wall);
+  }
+  const bounds = [
+    { minX: -18, maxX: 18, minZ: -11.4, maxZ: -10.9 }, { minX: -18, maxX: 18, minZ: 10.9, maxZ: 11.4 },
+    { minX: -18.4, maxX: -17.9, minZ: -11.4, maxZ: 11.4 }, { minX: 17.9, maxX: 18.4, minZ: -11.4, maxZ: 11.4 },
+  ];
+  for (let sx = -12; sx <= 12; sx += 8) {
+    const sky = new THREE.Mesh(new THREE.BoxGeometry(4, 0.1, 16), new THREE.MeshBasicMaterial({ color: 0x8ab8e8 }));
+    sky.position.set(sx, 7.9, 0);
+    scene.add(sky);
+  }
+  for (const [lx, lz] of [[-10, -5], [0, 0], [10, 5], [-10, 5], [10, -5]]) {
+    const pt = new THREE.PointLight(0xfff0d8, 24, 18);
+    pt.position.set(lx, 6, lz);
+    scene.add(pt);
+  }
+
+  // suspended aircraft — the hall's signature
+  function plane(color, scale = 1) {
+    const g = new THREE.Group();
+    const fus = new THREE.Mesh(new THREE.CapsuleGeometry(0.3 * scale, 2.2 * scale, 4, 8), mat(color));
+    fus.rotation.z = Math.PI / 2;
+    g.add(fus);
+    const wing = new THREE.Mesh(new THREE.BoxGeometry(0.9 * scale, 0.05 * scale, 2.6 * scale), mat(color));
+    wing.position.x = 0.2 * scale;
+    g.add(wing);
+    const tail = new THREE.Mesh(new THREE.BoxGeometry(0.5 * scale, 0.6 * scale, 0.05 * scale), mat(color));
+    tail.position.set(-1.2 * scale, 0.3 * scale, 0);
+    g.add(tail);
+    const tailw = new THREE.Mesh(new THREE.BoxGeometry(0.4 * scale, 0.04 * scale, 1 * scale), mat(color));
+    tailw.position.set(-1.15 * scale, 0.15 * scale, 0);
+    g.add(tailw);
+    return g;
+  }
+  const flyers = [];
+  for (const [c, s, x, y, z, ry] of [
+    [0xc84a3a, 1.3, -8, 5.4, -4, 0.4],
+    [0xd8d8e0, 1.0, 2, 6.0, 2, -0.3],
+    [0x3a5a8a, 0.8, 10, 5.2, -3, 0.9],
+  ]) {
+    const pl = plane(c, s);
+    pl.position.set(x, y, z);
+    pl.rotation.y = ry;
+    scene.add(pl);
+    flyers.push({ pl, baseY: y, off: Math.random() * 6 });
+  }
+  // rocket standing tall
+  const rocket = new THREE.Group();
+  const rbody = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 5.5, 12), mat(0xe8e8e8));
+  rbody.position.y = 2.75;
+  rocket.add(rbody);
+  const rnose = new THREE.Mesh(new THREE.ConeGeometry(0.5, 1.4, 12), mat(0x2a2a30));
+  rnose.position.y = 6.2;
+  rocket.add(rnose);
+  for (let i = 0; i < 4; i++) {
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.2, 0.6), mat(0xc84040));
+    const a = (i / 4) * Math.PI * 2;
+    fin.position.set(Math.cos(a) * 0.55, 0.7, Math.sin(a) * 0.55);
+    fin.rotation.y = -a;
+    rocket.add(fin);
+  }
+  rocket.position.set(12, 0, 6);
+  scene.add(rocket);
+  bounds.push({ minX: 11, maxX: 13, minZ: 5, maxZ: 7 });
+  // lunar lander — angular gold foil
+  const lander = new THREE.Group();
+  const lbody = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.0, 1.6), new THREE.MeshStandardMaterial({ color: 0xc89830, metalness: 0.8, roughness: 0.3 }));
+  lbody.position.y = 1.2;
+  lander.add(lbody);
+  const ltop = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.7, 0.8, 8), mat(0x8a8a92));
+  ltop.position.y = 2.1;
+  lander.add(ltop);
+  for (let i = 0; i < 4; i++) {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.3, 6), mat(0x6a6a72));
+    const a = (i / 4) * Math.PI * 2 + 0.78;
+    leg.position.set(Math.cos(a) * 1.0, 0.6, Math.sin(a) * 1.0);
+    leg.rotation.z = Math.cos(a) * 0.5;
+    leg.rotation.x = -Math.sin(a) * 0.5;
+    lander.add(leg);
+  }
+  lander.position.set(-11, 0, 5);
+  scene.add(lander);
+  bounds.push({ minX: -12.5, maxX: -9.5, minZ: 3.5, maxZ: 6.5 });
+  // info desk + museum sign
+  const desk = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.5, 1.05, 16), mat(0x3a3630));
+  desk.position.set(0, 0.5, 9);
+  scene.add(desk);
+  bounds.push({ minX: -1.6, maxX: 1.6, minZ: 7.4, maxZ: 10.6 });
+  const sgC = document.createElement('canvas');
+  sgC.width = 1024; sgC.height = 128;
+  const sg = sgC.getContext('2d');
+  sg.fillStyle = '#141821'; sg.fillRect(0, 0, 1024, 128);
+  sg.fillStyle = '#e8e0c8'; sg.font = 'bold 64px Georgia'; sg.textAlign = 'center';
+  sg.fillText('AIR AND SPACE MUSEUM', 512, 88);
+  const sgT = new THREE.CanvasTexture(sgC);
+  sgT.colorSpace = THREE.SRGBColorSpace;
+  const sign = new THREE.Mesh(new THREE.PlaneGeometry(12, 1.5), new THREE.MeshBasicMaterial({ map: sgT }));
+  sign.position.set(0, 6.4, -10.8);
+  scene.add(sign);
+  // a few other visitors
+  const visitors = [];
+  for (let i = 0; i < 4; i++) {
+    const p = makePerson({ top: [0x4a5a7a, 0x7a4a4a, 0x4a7a5a, 0x6a6a6a][i], bottom: 0x2a2a34, hair: 0x2a1a12, skin: 0xd0a080 });
+    p.group.position.set(-6 + i * 4, 0, -2 + (i % 2) * 4);
+    p.group.rotation.y = Math.random() * 6.28;
+    scene.add(p.group);
+    visitors.push(p);
+  }
+
+  // player — default mark if christian unchosen? respect the picker
+  const hero = makePerson({ photo: faces.mark, top: 0x3a4a5c, bottom: 0x2c2c34, hair: 0x2a1c10, hairStyle: 'short', skin: 0xd8a880, ...playerIdentity(faces) });
+  hero.group.position.set(0, 0, 8);
+  hero.group.rotation.y = Math.PI;
+  scene.add(hero.group);
+  const player = new PlayerController(hero, input, bounds);
+  const followCam = new FollowCam(camera);
+  followCam.setRoom(-17.5, 17.5, -10.5, 10.5);
+  followCam.snap(hero.group.position);
+
+  const interactions = new Interactions(scene);
+  const say = (lines) => async () => { player.frozen = true; await dialogue.play(lines); player.frozen = false; };
+  interactions.add({ pos: new THREE.Vector3(-8, 0, -4), radius: 3.4, label: 'The red biplane', action: say([
+    { speaker: 'Mark', text: 'Fabric and wire and pure audacity. People flew these before radio. Before parachutes, sometimes.' },
+  ]) });
+  interactions.add({ pos: new THREE.Vector3(12, 0, 4), radius: 3.0, label: 'The rocket', action: say([
+    { speaker: 'Mark', text: 'Every gram on a rocket fights for its life. Engineering as a contact sport. Beautiful.' },
+    { speaker: 'Christian', text: 'You get this look on your face every time. Every single time.' },
+  ]) });
+  interactions.add({ pos: new THREE.Vector3(-11, 0, 3), radius: 3.0, label: 'The lunar lander', action: say([
+    { speaker: 'Mark', text: 'They landed on the moon in something that looks like a craft project. Gold foil and grit.' },
+  ]) });
+  interactions.add({ pos: new THREE.Vector3(0, 0, 9.8), radius: 2.6, label: 'Ask the info desk', action: say([
+    { speaker: 'Christian', text: 'Mark has now explained the lander to three separate strangers. The docents are taking notes. From HIM.' },
+  ]) });
+  interactions.add({ pos: new THREE.Vector3(2, 0, 2), radius: 3.0, label: 'The white plane', action: say([
+    { speaker: 'Mark', text: 'The suspended gallery is the best room in DC. Fight me. Actually do not, I will cry about airplanes.' },
+  ]) });
+  interactions.add({ pos: new THREE.Vector3(0, 0, -8), radius: 3.2, label: 'Look up', action: say([
+    { speaker: 'Christian', text: 'A whole ceiling of flying machines. This is Mark\u2019s cathedral.' },
+  ]) });
+
+  window.__sceneHint = 'WASD — move · E — interact · explore the hall';
+  showObjective('Air & Space — wander the great hall. Mark knows every bolt here.', 6000);
+
+  return {
+    update(dt) {
+      window.__sceneHooks = { interactions, player, christian: hero, self: this };
+      player.update(dt);
+      followCam.update(dt, hero.group.position);
+      const nearI = interactions.nearest(hero.group.position);
+      const promptEl = document.getElementById('interact-prompt');
+      if (nearI && !player.frozen) {
+        promptEl.textContent = 'E — ' + nearI.label;
+        promptEl.classList.remove('hidden');
+      } else if (promptEl) promptEl.classList.add('hidden');
+      if (nearI && !player.frozen && input.consumeInteract()) nearI.action();
+      const t = performance.now() / 1000;
+      for (const f of flyers) f.pl.position.y = f.baseY + Math.sin(t * 0.5 + f.off) * 0.08;
+      for (const v of visitors) v.animateIdle(t);
+    },
+  };
+}

@@ -270,7 +270,13 @@ export async function dcScene(game) {
 
   const followCam = new FollowCam(camera);
   followCam.snap(christian.group.position);
-  const player = new PlayerController(christian, input, []);
+  const dcBounds = [
+    { minX: -28.5, maxX: -23.5, minZ: -22.5, maxZ: -17.5 }, // washington monument
+    { minX: 31, maxX: 37, minZ: -29, maxZ: -23 }, // capitol dome
+    { minX: 4.8, maxX: 7.2, minZ: -15.2, maxZ: -12.8 }, // big tree
+    { minX: -13.6, maxX: -10.4, minZ: 6.8, maxZ: 9.2 }, // cocoa stall
+  ];
+  const player = new PlayerController(christian, input, dcBounds);
   const interactions = new Interactions(scene);
   const guide = new GuideMarker(scene);
 

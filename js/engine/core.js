@@ -46,9 +46,19 @@ export class FollowCam {
       this.offset.y + this.pitch * 3.2,
       (this.offset.x * sy + this.offset.z * cy) * dist
     );
-    const desired = target.clone().add(rot);
+    let desired = target.clone().add(rot);
     if (this.room) {
       const m = 1.1;
+      // pull-in instead of wall-slide: if the orbit position would leave the room,
+      // shrink the camera distance toward the player until it fits — this keeps
+      // rotation smooth in small venues instead of the camera grinding along walls
+      for (let shrink = 0; shrink < 6; shrink++) {
+        const cx = Math.max(this.room.minX + m, Math.min(this.room.maxX - m, desired.x));
+        const cz = Math.max(this.room.minZ + m, Math.min(this.room.maxZ - m, desired.z));
+        if (cx === desired.x && cz === desired.z) break;
+        desired = target.clone().add(rot.clone().multiplyScalar(1 - (shrink + 1) * 0.13));
+        desired.y = Math.max(desired.y, target.y + 1.1);
+      }
       desired.x = Math.max(this.room.minX + m, Math.min(this.room.maxX - m, desired.x));
       desired.z = Math.max(this.room.minZ + m, Math.min(this.room.maxZ - m, desired.z));
     }

@@ -52,7 +52,7 @@ export class FollowCam {
         if (ad > engageAt) this._recentering = true;
         if (ad < 0.06) this._recentering = false;
         if (this._recentering) {
-          this.yaw += d * Math.min(1, dt * (3.0 + Math.min(3.2, ad * 2.1)));
+          this.yaw += d * Math.min(1, dt * (7.5 + Math.min(4.5, ad * 3.0)));
         }
       }
     }

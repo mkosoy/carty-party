@@ -220,6 +220,7 @@ export async function miamiScene(game) {
       { speaker: 'Olivia', text: 'Eleven. Miami. Every tooth clean, the whole philly fam here — this is the best night of my life.' },
       { speaker: 'The Fam', text: 'OLIVIA! OLIVIA! OLIVIA!' },
     ]);
+    try { localStorage.setItem('cp-done-miami', '1'); } catch {}
     showObjective('🎉 You did it — Olivia dances at E11EVEN. Carty Party: A MoCo Holiday — bonus scene complete!', 8000);
   }, 700);
 

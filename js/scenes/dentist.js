@@ -473,6 +473,7 @@ export async function dentistScene(game) {
         if (elapsedS > TIME_LIMIT * 1.6) {
           // mercy: still finish but with the other olivia arrived
           document.body.removeChild(overlay);
+          if (cleaned >= total * 0.7) try { localStorage.setItem('cp-done-dentist', '1'); } catch {}
           resolve({ won: cleaned >= total * 0.7, slow: true, time: elapsedS });
           return;
         }

@@ -457,6 +457,7 @@ export async function runclubScene(game) {
         }
         if (lapCount >= LAPS && !raceDone) {
           raceDone = true;
+          try { localStorage.setItem('cp-done-runclub', '1'); } catch {}
           const total = (performance.now() - startT) / 1000;
           place = 1; // computed below against rivals
           for (const rs of rivalsState) {

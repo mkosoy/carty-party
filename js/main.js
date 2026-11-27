@@ -57,6 +57,7 @@ window.addEventListener('resize', () => {
 const input = new Input();
 const music = new Music();
 window.__music = music;
+window.__renderer = renderer;
 const dialogue = new Dialogue(input);
 fetch('assets/voice/manifest.json').then((r) => r.ok ? r.json() : null).then((m) => {
   if (m) dialogue.voiceManifest = m;

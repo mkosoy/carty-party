@@ -328,6 +328,11 @@ export async function dcScene(game) {
       const collects = `<div style="margin-top:14px;font-size:13.5px;opacity:.75">collected on the way: 📷 ${inv2.cameras} vintage cameras · 🎵 ${inv2.records} vinyl records</div>`;
       fin.innerHTML = '<div style="font-size:44px;color:#e8b64c">Carty Party</div><div style="font-size:22px;font-style:italic">A MoCo Holiday</div><div style="margin-top:24px;font-size:15px;opacity:.8;line-height:1.9">starring Christian, Stacy, Olivia, Olivia, Tre, Kylie ❤️, Mark & Jim<br>Yo Yogi’s closes at 9. The swap is forever.<br><br>made with love, in Montgomery County</div>' + collects;
       document.body.appendChild(fin);
+      const againBtn = document.createElement('button');
+      againBtn.textContent = 'back to the menu';
+      againBtn.style.cssText = 'margin-top:26px;background:#e8b64c;color:#1a1408;border:none;border-radius:22px;padding:10px 26px;font-family:Georgia;font-size:16px;cursor:pointer';
+      againBtn.onclick = () => window.location.reload();
+      fin.appendChild(againBtn);
     },
   });
   centerInt.hidden = true;

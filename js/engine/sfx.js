@@ -72,11 +72,12 @@ export function sfxStep(running = false) {
   for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2);
   const src = AC.createBufferSource();
   src.buffer = buf;
+  src.playbackRate.value = 0.85 + Math.random() * 0.35; // no two steps identical
   const f = AC.createBiquadFilter();
   f.type = 'lowpass';
-  f.frequency.value = running ? 480 : 380;
+  f.frequency.value = (running ? 480 : 380) * (0.9 + Math.random() * 0.25);
   const g = AC.createGain();
-  g.gain.value = 0.12;
+  g.gain.value = 0.09 + Math.random() * 0.05;
   src.connect(f); f.connect(g); g.connect(AC.destination);
   src.start(t);
 }

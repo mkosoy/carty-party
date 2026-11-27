@@ -409,6 +409,16 @@ export async function miamiScene(game) {
     },
   });
 
+  // player dance control: press 1-4 for moves (wave / sway / pump / spin)
+  window.__danceMoveT = 0;
+  window.__danceMove = -1;
+  const dmKeys = (e) => {
+    const n = { '1': 0, '2': 1, '3': 2, '4': 3 }[e.key];
+    if (n !== undefined) { window.__danceMove = n; window.__danceMoveT = performance.now(); }
+  };
+  window.addEventListener('keydown', dmKeys);
+
+  window.__sceneHint = 'WASD — dance floor · 1/2/3/4 — dance moves · drag — camera';
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: olivia, self: this };
@@ -433,7 +443,7 @@ export async function miamiScene(game) {
       const spd = Math.hypot(player.vel.x, player.vel.z);
       // custom choreography whenever she isn't walking — this is her night
       if (spd < 0.4 && player.grounded) {
-        const mv = Math.floor(t / 2.6) % 4;
+        const mv = (window.__danceMove >= 0 && performance.now() - window.__danceMoveT < 4000) ? window.__danceMove : Math.floor(t / 2.6) % 4;
         if (mv === 0) {
           // rave hands: arms alternating overhead
           olivia.armL.rotation.x = Math.PI * 0.9 + Math.sin(t * 8) * 0.5;

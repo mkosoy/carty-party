@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { phoneText, FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups } from '../engine/core.js';
+import { positionalLoop } from '../engine/sfx.js';
 
 // E11EVEN Miami — the reward. Olivia dances in the neon heart of the club:
 // laser grids, LED walls, smoke, a crowd moving with the beat, confetti
@@ -584,6 +585,9 @@ interactions.add({
 
       // the player controls olivia — wasd/joystick walks her around the club
       player.update(dt);
+      // ambient crowd murmur under the music
+      if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 260, x: 0, z: 0, maxDist: 30, gain: 0.05, rate: 4 }); } catch {} }
+      if (this._amb) this._amb.update(player.person.group.position.x, player.person.group.position.z);
       // interaction prompts (bar etc.)
       const nearI = interactions.nearest(olivia.group.position);
       const promptEl = document.getElementById('interact-prompt');

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
-import { sfxChime } from '../engine/sfx.js';
+import { sfxChime, positionalLoop } from '../engine/sfx.js';
 import { makeChatter } from '../engine/collectibles.js';
 
 // ECHOSTAGE DC — the warehouse cathedral of dance music on Queens Chapel Rd.
@@ -413,6 +413,9 @@ export async function echostageScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian, self: this };
       player.update(dt);
+      // ambient crowd murmur under the music
+      if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 260, x: 0, z: 0, maxDist: 30, gain: 0.05, rate: 4 }); } catch {} }
+      if (this._amb) this._amb.update(player.person.group.position.x, player.person.group.position.z);
       heroLight.position.set(christian.group.position.x, 2.6, christian.group.position.z + 0.6);
       chatter.update(dt);
       pickupsC.update(dt, christian.group.position);

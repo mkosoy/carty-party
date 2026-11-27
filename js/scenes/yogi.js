@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { sfxChime } from '../engine/sfx.js';
+import { sfxChime, positionalLoop } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh, makeChatter } from '../engine/collectibles.js';
@@ -420,6 +420,9 @@ export async function yogiScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };
       player.update(dt);
+      // ambient kitchen sizzle and chatter
+      if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 380, x: 0, z: 0, maxDist: 22, gain: 0.04, rate: 4 }); } catch {} }
+      if (this._amb) this._amb.update(player.person.group.position.x, player.person.group.position.z);
       chatter.update(dt);
       followCam.update(dt, hero.group.position);
       pickups.update(dt, hero.group.position);

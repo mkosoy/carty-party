@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { phoneText, FollowCam, PlayerController, Interactions, showObjective, setObjective, choice , Pickups , npcFacePlayer } from '../engine/core.js';
-import { sfxChime } from '../engine/sfx.js';
+import { sfxChime, positionalLoop } from '../engine/sfx.js';
 import { carpet, paintedWall } from '../engine/textures.js';
 
 // Dr. Fritz's dental office — unlockable location. Olivia sits in the chair
@@ -661,6 +661,9 @@ export async function dentistScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: olivia, self: this };
       player.update(dt);
+      // ambient waiting room hush
+      if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 240, x: 0, z: 0, maxDist: 20, gain: 0.02, rate: 5 }); } catch {} }
+      if (this._amb) this._amb.update(player.person.group.position.x, player.person.group.position.z);
       followCam.update(dt, olivia.group.position);
       const near = interactions.nearest(olivia.group.position);
       const prompt = document.getElementById('interact-prompt');

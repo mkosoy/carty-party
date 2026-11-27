@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { sfxChime } from '../engine/sfx.js';
+import { sfxChime, positionalLoop } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
@@ -308,6 +308,9 @@ export async function hopkinsScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };
       player.update(dt);
+      // ambient lab ventilation hum
+      if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 210, x: 0, z: 0, maxDist: 22, gain: 0.03, rate: 5 }); } catch {} }
+      if (this._amb) this._amb.update(player.person.group.position.x, player.person.group.position.z);
       chatter.update(dt);
       pickupsC.update(dt, hero.group.position);
       followCam.update(dt, hero.group.position);

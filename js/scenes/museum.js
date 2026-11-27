@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh, makeChatter } from '../engine/collectibles.js';
-import { sfxChime } from '../engine/sfx.js';
+import { sfxChime, positionalLoop } from '../engine/sfx.js';
 
 // Smithsonian Air & Space — Mark's home turf. The great hall: suspended
 // aircraft overhead, rockets, lunar lander, interactive exhibits.
@@ -427,6 +427,9 @@ export async function museumScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };
       player.update(dt);
+      // ambient big quiet hall — air handling hush
+      if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 180, x: 0, z: 0, maxDist: 24, gain: 0.025, rate: 5 }); } catch {} }
+      if (this._amb) this._amb.update(player.person.group.position.x, player.person.group.position.z);
       sat.rotation.y += dt * 0.2;
       chatter.update(dt);
       if (!fl.active) followCam.update(dt, hero.group.position);

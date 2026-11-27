@@ -219,7 +219,7 @@ export function positionalLoop({ freq = 200, type = 'noise', x = 0, z = 0, maxDi
   }
   g.connect(ac().destination);
   src.start();
-  return {
+  const api = {
     x, z, maxDist, gain,
     update(px, pz) {
       const d = Math.hypot(px - this.x, pz - this.z);
@@ -228,6 +228,11 @@ export function positionalLoop({ freq = 200, type = 'noise', x = 0, z = 0, maxDi
     },
     stop() { try { src.stop(); } catch {} try { g.disconnect(); } catch {} }
   };
+  if (typeof window !== 'undefined') {
+    if (!window.__activeLoops) window.__activeLoops = [];
+    window.__activeLoops.push(api);
+  }
+  return api;
 }
 
 export function sfxBuzz() {

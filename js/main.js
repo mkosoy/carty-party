@@ -116,6 +116,11 @@ const game = {
   scene: null,
   sceneApi: null,
   async switchScene(factory) {
+    // stop all ambient positional loops from the previous scene — they must not bleed
+    if (window.__activeLoops) {
+      for (const l of window.__activeLoops) { try { l.stop(); } catch {} }
+      window.__activeLoops = [];
+    }
     // kill any live DJ booth loop — it must never bleed into other scenes
     if (window.__djLoop) {
       try { if (window.__djLoop.timer) clearInterval(window.__djLoop.timer); window.__djLoop.AC.close().catch(() => {}); } catch {}

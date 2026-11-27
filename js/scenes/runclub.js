@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { nightSky, skyDome } from '../engine/textures.js';
 import { makePerson } from '../engine/character.js';
 import { phoneText, showObjective, setObjective, choice } from '../engine/core.js';
+import { positionalLoop } from '../engine/sfx.js';
 
 // Kylie's Run Club — Wootton High School track. Marathon prep: hurdles,
 // racing three other runners, two laps, best lap time wins. SPACE / tap
@@ -396,6 +397,9 @@ export async function runclubScene(game) {
   return {
     update(dt) {
       window.__sceneHooks = { christian: kylie, self: this };
+      // ambient evening air on the track
+      if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 520, x: 0, z: 0, maxDist: 34, gain: 0.035, rate: 3 }); } catch {} }
+      if (this._amb) this._amb.update(kylie.group.position.x, kylie.group.position.z);
       // spectators sway and bounce a little as they watch
       for (let si = 0; si < spectators.length; si++) {
         const sp = spectators[si];

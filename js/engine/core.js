@@ -28,7 +28,11 @@ export class FollowCam {
       inp.camDX = 0; inp.camDY = 0;
       // auto-align: if the player is walking and hasn't dragged for 2s, ease behind them
       const nowT = performance.now() / 1000;
-      const moving = inp.axes && (Math.abs(inp.axes().x) > 0.1 || Math.abs(inp.axes().z) > 0.1) || window.__playerFrozen;
+      const inputActive = inp.axes && (Math.abs(inp.axes().x) > 0.1 || Math.abs(inp.axes().z) > 0.1);
+      // three regimes: input held — normal deadzone re-centering; idle or
+      // frozen — only correct BAD misalignment (face-on), so deliberate camera
+      // inspection while standing still is not fought
+      const moving = inputActive || window.__playerFrozen || true;
       if (moving && (!this.lastDragT || nowT - this.lastDragT > 0.9) && window.__playerFacing !== undefined) {
         // correct alignment target is pi - facing, NOT facing: facing uses
         // atan2(x,z) where forward-away-from-camera = pi, while camera yaw 0
@@ -44,7 +48,8 @@ export class FollowCam {
         // deliberate direction changes (strafe, reverse, big turns) re-center.
         // once a re-center starts it finishes (hysteresis 0.12) so it never stutters
         const ad = Math.abs(d);
-        if (ad > 0.5) this._recentering = true;
+        const engageAt = inputActive ? 0.5 : 1.2;
+        if (ad > engageAt) this._recentering = true;
         if (ad < 0.12) this._recentering = false;
         if (this._recentering) {
           this.yaw += d * Math.min(1, dt * (2.6 + Math.min(2.4, ad * 1.7)));
@@ -71,7 +76,12 @@ export class FollowCam {
         const cz = Math.max(this.room.minZ + m, Math.min(this.room.maxZ - m, desired.z));
         if (cx === desired.x && cz === desired.z) break;
         desired = target.clone().add(rot.clone().multiplyScalar(1 - (shrink + 1) * 0.11));
-        desired.y = Math.max(desired.y, target.y + 1.1 + shrink * 0.45);
+        // constant over-shoulder floor, NOT a rising one: a floor that grows
+        // with shrink ends up HIGHER than the unshrunk camera in small rooms
+        // (house: normal height 2.6, forced floor hit 3.35) — that is the
+        // top-down "camera on my head" angle. height already scales down with
+        // the shrink factor via rot; the floor only keeps it above shoulder.
+        desired.y = Math.max(desired.y, target.y + 1.8);
       }
       desired.x = Math.max(this.room.minX + m, Math.min(this.room.maxX - m, desired.x));
       desired.z = Math.max(this.room.minZ + m, Math.min(this.room.maxZ - m, desired.z));

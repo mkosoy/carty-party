@@ -78,9 +78,9 @@ export async function houseScene(game) {
     return g;
   }
 
-  const ground = buildFloor({ wallColor: 0xcfc4ae, floorColor: 0x9a7850, y: 0, floorTex: woodFloor('#8a6a42', 3, 2.2) });
-  const upper = buildFloor({ wallColor: 0xd8cfc4, floorColor: 0xa88a62, y: 0, floorTex: carpet('#7a6858', 4, 3) });
-  const basement = buildFloor({ wallColor: 0x4a4a52, floorColor: 0x3c3c44, y: 0, floorTex: carpet('#3c3c44', 4, 3) });
+  const ground = buildFloor({ wallColor: 0xd8caa8, floorColor: 0xc8b89a, y: 0, floorTex: carpet('#c0b090', 4, 3) });
+  const upper = buildFloor({ wallColor: 0xd8c8ae, floorColor: 0xb8a888, y: 0, floorTex: carpet('#b0a080', 4, 3) });
+  const basement = buildFloor({ wallColor: 0x7a5c38, floorColor: 0x9a9a8e, y: 0, floorTex: woodFloor('#8a6a42', 5, 1.4) });
 
   const boundsByFloor = {
     ground: [
@@ -122,12 +122,12 @@ export async function houseScene(game) {
 
   // GROUND: foyer + living room
   // couch: rounded, two cushions + arms
-  const couchMat = 0x7a5a3a;
+  const couchMat = 0x4e7a54;
   box(ground, 2.6, 0.5, 1.1, couchMat, -4, 0.3, 3.5);
   box(ground, 2.6, 0.55, 0.28, couchMat, -4, 0.75, 4.0);
   box(ground, 0.28, 0.65, 1.1, couchMat, -5.25, 0.5, 3.5);
   box(ground, 0.28, 0.65, 1.1, couchMat, -2.75, 0.5, 3.5);
-  box(ground, 1.15, 0.14, 0.95, 0x8a6a4a, -4.55, 0.62, 3.5);  // cushions
+  box(ground, 1.15, 0.14, 0.95, 0x5a8a60, -4.55, 0.62, 3.5);  // cushions
 
   // --- lived-in detail pass: the small stuff that makes a house a home ---
   // throw pillows on the couch — accent colors, slightly rotated
@@ -463,6 +463,157 @@ export async function houseScene(game) {
     flame.position.set(cx, 1.02, -3.5);
     ground.add(flame);
   }
+  // ===== REAL-HOUSE MATCH: signature pieces from 6570 Waning Moon Way =====
+  // second green velvet sofa facing the first — the real living room has a matched pair
+  const sofa2Mat = 0x4e7a54;
+  box(ground, 2.6, 0.5, 1.1, sofa2Mat, -4, 0.3, 0.2);
+  box(ground, 2.6, 0.55, 0.28, sofa2Mat, -4, 0.75, -0.3);
+  box(ground, 0.28, 0.65, 1.1, sofa2Mat, -5.25, 0.5, 0.2);
+  box(ground, 0.28, 0.65, 1.1, sofa2Mat, -2.75, 0.5, 0.2);
+  box(ground, 1.15, 0.14, 0.95, 0x5a8a60, -4.55, 0.62, 0.25);
+  box(ground, 1.15, 0.14, 0.95, 0x5a8a60, -3.45, 0.62, 0.25);
+  // burgundy accent pillow on the second sofa — matches photos
+  const accP = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.12), mat(0x8a2838));
+  accP.position.set(-4.9, 0.75, -0.1);
+  accP.rotation.z = 0.2;
+  ground.add(accP);
+  boundsByFloor.ground.push({ minX: -5.4, maxX: -2.6, minZ: -0.5, maxZ: 0.8 });
+
+  // black lacquer asian folding screen with gold art — the signature corner piece
+  for (let pi = 0; pi < 4; pi++) {
+    const panel = new THREE.Mesh(new THREE.BoxGeometry(0.55, 2.0, 0.05), mat(0x14100c));
+    panel.position.set(-7.5 + pi * 0.5, 1.0, -5.6 + (pi % 2) * 0.22);
+    panel.rotation.y = (pi % 2 ? -0.3 : 0.3);
+    ground.add(panel);
+    // gold painted detail on each panel
+    const c2 = document.createElement('canvas');
+    c2.width = 32; c2.height = 96;
+    const cx2 = c2.getContext('2d');
+    cx2.fillStyle = '#14100c';
+    cx2.fillRect(0, 0, 32, 96);
+    cx2.strokeStyle = '#c8a028';
+    cx2.lineWidth = 2;
+    cx2.beginPath();
+    cx2.moveTo(8, 80); cx2.quadraticCurveTo(20, 55, 10, 40);
+    cx2.quadraticCurveTo(24, 28, 14, 12);
+    cx2.stroke();
+    cx2.fillStyle = '#c8a028';
+    for (const [fx, fy] of [[12, 30], [18, 48], [10, 62]]) { cx2.beginPath(); cx2.arc(fx, fy, 2.5, 0, 7); cx2.fill(); }
+    const tt2 = new THREE.CanvasTexture(c2);
+    tt2.colorSpace = THREE.SRGBColorSpace;
+    const art = new THREE.Mesh(new THREE.PlaneGeometry(0.48, 1.9), new THREE.MeshStandardMaterial({ map: tt2, roughness: 0.4 }));
+    art.position.copy(panel.position);
+    art.position.z += (pi % 2 ? 0.05 : 0.05);
+    art.position.x += 0.01;
+    art.rotation.y = panel.rotation.y;
+    art.position.y = 1.0;
+    ground.add(art);
+  }
+  boundsByFloor.ground.push({ minX: -7.9, maxX: -5.4, minZ: -6.0, maxZ: -5.2 });
+
+  // large gilt-framed mirror on the living room wall — opens the space like the photos
+  const mirrorFrame = new THREE.Mesh(new THREE.BoxGeometry(1.7, 1.2, 0.07), mat(0x9a7428));
+  mirrorFrame.position.set(1.0, 1.9, 5.86);
+  ground.add(mirrorFrame);
+  const mirrorGlass = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.0), new THREE.MeshStandardMaterial({ color: 0xaebfd0, roughness: 0.05, metalness: 0.9 }));
+  mirrorGlass.position.set(1.0, 1.9, 5.82);
+  mirrorGlass.rotation.y = Math.PI;
+  ground.add(mirrorGlass);
+
+  // wooden secretary desk with hutch against the wall — the antique in the photos
+  box(ground, 0.9, 1.3, 0.45, 0x6a4426, 7.5, 0.65, 2.5);
+  box(ground, 0.8, 0.6, 0.4, 0x7a5230, 7.5, 1.55, 2.5);
+  // little cubby holes in the hutch
+  for (const [hx, hy] of [[-0.2, 1.45], [0.1, 1.45], [-0.2, 1.7], [0.1, 1.7]]) {
+    box(ground, 0.16, 0.14, 0.3, 0x3a2814, 7.5 + hx, hy, 2.55);
+  }
+  boundsByFloor.ground.push({ minX: 6.9, maxX: 8.0, minZ: 2.1, maxZ: 2.9 });
+
+  // table lamp with cream shade on a side console — the warm pools of lamplight in every photo
+  box(ground, 0.7, 0.75, 0.4, 0x5a3a24, 5.2, 0.37, 5.6);
+  const tlBase = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.09, 0.3, 8), mat(0x8a6a3a));
+  tlBase.position.set(5.2, 0.95, 5.6);
+  ground.add(tlBase);
+  const tlShade = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 0.24, 10), mat(0xf0e4c8));
+  tlShade.position.set(5.2, 1.25, 5.6);
+  ground.add(tlShade);
+  const tlGlow = new THREE.PointLight(0xffdfae, 2.2, 5.5);
+  tlGlow.position.set(5.2, 1.4, 5.4);
+  ground.add(tlGlow);
+  // second lamp pairing the other side — photos show pairs of lamps
+  const tl2Base = tlBase.clone(); tl2Base.position.set(-0.5, 0.95, 5.6); ground.add(tl2Base);
+  const tl2Shade = tlShade.clone(); tl2Shade.position.set(-0.5, 1.25, 5.6); ground.add(tl2Shade);
+  const tl2Glow = new THREE.PointLight(0xffdfae, 2.0, 5); tl2Glow.position.set(-0.5, 1.4, 5.4); ground.add(tl2Glow);
+  box(ground, 0.7, 0.75, 0.4, 0x5a3a24, -0.5, 0.37, 5.6);
+
+  // striped dining chair cushions — the green/burgundy stripe in the photos
+  for (let ci2 = 0; ci2 < 4; ci2++) {
+    const cx3 = 0.7 + (ci2 % 2) * 1.6, cz3 = ci2 < 2 ? -4.35 : -2.65;
+    const sc = document.createElement('canvas');
+    sc.width = 32; sc.height = 32;
+    const sx2 = sc.getContext('2d');
+    const stripes = ['#5a7a4a', '#8a3848', '#c8b088', '#5a7a4a'];
+    stripes.forEach((col, si3) => { sx2.fillStyle = col; sx2.fillRect(si3 * 8, 0, 8, 32); });
+    const st2 = new THREE.CanvasTexture(sc);
+    st2.colorSpace = THREE.SRGBColorSpace;
+    const cush = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.05, 0.42), new THREE.MeshStandardMaterial({ map: st2, roughness: 0.9 }));
+    cush.position.set(cx3, 0.48, cz3);
+    ground.add(cush);
+  }
+  // candelabra centerpiece — tall brass with candle cups like the photos
+  const candBase = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 0.05, 8), mat(0x8a6a28));
+  candBase.position.set(1.5, 0.83, -3.5);
+  ground.add(candBase);
+  const candStem = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.03, 0.35, 6), mat(0x8a6a28));
+  candStem.position.set(1.5, 1.0, -3.5);
+  ground.add(candStem);
+  for (const off of [-0.14, 0, 0.14]) {
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.12, 5), mat(0x8a6a28));
+    arm.position.set(1.5 + off, 1.15 - Math.abs(off) * 0.4, -3.5);
+    ground.add(arm);
+    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.02, 0.1, 6), mat(0xe8e0d0));
+    cup.position.set(1.5 + off, 1.24 - Math.abs(off) * 0.4, -3.5);
+    ground.add(cup);
+  }
+  // richer polished wood on the dining table — red-toned like the photos
+  dt.material = new THREE.MeshStandardMaterial({ color: 0x8a4626, roughness: 0.25 });
+
+  // basement drop ceiling with fluorescent panel — the real 80s basement look
+  for (let dx = -7; dx <= 7; dx += 2) {
+    const grid = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.02, 11.6), mat(0xd8d8d0));
+    grid.position.set(dx, 3.0, 0);
+    basement.add(grid);
+  }
+  for (let dz = -5; dz <= 5; dz += 2) {
+    const grid = new THREE.Mesh(new THREE.BoxGeometry(15.6, 0.02, 0.04), mat(0xd8d8d0));
+    grid.position.set(0, 3.0, dz);
+    basement.add(grid);
+  }
+  const fluor = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.05, 0.7), new THREE.MeshBasicMaterial({ color: 0xf4f8ff }));
+  fluor.position.set(-2, 2.98, -1);
+  basement.add(fluor);
+  const fluorGlow = new THREE.PointLight(0xe8f0ff, 3.2, 11);
+  fluorGlow.position.set(-2, 2.6, -1);
+  basement.add(fluorGlow);
+
+  // upstairs ceiling fan with light — in the real primary bedroom
+  const fanBase = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 0.14, 8), mat(0xc8b888));
+  fanBase.position.set(-5.5, 2.9, 4.2);
+  upper.add(fanBase);
+  for (let fb = 0; fb < 4; fb++) {
+    const blade = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.02, 0.16), mat(0xd8cbb0));
+    blade.position.set(-5.5, 2.88, 4.2);
+    blade.rotation.y = fb * Math.PI / 2;
+    blade.translateX(0.42);
+    upper.add(blade);
+  }
+  const fanLight = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), new THREE.MeshBasicMaterial({ color: 0xfff2cc }));
+  fanLight.position.set(-5.5, 2.78, 4.2);
+  upper.add(fanLight);
+  const fanGlow = new THREE.PointLight(0xffe8c0, 1.8, 6);
+  fanGlow.position.set(-5.5, 2.6, 4.2);
+  upper.add(fanGlow);
+
   // stockings on the fireplace wall + garland
   for (let si = 0; si < 4; si++) {
     const st = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.3, 0.06), mat([0xc04040, 0x3a6a4a, 0xc04040, 0x3a6a4a][si]));
@@ -534,8 +685,8 @@ export async function houseScene(game) {
     cloth.position.set(-2.65 + li * 0.15, 0.42, -4.6);
     upper.add(cloth);
   }
-  bed(upper, -6.2, -4.2, 0x222226);
-  bed(upper, -6.2, 4.2, 0xd07a92);
+  bed(upper, -6.2, -4.2, 0x3a5a8a);
+  bed(upper, -6.2, 4.2, 0x7a5230);
   // nightstands with warm glowing lamps beside each bed
   for (const nz of [-4.2, 4.2]) {
     box(upper, 0.45, 0.5, 0.45, 0x6a4a2c, -5.2, 0.25, nz + 0.9);
@@ -1096,7 +1247,7 @@ export async function houseScene(game) {
 
   // --- Olivia (real one) ---
   interactions.add({
-    pos: new THREE.Vector3(-6.2, 0, -2.6), radius: 1.7, label: 'The black bedding', floor: 'upper',
+    pos: new THREE.Vector3(-6.2, 0, -2.6), radius: 1.7, label: 'The blue bedding', floor: 'upper',
     action: async () => {
       player.frozen = true;
       await dialogue.play([
@@ -1106,11 +1257,11 @@ export async function houseScene(game) {
     },
   });
   interactions.add({
-    pos: new THREE.Vector3(-6.2, 0, 2.6), radius: 1.7, label: 'The pink bedding', floor: 'upper',
+    pos: new THREE.Vector3(-6.2, 0, 2.6), radius: 1.7, label: 'The bronze bedding', floor: 'upper',
     action: async () => {
       player.frozen = true;
       await dialogue.play([
-        { speaker: 'Christian', text: 'Pink, ruffled, immaculate. The other Olivia is the exact opposite of downstairs black-bedding Olivia. They really are two different people. Probably.' },
+        { speaker: 'Christian', text: 'Bronze paisley, immaculate. The other Olivia is the exact opposite of downstairs blue-bedding Olivia. They really are two different people. Probably.' },
       ]);
       player.frozen = false;
     },

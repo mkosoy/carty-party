@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { sfxCrash, sfxGobble, sfxBoost } from '../engine/sfx.js';
 import { showObjective, choice } from '../engine/core.js';
 import { asphalt } from '../engine/textures.js';
 
@@ -330,6 +331,34 @@ export async function driveScene(game) {
     radioNodes = null;
   }
   window.__radioStop = stopRadio;
+  // engine hum: continuous low osc whose pitch tracks speed
+  let engineOsc = null, engineGain = null, engineFilter = null;
+  function startEngine() {
+    try {
+      const AC = radioAC();
+      engineOsc = AC.createOscillator();
+      engineOsc.type = 'sawtooth';
+      engineOsc.frequency.value = 55;
+      engineFilter = AC.createBiquadFilter();
+      engineFilter.type = 'lowpass';
+      engineFilter.frequency.value = 220;
+      engineGain = AC.createGain();
+      engineGain.gain.value = 0.0;
+      engineOsc.connect(engineFilter);
+      engineFilter.connect(engineGain);
+      engineGain.connect(AC.destination);
+      engineOsc.start();
+      engineGain.gain.setTargetAtTime(0.055, AC.currentTime, 1.2);
+    } catch {}
+  }
+  function stopEngine() {
+    try { engineOsc?.stop(); } catch {}
+    try { engineGain?.disconnect(); } catch {}
+    engineOsc = null;
+  }
+  const origRadioStop = stopRadio;
+  window.__radioStop = () => { origRadioStop(); stopEngine(); };
+  setTimeout(() => { try { startEngine(); } catch {} }, 900);
   function noiseBufAC(AC, secs = 1.5) {
     const buf = AC.createBuffer(1, AC.sampleRate * secs, AC.sampleRate);
     const dd = buf.getChannelData(0);
@@ -762,6 +791,7 @@ export async function driveScene(game) {
             scene.remove(o.g);
             obstacles.splice(i, 1);
             speed = Math.max(9, speed - 4);
+            try { sfxCrash(); } catch {}
             camera.position.x += (Math.random() - 0.5) * 0.3;
             score++;
             const names = { dentist: 'A dentist! flossing in the road!', activist: 'Environmental activist chaining himself to the lane!', clubber: 'Club goer still out from last night!', datacenter: 'An entire AI data center, in the road, in MoCo!' };
@@ -777,12 +807,14 @@ export async function driveScene(game) {
             scene.remove(p);
             pickups.splice(i, 1);
             speed = Math.min(30, speed + 3.5);
+            try { sfxGobble(); sfxBoost(); } catch {}
             showObjective('🍣 sushi speed boost!', 1200);
           }
         }
 
         // arrival: cover enough distance before timer ends
         this._distance = (this._distance || 0) + dz;
+        if (engineOsc) { try { engineOsc.frequency.setTargetAtTime(48 + speed * 2.6, radioAC().currentTime, 0.15); } catch {} }
         if (this._distance > (window.__runDistance || 1050) && !finished) {
           finished = true;
           (async () => {

@@ -80,3 +80,73 @@ export function sfxStep(running = false) {
   src.connect(f); f.connect(g); g.connect(AC.destination);
   src.start(t);
 }
+
+export function sfxCrash() {
+  const AC = ac();
+  const t = AC.currentTime;
+  // thud: low noise burst + frequency drop
+  const len = 0.25;
+  const buf = AC.createBuffer(1, AC.sampleRate * len, AC.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 1.6);
+  const src = AC.createBufferSource();
+  src.buffer = buf;
+  const f = AC.createBiquadFilter();
+  f.type = 'lowpass';
+  f.frequency.setValueAtTime(400, t);
+  f.frequency.exponentialRampToValueAtTime(90, t + len);
+  const g = AC.createGain();
+  g.gain.value = 0.5;
+  src.connect(f); f.connect(g); g.connect(AC.destination);
+  src.start(t);
+  // metal clank harmonic
+  const o = AC.createOscillator();
+  o.type = 'square';
+  o.frequency.setValueAtTime(180, t);
+  o.frequency.exponentialRampToValueAtTime(60, t + 0.2);
+  const og = AC.createGain();
+  og.gain.setValueAtTime(0.12, t);
+  og.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+  o.connect(og); og.connect(AC.destination);
+  o.start(t); o.stop(t + 0.24);
+}
+
+export function sfxGobble() {
+  const AC = ac();
+  const t = AC.currentTime;
+  // turkey gobble: rapid warbling bursts — pitch wobbles fast
+  const o = AC.createOscillator();
+  o.type = 'sawtooth';
+  o.frequency.setValueAtTime(320, t);
+  const g = AC.createGain();
+  g.gain.value = 0;
+  const f = AC.createBiquadFilter();
+  f.type = 'lowpass'; f.frequency.value = 1400;
+  o.connect(f); f.connect(g); g.connect(AC.destination);
+  // warble via LFO on frequency
+  const lfo = AC.createOscillator();
+  lfo.frequency.value = 28;
+  const lfoG = AC.createGain();
+  lfoG.gain.value = 90;
+  lfo.connect(lfoG); lfoG.connect(o.frequency);
+  o.start(t); lfo.start(t);
+  g.gain.setValueAtTime(0.16, t);
+  g.gain.setValueAtTime(0.16, t + 0.28);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+  o.stop(t + 0.42); lfo.stop(t + 0.42);
+}
+
+export function sfxBoost() {
+  const AC = ac();
+  const t = AC.currentTime;
+  // speed boost: rising whoosh
+  const o = AC.createOscillator();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(300, t);
+  o.frequency.exponentialRampToValueAtTime(900, t + 0.28);
+  const g = AC.createGain();
+  g.gain.setValueAtTime(0.14, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
+  o.connect(g); g.connect(AC.destination);
+  o.start(t); o.stop(t + 0.34);
+}

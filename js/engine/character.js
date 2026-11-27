@@ -44,8 +44,15 @@ export function makePerson({
   height = 1,
   jacket = false,       // open jacket layer over the torso
   collar = true,
+  outfit = null,        // 'shirt' | 'hoodie' | 'tee' | 'sweater' | 'jacket' — auto-varied when null
   name = null,
 } = {}) {
+  if (!outfit) {
+    const pool = jacket ? ['jacket'] : ['shirt', 'hoodie', 'tee', 'sweater', 'shirt', 'hoodie', 'sweater'];
+    const seed = (typeof top === 'number' ? top : 0) * 31 + (typeof bottom === 'number' ? bottom : 0) * 7 + (typeof hair === 'number' ? hair : 0);
+    outfit = pool[Math.abs(seed) % pool.length];
+  }
+  if (jacket) outfit = 'jacket';
   const g = new THREE.Group();
   const weave = fabricWeave(2, 2);
   const mat = (c, rough = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0, map: weave, bumpMap: weave, bumpScale: 0.15 });
@@ -69,7 +76,7 @@ export function makePerson({
   hem.scale.z = 0.74;
   g.add(hem);
   // collar rim
-  if (collar) {
+  if (collar && outfit === 'shirt') {
     const col = new THREE.Mesh(new THREE.TorusGeometry(0.075 * u, 0.02 * u, 8, 14), mat(new THREE.Color(top).multiplyScalar(0.78).getHex()));
     col.position.y = 1.5 * u;
     col.rotation.x = Math.PI / 2;
@@ -86,24 +93,79 @@ export function makePerson({
       g.add(panel);
     }
   }
-  // shirt construction details: center placket with buttons, chest pocket, shoulder seams
-  const placket = new THREE.Mesh(new THREE.BoxGeometry(0.028 * u, 0.5 * u, 0.012 * u), mat(new THREE.Color(top).multiplyScalar(0.88).getHex()));
-  placket.position.set(0, 1.13 * u, 0.121 * u);
-  g.add(placket);
-  for (let bi = 0; bi < 3; bi++) {
-    const btn = new THREE.Mesh(new THREE.SphereGeometry(0.011 * u, 6, 6), smoothMat(0xe8e4da, 0.4));
-    btn.position.set(0, (1.3 - bi * 0.14) * u, 0.13 * u);
-    g.add(btn);
+  // outfit-specific construction — shirts get plackets, hoodies get hoods + kangaroo pockets, etc.
+  if (outfit === 'shirt' || outfit === 'jacket') {
+    const placket = new THREE.Mesh(new THREE.BoxGeometry(0.028 * u, 0.5 * u, 0.012 * u), mat(new THREE.Color(top).multiplyScalar(0.88).getHex()));
+    placket.position.set(0, 1.13 * u, 0.121 * u);
+    g.add(placket);
+    for (let bi = 0; bi < 3; bi++) {
+      const btn = new THREE.Mesh(new THREE.SphereGeometry(0.011 * u, 6, 6), smoothMat(0xe8e4da, 0.4));
+      btn.position.set(0, (1.3 - bi * 0.14) * u, 0.13 * u);
+      g.add(btn);
+    }
   }
-  const pocket = new THREE.Mesh(new THREE.BoxGeometry(0.075 * u, 0.085 * u, 0.012 * u), mat(new THREE.Color(top).multiplyScalar(0.85).getHex()));
-  pocket.position.set(-0.075 * u, 1.26 * u, 0.117 * u);
-  g.add(pocket);
+  if (outfit === 'shirt') {
+    const pocket = new THREE.Mesh(new THREE.BoxGeometry(0.075 * u, 0.085 * u, 0.012 * u), mat(new THREE.Color(top).multiplyScalar(0.85).getHex()));
+    pocket.position.set(-0.075 * u, 1.26 * u, 0.117 * u);
+    g.add(pocket);
+  }
+  if (outfit === 'hoodie') {
+    // kangaroo pocket
+    const kanga = new THREE.Mesh(new THREE.BoxGeometry(0.2 * u, 0.13 * u, 0.03 * u), mat(new THREE.Color(top).multiplyScalar(0.85).getHex()));
+    kanga.position.set(0, 0.99 * u, 0.115 * u);
+    g.add(kanga);
+    // hood resting behind the neck
+    const hood = new THREE.Mesh(new THREE.SphereGeometry(0.11 * u, 12, 8), mat(new THREE.Color(top).multiplyScalar(0.9).getHex()));
+    hood.position.set(0, 1.52 * u, -0.09 * u);
+    hood.scale.set(1.1, 0.6, 0.8);
+    g.add(hood);
+    // drawstrings
+    for (const side of [-1, 1]) {
+      const string = new THREE.Mesh(new THREE.CylinderGeometry(0.006 * u, 0.006 * u, 0.09 * u, 4), smoothMat(0xe8e4da, 0.5));
+      string.position.set(side * 0.035 * u, 1.44 * u, 0.1 * u);
+      g.add(string);
+    }
+  }
+  if (outfit === 'sweater') {
+    // ribbed collar/cuff/hem bands — chunky knit read
+    for (const [ry, rr] of [[1.49, 0.082], [0.86, 0.165]]) {
+      const rib = new THREE.Mesh(new THREE.TorusGeometry(rr * u, 0.018 * u, 6, 14), mat(new THREE.Color(top).multiplyScalar(0.72).getHex()));
+      rib.position.y = ry * u;
+      rib.rotation.x = Math.PI / 2;
+      rib.scale.z = 0.8;
+      g.add(rib);
+    }
+  }
+  if (outfit === 'tee') {
+    // simple band collar, no construction details — reads casual
+    const teeBand = new THREE.Mesh(new THREE.TorusGeometry(0.07 * u, 0.014 * u, 6, 12), mat(new THREE.Color(top).multiplyScalar(0.9).getHex()));
+    teeBand.position.y = 1.5 * u;
+    teeBand.rotation.x = Math.PI / 2;
+    teeBand.scale.z = 0.8;
+    g.add(teeBand);
+  }
+  // every body type: shoulder seams
   for (const side of [-1, 1]) {
     const seam = new THREE.Mesh(new THREE.CylinderGeometry(0.006 * u, 0.006 * u, 0.16 * u, 4), mat(new THREE.Color(top).multiplyScalar(0.8).getHex()));
     seam.position.set(side * 0.14 * u, 1.47 * u, 0.03 * u);
     seam.rotation.z = side * 0.9;
     seam.rotation.x = 0.3;
     g.add(seam);
+  }
+  // scarf sometimes — it's a holiday game, scarves everywhere
+  const scarfSeed = (typeof top === 'number' ? top : 0) * 13 + (typeof skin === 'number' ? skin : 0);
+  if (scarfSeed % 3 === 0 && outfit !== 'hoodie') {
+    const scarfColors = [0xc03838, 0x2a6a3a, 0xd0a030, 0x8a2a5a, 0x3a5a9a];
+    const sc = scarfColors[Math.abs(scarfSeed) % scarfColors.length];
+    const wrap = new THREE.Mesh(new THREE.TorusGeometry(0.075 * u, 0.028 * u, 8, 14), mat(sc));
+    wrap.position.y = 1.52 * u;
+    wrap.rotation.x = Math.PI / 2;
+    wrap.scale.z = 0.85;
+    g.add(wrap);
+    const tail = new THREE.Mesh(new THREE.BoxGeometry(0.07 * u, 0.22 * u, 0.02 * u), mat(sc));
+    tail.position.set(0.05 * u, 1.38 * u, 0.12 * u);
+    tail.rotation.z = 0.12;
+    g.add(tail);
   }
 
   // hips + belt

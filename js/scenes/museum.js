@@ -87,7 +87,7 @@ export async function museumScene(game) {
     fin.rotation.y = -a;
     rocket.add(fin);
   }
-  rocket.position.set(12, 0, 6);
+  rocket.position.set(6, 0, -5);
   scene.add(rocket);
   bounds.push({ minX: 11, maxX: 13, minZ: 5, maxZ: 7 });
   // lunar lander — angular gold foil
@@ -106,9 +106,9 @@ export async function museumScene(game) {
     leg.rotation.x = -Math.sin(a) * 0.5;
     lander.add(leg);
   }
-  lander.position.set(-11, 0, 5);
+  lander.position.set(-6, 0, -5);
   scene.add(lander);
-  bounds.push({ minX: -12.5, maxX: -9.5, minZ: 3.5, maxZ: 6.5 });
+  bounds.push({ minX: -7.5, maxX: -4.5, minZ: -6.5, maxZ: -3.5 });
   // info desk + museum sign
   const desk = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.5, 1.05, 16), mat(0x3a3630));
   desk.position.set(0, 0.5, 9);

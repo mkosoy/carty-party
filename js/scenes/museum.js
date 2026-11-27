@@ -135,6 +135,58 @@ export async function museumScene(game) {
     visitors.push(p);
   }
 
+  // mark himself is here — your personal docent, unless you're playing as him
+  if ((localStorage.getItem('cp-character') || 'christian') !== 'mark') {
+    const markNpc = makePerson({ photo: faces.mark, top: 0x3a4a5c, bottom: 0x2c2c34, hair: 0x2a1c10, hairStyle: 'short', skin: 0xd8a880, name: 'Mark' });
+    markNpc.group.position.set(1.6, 0, 4.8);
+    markNpc.group.rotation.y = Math.PI;
+    scene.add(markNpc.group);
+    window.__markNpc = markNpc;
+  }
+  // display cases with models along the side walls
+  for (const [cx, cz, ry] of [[-16.5, -4, Math.PI / 2], [-16.5, 2, Math.PI / 2], [16.5, -2, -Math.PI / 2], [16.5, 4, -Math.PI / 2]]) {
+    const ped = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.0, 1.2), mat(0x3a3630));
+    ped.position.set(cx, 0.5, cz);
+    scene.add(ped);
+    const vitrine = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.8, 1.0), new THREE.MeshStandardMaterial({ color: 0xa8d0e8, transparent: true, opacity: 0.22, roughness: 0.05 }));
+    vitrine.position.set(cx, 1.45, cz);
+    scene.add(vitrine);
+    const model = plane([0xc84a3a, 0xd8d8e0, 0x3a5a8a, 0xc89830][Math.floor(Math.abs(cx + cz)) % 4], 0.3);
+    model.position.set(cx, 1.4, cz);
+    model.rotation.y = ry + Math.random();
+    scene.add(model);
+    bounds.push({ minX: cx - 0.8, maxX: cx + 0.8, minZ: cz - 0.8, maxZ: cz + 0.8 });
+  }
+  // wall murals: clouds-and-sky canvases between the windows
+  for (const [mx, hue] of [[-14, '#3a5a8a'], [-5, '#4a6a9a'], [5, '#3a5a8a'], [14, '#4a6a9a']]) {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 128;
+    const xc = c.getContext('2d');
+    const gr = xc.createLinearGradient(0, 0, 0, 128);
+    gr.addColorStop(0, hue); gr.addColorStop(1, '#1a2a42');
+    xc.fillStyle = gr; xc.fillRect(0, 0, 256, 128);
+    xc.fillStyle = 'rgba(255,255,255,0.5)';
+    for (let cl = 0; cl < 5; cl++) {
+      xc.beginPath();
+      xc.ellipse(30 + cl * 48, 90 - Math.random() * 30, 26, 10, 0, 0, 6.29);
+      xc.fill();
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 2.2), new THREE.MeshBasicMaterial({ map: t }));
+    m.position.set(mx, 4.4, -10.85);
+    scene.add(m);
+  }
+  // floor medallion at center — the museum compass rose
+  const med = new THREE.Mesh(new THREE.CircleGeometry(2.6, 32), new THREE.MeshStandardMaterial({ color: 0x6a6458, roughness: 0.3, metalness: 0.3 }));
+  med.rotation.x = -Math.PI / 2;
+  med.position.set(0, 0.115, 0);
+  scene.add(med);
+  const star2 = new THREE.Mesh(new THREE.CircleGeometry(1.4, 8), new THREE.MeshBasicMaterial({ color: 0xc8a040 }));
+  star2.rotation.x = -Math.PI / 2;
+  star2.position.set(0, 0.12, 0);
+  scene.add(star2);
+
   // player — default mark if christian unchosen? respect the picker
   const hero = makePerson({ photo: faces.mark, top: 0x3a4a5c, bottom: 0x2c2c34, hair: 0x2a1c10, hairStyle: 'short', skin: 0xd8a880, ...playerIdentity(faces) });
   hero.group.position.set(0, 0, 4.5);

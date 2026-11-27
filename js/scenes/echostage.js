@@ -10,7 +10,7 @@ export async function echostageScene(game) {
 
   scene.background = new THREE.Color(0x060509);
   scene.fog = new THREE.Fog(0x0a0812, 14, 42);
-  scene.add(new THREE.AmbientLight(0x3a3450, 1.6));
+  scene.add(new THREE.AmbientLight(0x453f5e, 2.0));
   const keyL = new THREE.DirectionalLight(0x8090c0, 0.5);
   keyL.position.set(-6, 10, 4);
   scene.add(keyL);
@@ -153,9 +153,15 @@ export async function echostageScene(game) {
   }
   neonSign('ECHOSTAGE', '#40e8ff', 7, -17.6, 6.4, 0, Math.PI / 2);
   neonSign('queens chapel rd — dc', '#ff2a8a', 5, 0, 6.2, 11.6, Math.PI);
+  const washA = new THREE.PointLight(0xff2a8a, 30, 20);
+  washA.position.set(-6, 5, 0);
+  scene.add(washA);
+  const washB = new THREE.PointLight(0x40e8ff, 30, 20);
+  washB.position.set(6, 5, 2);
+  scene.add(washB);
   // overhead practicals
   for (const [lx, lz] of [[-8, 4], [0, 4], [8, 4], [12, 0]]) {
-    const pt = new THREE.PointLight(0xffe8c0, 30, 20);
+    const pt = new THREE.PointLight(0xffe8c0, 46, 24);
     pt.position.set(lx, 6.8, lz);
     scene.add(pt);
   }

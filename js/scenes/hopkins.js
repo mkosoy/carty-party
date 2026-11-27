@@ -133,6 +133,15 @@ export async function hopkinsScene(game) {
     researchers.push(p);
   }
 
+  // stacy herself is at the bench unless you're playing as her
+  if ((localStorage.getItem('cp-character') || 'christian') !== 'stacy') {
+    const stacyNpc = makePerson({ photo: faces.stacy, outfit: 'dress', top: 0xf0f0f0, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098, name: 'Stacy' });
+    stacyNpc.group.position.set(-1.5, 0, 4.8);
+    stacyNpc.group.rotation.y = Math.PI;
+    scene.add(stacyNpc.group);
+    window.__stacyNpc = stacyNpc;
+  }
+
   // player — stacy by default here
   const hero = makePerson({ photo: faces.stacy, outfit: 'dress', top: 0xf0f0f0, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098, ...playerIdentity(faces) });
   hero.group.position.set(0, 0, 4.5);

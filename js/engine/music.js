@@ -149,6 +149,10 @@ export class Music {
     else if (sceneName === 'dc') loop(500, 0.4, 0.02, 'highpass');
     else if (sceneName === 'house') loop(240, 1.2, 0.018, 'lowpass');
     else if (sceneName === 'swap') loop(500, 0.6, 0.015);
+    else if (sceneName === 'echostage') { loop(600, 0.5, 0.02); loop(150, 0.4, 0.03, 'lowpass'); }
+    else if (sceneName === 'shopping') loop(380, 0.8, 0.015);
+    else if (sceneName === 'museum') loop(300, 1.0, 0.014, 'highpass');
+    else if (sceneName === 'hopkins') loop(420, 0.7, 0.012, 'lowpass');
   }
 
   play(sceneName) {

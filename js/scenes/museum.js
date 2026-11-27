@@ -211,6 +211,70 @@ export async function museumScene(game) {
   interactions.add({ pos: new THREE.Vector3(-8, 0, -4), radius: 3.4, label: 'The red biplane', action: say([
     { speaker: 'Mark', text: 'Fabric and wire and pure audacity. People flew these before radio. Before parachutes, sometimes.' },
   ]) });
+
+  // great-hall enrichment: wall banners, info pedestals, satellite hanging
+  function wallBanner(x, z, ry, lines, bg) {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 384;
+    const x2 = c.getContext('2d');
+    x2.fillStyle = bg;
+    x2.fillRect(0, 0, 256, 384);
+    x2.fillStyle = 'rgba(255,255,255,0.12)';
+    for (let i = 0; i < 30; i++) x2.fillRect(Math.random() * 256, Math.random() * 384, 2, 2);
+    x2.fillStyle = '#f5eeda';
+    x2.font = 'bold 30px Georgia';
+    x2.textAlign = 'center';
+    lines.forEach((ln, i) => x2.fillText(ln, 128, 160 + i * 44));
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 3.3), new THREE.MeshStandardMaterial({ map: t, roughness: 0.85 }));
+    m.position.set(x, 3.4, z);
+    m.rotation.y = ry;
+    scene.add(m);
+  }
+  wallBanner(-17.7, -6, Math.PI / 2, ['MILESTONES', 'OF', 'FLIGHT'], '#28324a');
+  wallBanner(-17.7, 2, Math.PI / 2, ['SPACE', 'RACE'], '#4a2838');
+  wallBanner(17.7, -6, -Math.PI / 2, ['APOLLO', 'TO THE', 'MOON'], '#2a3c2c');
+  wallBanner(17.7, 2, -Math.PI / 2, ['WRIGHT', 'BROTHERS', '1903'], '#3c3428');
+  // hanging satellite mid-hall
+  const sat = new THREE.Group();
+  const satBody = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.9, 10), mat(0xb8bcc8));
+  sat.add(satBody);
+  const panelMat = mat(0x2244aa);
+  for (const sgn of [-1, 1]) {
+    const p = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.04, 0.6), panelMat);
+    p.position.x = sgn * 1.2;
+    sat.add(p);
+    for (let gi = 0; gi < 3; gi++) {
+      const strip = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 0.6), mat(0xd8c840));
+      strip.position.set(sgn * (0.6 + gi * 0.55), 0, 0);
+      sat.add(strip);
+    }
+  }
+  sat.position.set(-3, 4.2, 2);
+  sat.rotation.z = 0.3;
+  scene.add(sat);
+  sat.userData.baseY = 4.2;
+  const satWire = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 3.5), mat(0x2a2a2a));
+  satWire.position.set(-3, 7.5, 2);
+  scene.add(satWire);
+  // info pedestals with plaque tops
+  function pedestal(x, z, ry) {
+    const g = new THREE.Group();
+    const base = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.0, 0.5), mat(0x3a3f4a));
+    base.position.y = 0.5;
+    g.add(base);
+    const plaque = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.02, 0.34), mat(0x8a7a4a));
+    plaque.position.set(0, 1.02, 0);
+    plaque.rotation.x = -0.4;
+    g.add(plaque);
+    g.position.set(x, 0, z);
+    g.rotation.y = ry;
+    scene.add(g);
+    bounds.push({ minX: x - 0.35, maxX: x + 0.35, minZ: z - 0.35, maxZ: z + 0.35 });
+  }
+  pedestal(-4, 4.5, 0.4); pedestal(4, 4.5, -0.4); pedestal(0, -4.5, 0);
+
   interactions.add({ pos: new THREE.Vector3(6, 0, -5), radius: 3.4, label: 'The rocket', action: say([
     { speaker: 'Mark', text: 'Every gram on a rocket fights for its life. Engineering as a contact sport. Beautiful.' },
     { speaker: 'Christian', text: 'You get this look on your face every time. Every single time.' },
@@ -286,6 +350,7 @@ export async function museumScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };
       player.update(dt);
+      sat.rotation.y += dt * 0.2;
       chatter.update(dt);
       if (!fl.active) followCam.update(dt, hero.group.position);
       pickups.update(dt, hero.group.position);

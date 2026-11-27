@@ -186,6 +186,39 @@ export async function dentistScene(game) {
   const upper = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.8, 0.4), mat(0xdde3e9));
   upper.position.set(-3.2, 2.2, -4.6);
   scene.add(upper);
+  // cabinet door seams + handles so it reads as cabinetry
+  for (let di2 = 0; di2 < 4; di2++) {
+    const seam = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.74, 0.02), mat(0x9aa2ac));
+    seam.position.set(-3.2 - 1.28 + di2 * 0.85, 2.2, -4.38);
+    scene.add(seam);
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.025, 6, 6), mat(0x666e78));
+    knob.position.set(-3.2 - 1.5 + di2 * 0.85 + 0.35, 2.05, -4.38);
+    scene.add(knob);
+  }
+  // rolling stool — every operatory has one
+  const stoolSeat = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.09, 12), mat(0x2c3240));
+  stoolSeat.position.set(2.2, 0.62, -0.6);
+  scene.add(stoolSeat);
+  const stoolPole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.5, 8), mat(0x9aa2ac));
+  stoolPole.position.set(2.2, 0.33, -0.6);
+  scene.add(stoolPole);
+  const stoolBase = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.04, 10), mat(0x666e78));
+  stoolBase.position.set(2.2, 0.05, -0.6);
+  scene.add(stoolBase);
+  // instrument tray on an arm next to the chair
+  const trayArm = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.9, 6), mat(0x9aa2ac));
+  trayArm.position.set(2.9, 0.75, -1.7);
+  trayArm.rotation.z = 0.5;
+  scene.add(trayArm);
+  const tray = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.04, 0.35), mat(0xd8dee4));
+  tray.position.set(3.2, 1.15, -1.7);
+  scene.add(tray);
+  for (let ti2 = 0; ti2 < 3; ti2++) {
+    const tool = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.02, 0.16), mat(0xb8bec6));
+    tool.position.set(3.08 + ti2 * 0.12, 1.18, -1.7);
+    tool.rotation.y = ti2 * 0.4;
+    scene.add(tool);
+  }
   // framed diplomas on wall
   for (let di = 0; di < 3; di++) {
     const frame = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.66, 0.03), mat(0x6a4a2a));

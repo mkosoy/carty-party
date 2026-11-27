@@ -203,11 +203,11 @@ export async function museumScene(game) {
   interactions.add({ pos: new THREE.Vector3(-8, 0, -4), radius: 3.4, label: 'The red biplane', action: say([
     { speaker: 'Mark', text: 'Fabric and wire and pure audacity. People flew these before radio. Before parachutes, sometimes.' },
   ]) });
-  interactions.add({ pos: new THREE.Vector3(12, 0, 4), radius: 3.0, label: 'The rocket', action: say([
+  interactions.add({ pos: new THREE.Vector3(6, 0, -5), radius: 3.4, label: 'The rocket', action: say([
     { speaker: 'Mark', text: 'Every gram on a rocket fights for its life. Engineering as a contact sport. Beautiful.' },
     { speaker: 'Christian', text: 'You get this look on your face every time. Every single time.' },
   ]) });
-  interactions.add({ pos: new THREE.Vector3(-11, 0, 3), radius: 3.0, label: 'The lunar lander', action: say([
+  interactions.add({ pos: new THREE.Vector3(-6, 0, -5), radius: 3.4, label: 'The lunar lander', action: say([
     { speaker: 'Mark', text: 'They landed on the moon in something that looks like a craft project. Gold foil and grit.' },
   ]) });
   interactions.add({ pos: new THREE.Vector3(0, 0, 9.8), radius: 2.6, label: 'Ask the info desk', action: say([

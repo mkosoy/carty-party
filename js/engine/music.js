@@ -225,7 +225,9 @@ export class Music {
       const melSeq = variant === 1 && pat.melody2 ? pat.melody2 : variant === 2 && pat.melody3 ? pat.melody3 : pat.melody;
       const mel = melSeq[step % 16];
       if (mel >= 0) {
-        this.bell(N(mel), t, pat.bellVol);
+        // octave lift on the back half of each 8-bar phrase — keeps long loops fresh
+        const lift = (bar % 8 >= 4) ? 12 : 0;
+        this.bell(N(mel + lift), t, pat.bellVol);
         // harmonic richness: a third above, softer, on alternate bars — and octave sparkle every 4th bar
         if (bar % 2 === 0) this.bell(N(mel + 4), t + 0.01, pat.bellVol * 0.4);
         if (bar % 4 === 3) this.bell(N(mel + 12), t + 0.005, pat.bellVol * 0.3);

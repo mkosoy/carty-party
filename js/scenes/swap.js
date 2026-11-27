@@ -38,7 +38,7 @@ export async function swapScene(game) {
   const floor = new THREE.Mesh(new THREE.BoxGeometry(34, 0.2, 24), new THREE.MeshStandardMaterial({ map: concrete('#6e6a66', 5, 3.5), roughness: 0.9 }));
   floor.receiveShadow = true;
   scene.add(floor);
-  const wallN = new THREE.Mesh(new THREE.BoxGeometry(34, 6, 0.4), new THREE.MeshStandardMaterial({ map: brickWall('#7a4436', 5, 1.2), roughness: 0.95 }));
+  const wallN = new THREE.Mesh(new THREE.BoxGeometry(34, 6, 0.4), new THREE.MeshStandardMaterial({ map: (window.__bw5 ||= brickWall('#7a4436', 5, 1.2)), bumpMap: window.__bw5, bumpScale: 0.8, roughness: 0.95 }));
   wallN.position.set(0, 3, -12);
   scene.add(wallN);
   const wallS = new THREE.Mesh(new THREE.BoxGeometry(34, 6, 0.4), new THREE.MeshStandardMaterial({ map: brickWall('#7a4436', 5, 1.2), roughness: 0.95 }));

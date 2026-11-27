@@ -37,7 +37,7 @@ export async function houseScene(game) {
     ]) {
       const isBareConcrete = wallColor === 0x4a4a52;
       const wallTex = isBareConcrete ? concrete('#55555e', 3, 1.2) : paintedWall(typeof wallColor === 'number' ? '#' + wallColor.toString(16).padStart(6, '0') : wallColor, 3, 1.2);
-      const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ map: wallTex, roughness: 0.85 }));
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ map: wallTex, bumpMap: wallTex, bumpScale: 0.6, roughness: 0.85 }));
       wall.position.set(x, h / 2, z);
       g.add(wall);
       // wainscot: cream panel strip along the bottom of each interior wall face + chair rail cap —

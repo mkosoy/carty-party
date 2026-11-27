@@ -142,6 +142,16 @@ export async function shoppingScene(game) {
     shoppers.push({ p, dir: i % 2 ? 1 : -1, speed: 1.2 + Math.random(), laneZ: p.group.position.z });
   }
 
+  // kylie herself is here unless you're playing as her
+  const isKylie = (localStorage.getItem('cp-character') || 'christian') === 'kylie';
+  if (!isKylie) {
+    const kylieNpc = makePerson({ photo: faces.kylie, outfit: 'dress', top: 0x9a3050, bottom: 0x2c2c34, hair: 0x3a2416, hairStyle: 'long', skin: 0xe8c098, name: 'Kylie' });
+    kylieNpc.group.position.set(-11.5, 0, -6.5);
+    kylieNpc.group.rotation.y = Math.PI / 2;
+    scene.add(kylieNpc.group);
+    window.__kylieNpc = kylieNpc;
+  }
+
   // ---- the player: Kylie, list in hand ----
   const kylie = makePerson({ photo: faces.kylie, outfit: 'dress', top: 0x9a3050, bottom: 0x2c2c34, hair: 0x3a2416, hairStyle: 'long', skin: 0xe8c098, name: 'Kylie' });
   kylie.group.position.set(-13, 0, -8);

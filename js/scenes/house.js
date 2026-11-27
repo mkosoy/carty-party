@@ -478,6 +478,87 @@ export async function houseScene(game) {
     flame.position.set(cx, 1.02, -3.5);
     ground.add(flame);
   }
+  // sliding glass door to the deck + the deck itself — the real house has this off the living room
+  const slidingDoor = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2.3, 0.08), new THREE.MeshStandardMaterial({ color: 0xaebfd0, transparent: true, opacity: 0.28, roughness: 0.1, metalness: 0.4 }));
+  slidingDoor.position.set(4.5, 1.15, 5.95);
+  ground.add(slidingDoor);
+  const sdFrame1 = new THREE.Mesh(new THREE.BoxGeometry(0.07, 2.3, 0.12), mat(0xe8e4da));
+  sdFrame1.position.set(3.4, 1.15, 5.95);
+  ground.add(sdFrame1);
+  const sdFrame2 = sdFrame1.clone();
+  sdFrame2.position.x = 5.6;
+  ground.add(sdFrame2);
+  const sdFrameM = new THREE.Mesh(new THREE.BoxGeometry(0.06, 2.3, 0.1), mat(0xe8e4da));
+  sdFrameM.position.set(4.5, 1.15, 5.97);
+  ground.add(sdFrameM);
+  // the deck — wooden planks, green folding bistro set, exactly like the listing photos
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(5, 0.16, 3.4), new THREE.MeshStandardMaterial({ color: 0x8a6a48, roughness: 0.85 }));
+  deck.position.set(4.5, 0.02, 8);
+  ground.add(deck);
+  for (let dp = 0; dp < 8; dp++) {
+    const plankLine = new THREE.Mesh(new THREE.BoxGeometry(5, 0.02, 0.03), mat(0x6a4e30));
+    plankLine.position.set(4.5, 0.11, 6.6 + dp * 0.42);
+    ground.add(plankLine);
+  }
+  // green metal folding chairs — the exact bistro set from the photos
+  for (const [gx, gz, gr] of [[3.6, 7.6, 0.4], [5.4, 8.4, -2.6]]) {
+    const chairMat = 0x3e6a3e;
+    const seat = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.03, 0.4), mat(chairMat));
+    seat.position.set(gx, 0.35, gz);
+    seat.rotation.y = gr;
+    ground.add(seat);
+    const back = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 0.03), mat(chairMat));
+    back.position.set(gx - Math.sin(gr) * 0.2, 0.55, gz - Math.cos(gr) * 0.2);
+    back.rotation.y = gr;
+    ground.add(back);
+    for (const [lx2, lz2] of [[-0.16, -0.16], [0.16, -0.16], [-0.16, 0.16], [0.16, 0.16]]) {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.35, 5), mat(chairMat));
+      leg.position.set(gx + lx2, 0.17, gz + lz2);
+      ground.add(leg);
+    }
+  }
+  const bistro = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.03, 12), mat(0x3e6a3e));
+  bistro.position.set(4.5, 0.55, 8);
+  ground.add(bistro);
+  const bistroLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.55, 6), mat(0x3e6a3e));
+  bistroLeg.position.set(4.5, 0.27, 8);
+  ground.add(bistroLeg);
+  // flower pot with red blooms like the photos
+  const dpot = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.09, 0.16, 8), mat(0xa05030));
+  dpot.position.set(6.4, 0.16, 7);
+  ground.add(dpot);
+  for (let fl = 0; fl < 4; fl++) {
+    const bloom = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), mat(0xc03848));
+    bloom.position.set(6.4 + Math.cos(fl * 1.7) * 0.06, 0.3, 7 + Math.sin(fl * 1.7) * 0.06);
+    ground.add(bloom);
+  }
+  // fence + trees beyond — the fenced yard
+  for (let fp = 0; fp < 6; fp++) {
+    const picket = new THREE.Mesh(new THREE.BoxGeometry(0.09, 1.1, 0.03), mat(0xd8d4c8));
+    picket.position.set(2.2 + fp * 0.9, 0.55, 9.9);
+    ground.add(picket);
+  }
+  const frail = new THREE.Mesh(new THREE.BoxGeometry(5.4, 0.06, 0.04), mat(0xd8d4c8));
+  frail.position.set(4.5, 0.95, 9.9);
+  ground.add(frail);
+  for (const [tx3, tz3, ts3] of [[2.5, 11.5, 1.3], [6.5, 12, 1.6]]) {
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.14, 1.6, 6), mat(0x4a3524));
+    trunk.position.set(tx3, 0.8, tz3);
+    ground.add(trunk);
+    const canopy = new THREE.Mesh(new THREE.SphereGeometry(ts3, 8, 7), mat(0x24401e));
+    canopy.position.set(tx3, 2.2, tz3);
+    ground.add(canopy);
+  }
+  // night sky beyond the yard so the glass reads as outdoors
+  const skyBack = new THREE.Mesh(new THREE.PlaneGeometry(14, 5), new THREE.MeshBasicMaterial({ color: 0x0e1626 }));
+  skyBack.position.set(4.5, 2.5, 13);
+  ground.add(skyBack);
+  for (let st4 = 0; st4 < 20; st4++) {
+    const star = new THREE.Mesh(new THREE.CircleGeometry(0.02, 5), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+    star.position.set(-2 + Math.random() * 13, 1.2 + Math.random() * 3, 12.9);
+    ground.add(star);
+  }
+
   // ===== REAL-HOUSE MATCH: signature pieces from 6570 Waning Moon Way =====
   // second green velvet sofa facing the first — the real living room has a matched pair
   const sofa2Mat = 0x4e7a54;

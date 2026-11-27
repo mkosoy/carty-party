@@ -201,6 +201,16 @@ export class Pickups {
   }
   update(dt, playerPos) {
     const t = performance.now() / 1000;
+    if (this.bursts && this.bursts.length) {
+      for (let bi = this.bursts.length - 1; bi >= 0; bi--) {
+        const b = this.bursts[bi];
+        b.t += dt;
+        b.m.scale.setScalar(1 + b.t * 5);
+        b.m.material.opacity = Math.max(0, 0.95 - b.t * 2.2);
+        b.m.position.y = 0.12 + b.t * 0.8;
+        if (b.t > 0.5) { this.scene.remove(b.m); this.bursts.splice(bi, 1); }
+      }
+    }
     for (const it of this.items) {
       if (it.taken) continue;
       it.mesh.rotation.y += dt * 1.8;
@@ -211,6 +221,16 @@ export class Pickups {
       if (dx * dx + dz * dz < 0.55 && dy < 1.2) {
         it.taken = true;
         this.scene.remove(it.mesh);
+        // burst: expanding gold ring so the pickup feels rewarding
+        if (!this.bursts) this.bursts = [];
+        const ring = new THREE.Mesh(
+          new THREE.TorusGeometry(0.3, 0.035, 8, 24),
+          new THREE.MeshBasicMaterial({ color: 0xffd770, transparent: true, opacity: 0.95 })
+        );
+        ring.rotation.x = -Math.PI / 2;
+        ring.position.set(it.mesh.position.x, 0.12, it.mesh.position.z);
+        this.scene.add(ring);
+        this.bursts.push({ m: ring, t: 0 });
         try { (it.id || '').startsWith('camera') ? sfxCamera() : sfxVinyl(); } catch {}
         if (it.onPick) it.onPick(it.id);
       }

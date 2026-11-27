@@ -46,7 +46,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #0b0e1a; f
 #dialogue-speaker { color: #e8b64c; font-weight: bold; font-size: 15px; margin-bottom: 5px; letter-spacing: 1px; }
 #dialogue-text { font-size: clamp(17px, 2.6vw, 21px); line-height: 1.5; max-width: 850px; margin: 0 auto; }
 #dialogue-box > #dialogue-speaker, #dialogue-box > #dialogue-text { margin-left: auto; margin-right: auto; max-width: 850px; }
-#dialogue-advance { text-align: right; font-size: 12px; opacity: .55; max-width: 850px; margin: 6px auto 0; animation: pulse 1.4s infinite; }
+#dialogue-advance { text-align: right; font-size: 14px; opacity: .95; max-width: 850px; margin: 6px auto 0; animation: pulse 1.4s infinite; color: #ffd663; font-weight: bold; text-shadow: 0 0 8px rgba(255,214,99,.6); }
 
 #phone-overlay {
   position: fixed; top: 12%; left: 50%; transform: translateX(-50%); z-index: 25;

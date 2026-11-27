@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { sfxCrash, sfxHorn, sfxGobble, sfxBoost } from '../engine/sfx.js';
-import { showObjective, choice } from '../engine/core.js';
+import { showObjective, setObjective, choice } from '../engine/core.js';
 import { asphalt, winterSky, skyDome, snowGround } from '../engine/textures.js';
 
 // Scene 2 — the drive. Part A: cruise with radio stations. Part B: the Yo
@@ -829,7 +829,7 @@ export async function driveScene(game) {
     for (const [side, glyph, val] of [['left', '\u25C0', -1], ['right', '\u25B6', 1]]) {
       const b = document.createElement('div');
       b.className = 'scene-dom-extra';
-      b.style.cssText = 'position:fixed;bottom:218px;' + side + ':14px;width:84px;height:84px;border-radius:50%;background:rgba(20,24,40,.45);border:2px solid rgba(255,255,255,.35);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;z-index:40;touch-action:none;user-select:none;-webkit-user-select:none;font-family:Arial,sans-serif';
+      b.style.cssText = 'position:fixed;bottom:284px;' + side + ':14px;width:84px;height:84px;border-radius:50%;background:rgba(20,24,40,.45);border:2px solid rgba(255,255,255,.35);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;z-index:40;touch-action:none;user-select:none;-webkit-user-select:none;font-family:Arial,sans-serif';
       b.textContent = glyph;
       const on = (e) => { btnSteer = val; b.style.background = 'rgba(255,214,99,.5)'; e.preventDefault(); };
       const off = () => { if (btnSteer === val) btnSteer = 0; b.style.background = 'rgba(20,24,40,.45)'; };
@@ -846,7 +846,7 @@ export async function driveScene(game) {
       { speaker: 'Christian', text: 'Okay — car smells like winter. First stop Olivia’s, then the swap in Baltimore.' },
       { speaker: 'Christian', text: 'Let’s see what’s on the radio…' },
     ]);
-    showObjective('Cruise down the parkway — tap E to flip radio stations.', 6000);
+    setObjective('Cruise down the parkway — steer with the arrows, tap ✦ for radio.');
     setTimeout(() => { try { startRadio(stationIdx); } catch {} }, 1200); // auto-start the radio
     phase = 'cruise';
   }
@@ -855,7 +855,7 @@ export async function driveScene(game) {
   let radioBanner = 0;
 
 
-  window.__sceneHint = '\u2190 \u2192 steer \u00b7 avoid the hazards \u00b7 grab turkeys for speed boost · E — radio · H — honk';
+  window.__sceneHint = 'steer with the arrows · grab turkeys for speed · tap ✦ — radio';
 
   // the mormon temple on 495 — the most recognizable moco drive landmark: white spires glowing
   const temple = new THREE.Group();
@@ -992,7 +992,7 @@ export async function driveScene(game) {
               { speaker: 'Christian', text: 'No problem — I’m heading that way now. Buckle in, bronco.' },
             ]);
             phase = 'run';
-            showObjective('YO YOGI RUN — dodge everything, grab turkeys for speed! A/D or joystick to steer.', 7000);
+            setObjective('YO YOGI RUN — dodge everything, grab turkeys for speed!');
             this._timerShown = true;
           })();
         }

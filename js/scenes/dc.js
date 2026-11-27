@@ -22,6 +22,15 @@ export async function dcScene(game) {
 
   const mat = (c) => new THREE.MeshLambertMaterial({ color: c });
 
+  // designed lighting: cold moonlight over the mall, warm pools at the stalls
+  const moonlightDc = new THREE.DirectionalLight(0x9ab8e8, 0.5);
+  moonlightDc.position.set(-14, 18, 6);
+  scene.add(moonlightDc);
+  for (const [dx, dz, col] of [[-12, 4, 0xffc887], [12, 4, 0xffc887], [0, -6, 0xbcd0ff]]) {
+    const pool = new THREE.PointLight(col, 2.2, 9, 1.8);
+    pool.position.set(dx, 3.2, dz);
+    scene.add(pool);
+  }
   // snow-covered mall ground
   const ground = new THREE.Mesh(new THREE.BoxGeometry(90, 0.2, 70), new THREE.MeshStandardMaterial({ map: snowGround(8, 6), roughness: 0.9 }));
   ground.receiveShadow = true;

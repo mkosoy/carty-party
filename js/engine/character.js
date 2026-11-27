@@ -423,6 +423,7 @@ export function makePerson({
     sit(seatTop) {
       legL.rotation.x = -Math.PI / 2;
       legR.rotation.x = -Math.PI / 2;
+      blob.visible = false; // shadow lives on the floor, not inside the chair
       // exact geometry: hip pivot is 0.82u above group origin. place the group so
       // the hips land just above the seat surface — no floating, no sinking.
       if (typeof seatTop === 'number') {

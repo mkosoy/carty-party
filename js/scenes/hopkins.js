@@ -11,7 +11,7 @@ export async function hopkinsScene(game) {
 
   scene.background = new THREE.Color(0x1a2432);
   scene.fog = new THREE.Fog(0x1a2432, 26, 66);
-  scene.add(new THREE.AmbientLight(0x9aa8bc, 1.2));
+  scene.add(new THREE.AmbientLight(0x8a98ac, 0.85));
   const key = new THREE.DirectionalLight(0xfff4e0, 0.7);
   key.position.set(6, 14, 4);
   key.castShadow = true;
@@ -20,7 +20,7 @@ export async function hopkinsScene(game) {
   const mat = (c) => new THREE.MeshLambertMaterial({ color: c });
 
   // the science hall: lab benches, glassware, greenhouse annex glow
-  const floor = new THREE.Mesh(new THREE.BoxGeometry(34, 0.2, 22), new THREE.MeshStandardMaterial({ color: 0x9aa098, roughness: 0.4 }));
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(34, 0.2, 22), new THREE.MeshStandardMaterial({ color: 0x6a7068, roughness: 0.5 }));
   floor.receiveShadow = true;
   scene.add(floor);
   for (const [w, h, d, x, z] of [

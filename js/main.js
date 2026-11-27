@@ -59,6 +59,29 @@ window.addEventListener('resize', () => {
 const input = new Input();
 const music = new Music();
 window.__music = music;
+
+// persistent sound toggle — mobile players have no M key
+(function() {
+  const sb = document.createElement('div');
+  sb.id = 'sound-toggle';
+  let muted = localStorage.getItem('cp-muted') === '1';
+  const paint = () => { sb.textContent = muted ? '\uD83D\uDD07' : '\uD83D\uDD0A'; };
+  sb.style.cssText = 'position:fixed;top:10px;left:12px;z-index:70;width:38px;height:38px;border-radius:50%;background:rgba(15,20,35,.55);border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation';
+  paint();
+  const applyMute = () => {
+    if (music.master) music.master.gain.value = muted ? 0 : 0.11;
+  };
+  sb.addEventListener('click', () => {
+    muted = !muted;
+    localStorage.setItem('cp-muted', muted ? '1' : '0');
+    paint();
+    applyMute();
+  });
+  document.body.appendChild(sb);
+  // honor saved mute state whenever music (re)starts
+  const origPlay = music.play.bind(music);
+  music.play = (s) => { origPlay(s); applyMute(); };
+})();
 window.__renderer = renderer;
 const dialogue = new Dialogue(input);
 fetch('assets/voice/manifest.json').then((r) => r.ok ? r.json() : null).then((m) => {
@@ -181,7 +204,7 @@ const game = {
 window.addEventListener('keydown', (e) => {
   if ((e.key === 'm' || e.key === 'M') && window.__music?.master) {
     window.__muteToggle = !window.__muteToggle;
-    window.__music.master.gain.value = window.__muteToggle ? 0 : 0.16;
+    window.__music.master.gain.value = window.__muteToggle ? 0 : 0.11;
   }
 });
 

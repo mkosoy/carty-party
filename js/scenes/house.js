@@ -232,10 +232,25 @@ export async function houseScene(game) {
   rug.position.set(-2.5, 0.12, 1.5);
   rug.scale.z = 0.7;
   ground.add(rug);
-  // coffee table + clutter
-  box(ground, 1.3, 0.08, 0.7, 0x5a4030, -2.5, 0.45, 1.5);
-  box(ground, 0.08, 0.42, 0.6, 0x5a4030, -3.05, 0.21, 1.5);
-  box(ground, 0.08, 0.42, 0.6, 0x5a4030, -1.95, 0.21, 1.5);
+  // coffee table — the dark ornate trunk from the real living room
+  box(ground, 1.3, 0.45, 0.7, 0x2c1c12, -2.5, 0.23, 1.5);
+  box(ground, 1.34, 0.06, 0.74, 0x1c1008, -2.5, 0.48, 1.5);  // lid lip
+  // brass studs along the trunk edges
+  for (let stud = 0; stud < 6; stud++) {
+    const st2 = new THREE.Mesh(new THREE.SphereGeometry(0.02, 6, 6), mat(0x9a7428));
+    st2.position.set(-3.05 + stud * 0.22, 0.4, 1.14);
+    ground.add(st2);
+  }
+  // leather straps
+  box(ground, 0.06, 0.47, 0.72, 0x482c18, -2.9, 0.24, 1.5);
+  box(ground, 0.06, 0.47, 0.72, 0x482c18, -2.1, 0.24, 1.5);
+  // hurricane candle on top — the tall glass candle in the photos
+  const hurr = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.3, 10, 1, true), new THREE.MeshStandardMaterial({ color: 0xd0dce4, transparent: true, opacity: 0.3, roughness: 0.1, side: THREE.DoubleSide }));
+  hurr.position.set(-2.5, 0.68, 1.5);
+  ground.add(hurr);
+  const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.18, 8), mat(0x8a2848));
+  pillar.position.set(-2.5, 0.62, 1.5);
+  ground.add(pillar);
   box(ground, 0.3, 0.12, 0.22, 0xc0b8a0, -2.7, 0.55, 1.4);   // book
   box(ground, 0.18, 0.1, 0.18, 0xa04038, -2.2, 0.54, 1.6);   // mug
   // tv console + tv

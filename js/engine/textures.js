@@ -122,7 +122,14 @@ export function carpet(base = '#6a5a48', rx = 4, ry = 4) {
   const [c, x] = canvas(128, 128);
   x.fillStyle = base;
   x.fillRect(0, 0, 128, 128);
-  noise(x, 128, 128, 0.18, [10, 60]);
+  noise(x, 128, 128, 0.06, [10, 40]);
+  // subtle fiber striping — reads as woven pile, not noise
+  x.globalAlpha = 0.05;
+  for (let fy = 0; fy < 128; fy += 3) {
+    x.fillStyle = fy % 6 ? '#000' : '#fff';
+    x.fillRect(0, fy, 128, 1);
+  }
+  x.globalAlpha = 1;
   return tex(c, rx, ry);
 }
 

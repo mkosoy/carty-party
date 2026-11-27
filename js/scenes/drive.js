@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { sfxCrash, sfxHorn, sfxGobble, sfxBoost } from '../engine/sfx.js';
 import { showObjective, choice } from '../engine/core.js';
-import { asphalt } from '../engine/textures.js';
+import { asphalt, winterSky, skyDome } from '../engine/textures.js';
 
 // Scene 2 — the drive. Part A: cruise with radio stations. Part B: the Yo
 // Yogi run — a lane-dodging timer game dodging dentists, environmental
@@ -10,6 +10,7 @@ export async function driveScene(game) {
   const { scene, camera, input, dialogue } = game;
 
   scene.background = new THREE.Color(0x9fb4d0);
+  skyDome(scene, winterSky());
   scene.fog = new THREE.Fog(0x9fb4d0, 40, 160);
   scene.add(new THREE.AmbientLight(0xffffff, 0.7));
   const sun = new THREE.DirectionalLight(0xfff5e0, 0.7);

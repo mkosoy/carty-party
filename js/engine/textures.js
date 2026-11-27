@@ -244,3 +244,60 @@ export function skinNoise(rx = 1, ry = 1) {
   noise(x, 64, 64, 0.05, [150, 255]);
   return tex(c, rx, ry);
 }
+
+// winter day sky — pale steel-blue gradient up to horizon haze, soft clouds
+export function winterSky() {
+  const [c, x] = canvas(512, 256);
+  const g = x.createLinearGradient(0, 0, 0, 256);
+  g.addColorStop(0, '#6a8ab8');
+  g.addColorStop(0.45, '#93aec8');
+  g.addColorStop(0.75, '#c4d2de');
+  g.addColorStop(1, '#dde6ec');
+  x.fillStyle = g;
+  x.fillRect(0, 0, 512, 256);
+  // soft drifting clouds
+  for (let i = 0; i < 26; i++) {
+    const cx = Math.random() * 512, cy = 20 + Math.random() * 130;
+    const r = 14 + Math.random() * 30;
+    const cg = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+    cg.addColorStop(0, 'rgba(255,255,255,0.5)');
+    cg.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = cg;
+    x.beginPath();
+    x.ellipse(cx, cy, r * 1.8, r * 0.55, 0, 0, Math.PI * 2);
+    x.fill();
+  }
+  const t = tex(c, 4, 1);
+  return t;
+}
+
+// night sky — deep blue-black gradient, star field, faint horizon glow
+export function nightSky() {
+  const [c, x] = canvas(512, 256);
+  const g = x.createLinearGradient(0, 0, 0, 256);
+  g.addColorStop(0, '#04060f');
+  g.addColorStop(0.6, '#0a1226');
+  g.addColorStop(0.85, '#1a2a44');
+  g.addColorStop(1, '#2a3a56');
+  x.fillStyle = g;
+  x.fillRect(0, 0, 512, 256);
+  for (let i = 0; i < 180; i++) {
+    const sx = Math.random() * 512, sy = Math.random() * 200;
+    const bright = Math.random();
+    x.fillStyle = `rgba(255,255,255,${0.25 + bright * 0.65})`;
+    const r = bright > 0.92 ? 1.6 : 0.9;
+    x.fillRect(sx, sy, r, r);
+  }
+  return tex(c, 4, 1);
+}
+
+// apply a sky dome to a scene — inverted sphere with the painted sky texture
+export function skyDome(scene, texture, radius = 300) {
+  const dome = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 24, 16),
+    new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide, fog: false, depthWrite: false })
+  );
+  dome.renderOrder = -10;
+  scene.add(dome);
+  return dome;
+}

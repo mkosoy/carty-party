@@ -4,6 +4,7 @@ import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectible
 import { sfxSplat } from '../engine/sfx.js';
 import { makePerson } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, GuideMarker } from '../engine/core.js';
+import { nightSky, skyDome } from '../engine/textures.js';
 
 // Scene 5 — DC at night. Washington Monument, the big Christmas tree,
 // snow everywhere, and the ice-skating finale with Mark, Kylie and Olivia.
@@ -11,6 +12,7 @@ export async function dcScene(game) {
   const { scene, camera, input, dialogue, faces } = game;
 
   scene.background = new THREE.Color(0x0c1226);
+  skyDome(scene, nightSky());
   scene.fog = new THREE.Fog(0x0c1226, 30, 120);
   scene.add(new THREE.AmbientLight(0x8fa0d0, 0.5));
   const moon = new THREE.DirectionalLight(0xcfd8ff, 0.5);

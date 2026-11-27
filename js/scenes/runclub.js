@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { nightSky, skyDome } from '../engine/textures.js';
 import { makePerson } from '../engine/character.js';
 import { showObjective, choice } from '../engine/core.js';
 
@@ -9,6 +10,7 @@ export async function runclubScene(game) {
   const { scene, camera, input, dialogue, faces } = game;
 
   scene.background = new THREE.Color(0x35426a);
+  skyDome(scene, nightSky());
   scene.fog = new THREE.Fog(0x35426a, 40, 110);
   scene.add(new THREE.AmbientLight(0x98a8c8, 1.25));
   const dusk = new THREE.DirectionalLight(0xffc890, 0.7);

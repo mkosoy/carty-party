@@ -37,6 +37,30 @@ export async function houseScene(game) {
       const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ map: paintedWall(typeof wallColor === 'number' ? '#' + wallColor.toString(16).padStart(6, '0') : wallColor, 3, 1.2), roughness: 0.85 }));
       wall.position.set(x, h / 2, z);
       g.add(wall);
+      // wainscot: cream panel strip along the bottom of each interior wall face + chair rail cap —
+      // the single biggest "real house" wall upgrade
+      const horizontal = w > d; // wall runs along x
+      const len = horizontal ? w : d;
+      const inward = horizontal ? (z < 0 ? 1 : -1) : (x < 0 ? 1 : -1);
+      const panelGeo = horizontal ? new THREE.BoxGeometry(len - 0.1, 1.0, 0.04) : new THREE.BoxGeometry(0.04, 1.0, len - 0.1);
+      const panel = new THREE.Mesh(panelGeo, new THREE.MeshStandardMaterial({ color: 0xf2ece0, roughness: 0.7 }));
+      if (horizontal) panel.position.set(x, 0.5, z + inward * 0.17);
+      else panel.position.set(x + inward * 0.17, 0.5, z);
+      g.add(panel);
+      const railGeo = horizontal ? new THREE.BoxGeometry(len - 0.1, 0.07, 0.07) : new THREE.BoxGeometry(0.07, 0.07, len - 0.1);
+      const rail = new THREE.Mesh(railGeo, new THREE.MeshStandardMaterial({ color: 0xe8e0d0, roughness: 0.6 }));
+      if (horizontal) rail.position.set(x, 1.03, z + inward * 0.17);
+      else rail.position.set(x + inward * 0.17, 1.03, z);
+      g.add(rail);
+      // vertical beadboard grooves illusion: thin shadow lines on the panel
+      for (let gi = 1; gi < 10; gi++) {
+        const grooveGeo = horizontal ? new THREE.BoxGeometry(0.015, 0.96, 0.045) : new THREE.BoxGeometry(0.045, 0.96, 0.015);
+        const groove = new THREE.Mesh(grooveGeo, new THREE.MeshBasicMaterial({ color: 0xd8d0c0 }));
+        const off = -len / 2 + (len / 10) * gi;
+        if (horizontal) groove.position.set(x + off, 0.5, z + inward * 0.17);
+        else groove.position.set(x + inward * 0.17, 0.5, z + off);
+        g.add(groove);
+      }
     }
     g.position.y = y;
     g.visible = false;

@@ -882,7 +882,8 @@ export async function swapScene(game) {
           { speaker: 'Stacy', text: 'You’re the best. Okay — enjoy the party! DJ’s actually good tonight.' },
         ]);
         hangInt.done = true;
-        guide.clear();
+        // keep the beacon on Stacy — she IS the exit to DC, and nothing else marks her
+        guide.setTarget(-4, 8);
         danceInt.hidden = false;
         yogaInt.hidden = false;
         stacy2Int.hidden = false;

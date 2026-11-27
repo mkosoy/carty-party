@@ -348,7 +348,7 @@ export async function dcScene(game) {
       rinkInt.hidden = true;
       player.frozen = false;
       player.speed = 7;
-      setObjective('Skate! When you’re ready, glide to the glowing center to end the night.');
+      setObjective('Skate! When you’re ready, skate to the glowing center and tap ✦ to end the night.');
       centerInt.hidden = false;
       guide.setTarget(0, 6);
       // olivia waves you over once

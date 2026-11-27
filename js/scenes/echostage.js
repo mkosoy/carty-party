@@ -83,6 +83,82 @@ export async function echostageScene(game) {
   const sign = new THREE.Mesh(new THREE.PlaneGeometry(14, 1.75), new THREE.MeshBasicMaterial({ map: sgT, transparent: true }));
   sign.position.set(0, 7.6, -11.6);
   scene.add(sign);
+  // ===== REAL ECHOSTAGE MATCH: warehouse industrial details =====
+  // exposed ceiling trusses — the warehouse roof structure
+  for (let tx = -14; tx <= 14; tx += 4) {
+    const truss = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.3, 23), mat(0x1e1e26));
+    truss.position.set(tx, 8.6, 0);
+    scene.add(truss);
+  }
+  for (let tz = -10; tz <= 10; tz += 5) {
+    const cross = new THREE.Mesh(new THREE.BoxGeometry(30, 0.14, 0.14), mat(0x232330));
+    cross.position.set(0, 8.45, tz);
+    scene.add(cross);
+  }
+  // d&b speaker stacks flanking the stage — the famous V-series
+  for (const sx of [-8.8, 8.8]) {
+    for (let sp = 0; sp < 3; sp++) {
+      const cab = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.8, 0.9), mat(0x0c0c10));
+      cab.position.set(sx, 1.4 + sp * 0.85, -9.5);
+      scene.add(cab);
+      const grille = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.6), new THREE.MeshBasicMaterial({ color: 0x1a1a22 }));
+      grille.position.set(sx, 1.4 + sp * 0.85, -9.02);
+      scene.add(grille);
+    }
+  }
+  // three mezzanines around the sides with railings + vip silhouettes
+  for (const [mx, mz, mw, mr] of [[-13.5, 0, 9, 0], [13.5, 0, 9, 0], [0, 8.5, 12, 1]]) {
+    const mezz = new THREE.Mesh(new THREE.BoxGeometry(mr ? mw : 2.6, 0.25, mr ? 2.6 : mw), mat(0x16161e));
+    mezz.position.set(mx, 4.4, mz);
+    scene.add(mezz);
+    // railing posts + top rail
+    const railLen = mr ? mw : mw;
+    for (let rp = -railLen / 2 + 0.3; rp < railLen / 2; rp += 0.9) {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.9, 5), mat(0x3a3a48));
+      if (mr) post.position.set(mx + rp, 4.9, mz - 1.2);
+      else post.position.set(mx + (mx < 0 ? 1.2 : -1.2), 4.9, mz + rp);
+      scene.add(post);
+    }
+    const topRail = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, railLen, 6), mat(0x4a4a5a));
+    topRail.rotation.z = mr ? Math.PI / 2 : 0;
+    if (!mr) topRail.rotation.x = Math.PI / 2;
+    if (mr) { topRail.position.set(mx, 5.35, mz - 1.2); topRail.rotation.x = 0; topRail.rotation.z = Math.PI / 2; }
+    else topRail.position.set(mx + (mx < 0 ? 1.2 : -1.2), 5.35, mz);
+    scene.add(topRail);
+  }
+  // the second 60-foot bar along the left side — the real venue runs bars down BOTH sides
+  const bar2 = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.1, 14), mat(0x1c1c28));
+  bar2.position.set(-15.5, 0.55, 0);
+  scene.add(bar2);
+  const bar2top = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.08, 14.2), mat(0x2e2e3e));
+  bar2top.position.set(-15.5, 1.14, 0);
+  scene.add(bar2top);
+  // back-bar glow strip
+  const bbGlow = new THREE.Mesh(new THREE.BoxGeometry(0.15, 1.6, 14), new THREE.MeshBasicMaterial({ color: 0x3a1a4a }));
+  bbGlow.position.set(-16.9, 1.6, 0);
+  scene.add(bbGlow);
+  bounds.push({ minX: -16.6, maxX: -14.8, minZ: -7.2, maxZ: 7.2 });
+  // bottle shelf behind left bar
+  for (let bv = 0; bv < 3; bv++) {
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.05, 12), mat(0x24243a));
+    shelf.position.set(-16.8, 1.2 + bv * 0.55, 0);
+    scene.add(shelf);
+    for (let bi = 0; bi < 10; bi++) {
+      const bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.28, 6), mat([0x40c060, 0xc04040, 0x4080c0, 0xc0c040][bi % 4]));
+      bottle.position.set(-16.8, 1.35 + bv * 0.55, -5.5 + bi * 1.2);
+      scene.add(bottle);
+    }
+  }
+  // cryo jets flanking the stage — white smoke columns that burst on a timer
+  const cryos = [];
+  for (const cx of [-6.5, 6.5]) {
+    const cryo = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.5, 2.8, 8), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 }));
+    cryo.position.set(cx, 1.4, -7.6);
+    scene.add(cryo);
+    cryos.push({ mesh: cryo, phase: Math.random() * 6 });
+  }
+  window.__cryoJets = cryos;
+
   // performer on stage — silhouette bouncing
   const performer = makePerson({ top: 0x101010, bottom: 0x101010, hair: 0x0a0a0a, skin: 0x8a6a52 });
   performer.group.position.set(0, 1.0, -9.8);
@@ -346,6 +422,17 @@ export async function echostageScene(game) {
         beams[i].rotation.z = Math.sin(t * 0.7 + i * 1.6) * 0.5;
         beams[i].rotation.x = Math.cos(t * 0.5 + i) * 0.3;
         beamMats[i].opacity = 0.03 + Math.abs(Math.sin(t * 2.6 + i)) * 0.03;
+      }
+      // cryo bursts — white smoke columns fire in waves like the real cryo jets
+      const ct = performance.now() / 1000;
+      for (const cy of cryos) {
+        const cyc = (ct + cy.phase) % 7;
+        if (cyc < 1.1) {
+          cy.mesh.material.opacity = 0.55 * (1 - cyc / 1.1);
+          cy.mesh.scale.y = 1 + cyc * 1.6;
+        } else {
+          cy.mesh.material.opacity = 0;
+        }
       }
       // LED wall waveform — throttled to ~15fps: full canvas re-upload every
       // frame melts phones, and the waveform reads identically at 15fps

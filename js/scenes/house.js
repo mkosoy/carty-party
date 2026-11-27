@@ -110,6 +110,45 @@ export async function houseScene(game) {
   box(ground, 1.8, 0.5, 0.5, 0x4a3a2e, 3, 0.25, -4.9);
   box(ground, 1.9, 1.05, 0.08, 0x111118, 3, 1.35, -4.95);
   box(ground, 0.5, 0.3, 0.3, 0x2c2c34, 1.8, 0.65, -4.8);     // console box
+  // animated football on the living-room TV — the game is on during the party
+  const hTvCanvas = document.createElement('canvas');
+  hTvCanvas.width = 256; hTvCanvas.height = 144;
+  const hTvCtx = hTvCanvas.getContext('2d');
+  const hTvTex = new THREE.CanvasTexture(hTvCanvas);
+  const hTvScreen = new THREE.Mesh(new THREE.PlaneGeometry(1.78, 0.95), new THREE.MeshBasicMaterial({ map: hTvTex }));
+  hTvScreen.position.set(3, 1.35, -4.9);
+  ground.add(hTvScreen);
+  function drawHouseTV() {
+    const t = performance.now() / 1000;
+    hTvCtx.fillStyle = '#0d3311';
+    hTvCtx.fillRect(0, 0, 256, 144);
+    hTvCtx.strokeStyle = '#ffffff';
+    hTvCtx.lineWidth = 1;
+    for (let x = 20; x < 256; x += 28) {
+      hTvCtx.beginPath(); hTvCtx.moveTo(x, 20); hTvCtx.lineTo(x, 124); hTvCtx.stroke();
+    }
+    const playT = t % 14;
+    const ballX = 30 + (playT / 14) * 200;
+    for (let i = 0; i < 5; i++) {
+      hTvCtx.fillStyle = '#c03030';
+      hTvCtx.beginPath(); hTvCtx.arc(Math.max(10, Math.min(246, ballX - 10 + Math.sin(t * 2.1 + i * 2.4) * 13 + i * 4)), 40 + i * 17 + Math.cos(t * 1.7 + i) * 6, 3.5, 0, Math.PI * 2); hTvCtx.fill();
+      hTvCtx.fillStyle = '#3050c0';
+      hTvCtx.beginPath(); hTvCtx.arc(Math.max(10, Math.min(246, ballX + 12 + Math.cos(t * 2.3 + i * 1.9) * 12 - i * 3)), 45 + i * 15 + Math.sin(t * 1.9 + i * 1.3) * 6, 3.5, 0, Math.PI * 2); hTvCtx.fill();
+    }
+    hTvCtx.fillStyle = '#ff5050';
+    hTvCtx.beginPath(); hTvCtx.arc(Math.min(246, ballX), 72 + Math.sin(t * 3) * 5, 4.5, 0, Math.PI * 2); hTvCtx.fill();
+    hTvCtx.fillStyle = '#000000cc';
+    hTvCtx.fillRect(48, 4, 160, 20);
+    hTvCtx.fillStyle = '#ffd663';
+    hTvCtx.font = 'bold 12px Georgia';
+    hTvCtx.textAlign = 'center';
+    const c = 10 + Math.floor(Math.sin(t * 0.3) * 3 + 3);
+    const w = 7 + Math.floor(Math.cos(t * 0.23) * 3 + 3);
+    hTvCtx.fillText('CHURCHILL ' + c + ' — WOOTON ' + w, 128, 19);
+    hTvTex.needsUpdate = true;
+  }
+  drawHouseTV();
+  setInterval(drawHouseTV, 120);
   // framed pictures on the wall
   for (const [fx, fy, fc] of [[-1.5, 1.9, 0xc0a060], [-0.5, 2.0, 0x6080a0], [0.6, 1.85, 0x7a9a5a]]) {
     box(ground, 0.5, 0.65, 0.05, 0x4a3524, fx, fy, -5.82);

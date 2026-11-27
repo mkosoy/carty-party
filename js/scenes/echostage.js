@@ -13,7 +13,7 @@ export async function echostageScene(game) {
 
   scene.background = new THREE.Color(0x060509);
   scene.fog = new THREE.Fog(0x0a0812, 14, 42);
-  scene.add(new THREE.AmbientLight(0x453f5e, 2.0));
+  scene.add(new THREE.AmbientLight(0x4a4568, 2.6));
   const keyL = new THREE.DirectionalLight(0x8090c0, 0.85);
   keyL.position.set(-6, 10, 4);
   scene.add(keyL);

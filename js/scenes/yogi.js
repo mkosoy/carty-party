@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { sfxChime } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 
 // Yo Yogi Sushi — downtown crown / rio, Gaithersburg. The whole drive chapter
 // is a race to get here before 9pm. Conveyor belt sushi, warm wood, closing soon.
@@ -298,6 +299,11 @@ export async function yogiScene(game) {
     { speaker: 'Christian', text: 'Half of MoCo\u2019s big decisions got made over conveyor sushi. Also at least three breakups per winter.' },
   ]) });
 
+  const pickups = new Pickups(scene);
+  const invC = inventory();
+  pickups.add(makeCameraMesh(), -13.5, 8.5, 'camera-yogi-1', () => { invC.cameras++; sfxChime(); showObjective('📷 vintage camera for Stacy — abandoned at the window seat!', 2500); });
+  pickups.add(makeRecordMesh(), 13.5, 8.5, 'record-yogi-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — someone traded it for sushi!', 2500); });
+
   window.__sceneHint = 'WASD — move · E — interact · grab sushi off the conveyor belt';
   showObjective('Yo Yogi Sushi — you made it before 9. The belt is moving.', 6000);
 
@@ -306,6 +312,7 @@ export async function yogiScene(game) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };
       player.update(dt);
       followCam.update(dt, hero.group.position);
+      pickups.update(dt, hero.group.position);
       // plates ride the belt forever — even outside the minigame it is alive
       for (const pg of beltPlates) {
         pg.userData.t += dt * (st.active ? st.beltSpeed + st.round * 0.09 : 0.28);

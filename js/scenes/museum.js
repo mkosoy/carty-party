@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
+import { sfxChime } from '../engine/sfx.js';
 
 // Smithsonian Air & Space — Mark's home turf. The great hall: suspended
 // aircraft overhead, rockets, lunar lander, interactive exhibits.
@@ -268,6 +270,11 @@ export async function museumScene(game) {
     showObjective('FLY! steer left/right · hold W for lift · thread the rings!', 3500);
   }});
 
+  const pickups = new Pickups(scene);
+  const invC = inventory();
+  pickups.add(makeCameraMesh(), -16, -8, 'camera-museum-1', () => { invC.cameras++; sfxChime(); showObjective('📷 vintage camera for Stacy — left behind the display case!', 2500); });
+  pickups.add(makeRecordMesh(), 15, 8, 'record-museum-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — someone hid it by the vitrines!', 2500); });
+
   window.__sceneHint = 'WASD — move · E — interact · explore the hall';
   showObjective('Air & Space — wander the great hall. Mark knows every bolt here.', 6000);
 
@@ -276,6 +283,7 @@ export async function museumScene(game) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };
       player.update(dt);
       if (!fl.active) followCam.update(dt, hero.group.position);
+      pickups.update(dt, hero.group.position);
       const nearI = interactions.nearest(hero.group.position);
       const promptEl = document.getElementById('interact-prompt');
       if (nearI && !player.frozen) {

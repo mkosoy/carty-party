@@ -1372,14 +1372,14 @@ export async function houseScene(game) {
 
   // --- stairs ground->upper, upper->basement chained through landings ---
   interactions.add({
-    pos: new THREE.Vector3(6, 0, 4), radius: 1.7, label: 'Go upstairs', floor: 'ground',
+    pos: new THREE.Vector3(6, 0, 4), radius: 2.5, label: 'Go upstairs', floor: 'ground',
     action: () => {
       showFloor('upper');
       christian.group.position.set(6, 0, 2.4);
     },
   });
   interactions.add({
-    pos: new THREE.Vector3(6, 0, 4), radius: 1.7, label: 'Go downstairs', floor: 'upper',
+    pos: new THREE.Vector3(6, 0, 4), radius: 2.5, label: 'Go downstairs', floor: 'upper',
     action: () => {
       // choice: ground floor or basement
       (async () => {
@@ -1395,7 +1395,7 @@ export async function houseScene(game) {
     },
   });
   interactions.add({
-    pos: new THREE.Vector3(6, 0, 4), radius: 1.7, label: 'Back upstairs', floor: 'basement',
+    pos: new THREE.Vector3(6, 0, 4), radius: 2.5, label: 'Back upstairs', floor: 'basement',
     action: () => {
       showFloor('upper');
       christian.group.position.set(6, 0, 2.4);

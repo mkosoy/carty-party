@@ -69,8 +69,14 @@ export async function swapScene(game) {
   for (let wsh = 0; wsh < 20; wsh++) wc.fillRect((wsh * 37) % 250, 136 + (wsh * 11) % 50, 14, 2);
   const winTex = new THREE.CanvasTexture(winCanvas);
   winTex.colorSpace = THREE.SRGBColorSpace;
+  winTex.wrapS = winTex.wrapT = THREE.RepeatWrapping;
   for (let i = -3; i <= 3; i++) {
-    const win = new THREE.Mesh(new THREE.PlaneGeometry(3, 2.4), new THREE.MeshBasicMaterial({ map: winTex }));
+    // each window gets a shifted slice of the vista — no copy-paste repetition
+    const slice = winTex.clone();
+    slice.needsUpdate = true;
+    slice.repeat.set(0.55, 1);
+    slice.offset.set((i + 3) * 0.065, 0);
+    const win = new THREE.Mesh(new THREE.PlaneGeometry(3, 2.4), new THREE.MeshBasicMaterial({ map: slice }));
     win.position.set(i * 4.4, 3.4, -11.78);
     scene.add(win);
     // window mullion frames

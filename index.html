@@ -83,10 +83,23 @@
       </div>
     </div>
     <p class="title-sub">Dulles → MoCo → Yo Yogi → the swap → DC<br>
-    <span class="title-small">WASD / joystick to move · E to interact · best with sound on</span></p>
+    <span class="title-small">WASD / joystick to move · E to interact · 🗺 the world map travels everywhere · best with sound on</span></p>
   </div>
 </div>
 
+<script>
+// completion checkmarks on minigame buttons
+for (const btn of document.querySelectorAll('.mg-btn[data-scene]')) {
+  try {
+    if (localStorage.getItem('cp-done-' + btn.dataset.scene)) {
+      const b = document.createElement('span');
+      b.textContent = ' ✓';
+      b.style.color = '#6f6';
+      btn.querySelector('span').appendChild(b);
+    }
+  } catch {}
+}
+</script>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>

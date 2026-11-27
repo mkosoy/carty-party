@@ -303,6 +303,12 @@ export async function driveScene(game) {
     const tx = car.position.x * 0.85;
     camera.position.x += (tx - camera.position.x) * Math.min(1, dt * 5);
     camera.position.y = 4.4;
+    // crash shake: brief violent jitter decaying over 400ms
+    if (window.__shakeUntil && performance.now() < window.__shakeUntil) {
+      const k = (window.__shakeUntil - performance.now()) / 400;
+      camera.position.x += (Math.random() - 0.5) * 0.5 * k;
+      camera.position.y += (Math.random() - 0.5) * 0.35 * k;
+    }
     camera.position.z = 8.5;
     camera.lookAt(car.position.x * 0.9, 0.8, -8);
   }
@@ -792,6 +798,7 @@ export async function driveScene(game) {
             obstacles.splice(i, 1);
             speed = Math.max(9, speed - 4);
             try { sfxCrash(); } catch {}
+            window.__shakeUntil = performance.now() + 400;
             camera.position.x += (Math.random() - 0.5) * 0.3;
             score++;
             const names = { dentist: 'A dentist! flossing in the road!', activist: 'Environmental activist chaining himself to the lane!', clubber: 'Club goer still out from last night!', datacenter: 'An entire AI data center, in the road, in MoCo!' };

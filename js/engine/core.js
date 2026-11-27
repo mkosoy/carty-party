@@ -34,10 +34,16 @@ export class FollowCam {
         let d = targetYaw - this.yaw;
         while (d > Math.PI) d -= Math.PI * 2;
         while (d < -Math.PI) d += Math.PI * 2;
-        // angle-proportional catch-up: big offsets (strafing sideways) swing
-        // around decisively, small corrections stay gentle — no spiral since
-        // movement input is frozen in world space while held
-        this.yaw += d * Math.min(1, dt * (2.6 + Math.min(2.4, Math.abs(d) * 1.7)));
+        // deadzone: diagonal nudges and small corrections must NOT rotate the
+        // camera — in tight rooms constant micro-swinging is nauseating. only
+        // deliberate direction changes (strafe, reverse, big turns) re-center.
+        // once a re-center starts it finishes (hysteresis 0.12) so it never stutters
+        const ad = Math.abs(d);
+        if (ad > 0.5) this._recentering = true;
+        if (ad < 0.12) this._recentering = false;
+        if (this._recentering) {
+          this.yaw += d * Math.min(1, dt * (2.6 + Math.min(2.4, ad * 1.7)));
+        }
       }
     }
     window.__camYaw = this.yaw;

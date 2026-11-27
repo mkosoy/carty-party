@@ -770,6 +770,33 @@ export async function airportScene(game) {
     },
   });
 
+  // parked jet visible through the windows at the gate — big tail fin anchor
+  const parked = new THREE.Group();
+  const pfus = new THREE.Mesh(new THREE.CapsuleGeometry(1.1, 10, 6, 10), mat(0xd8dde4));
+  pfus.rotation.z = Math.PI / 2;
+  pfus.position.y = 2.2;
+  parked.add(pfus);
+  const ptail = new THREE.Mesh(new THREE.BoxGeometry(0.3, 3.4, 1.8), mat(0x2a4a8a));
+  ptail.position.set(-5.2, 4.4, 0);
+  parked.add(ptail);
+  for (const pw of [-1, 1]) {
+    const pwing = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.18, 1.4), mat(0xc8ccd4));
+    pwing.position.set(0.5, 1.8, pw * 4);
+    pwing.rotation.x = pw * 0.12;
+    parked.add(pwing);
+  }
+  const engine = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1.2, 8), mat(0x9aa0a8));
+  engine.rotation.x = Math.PI / 2;
+  engine.position.set(0.8, 1.2, 2.8);
+  parked.add(engine);
+  parked.position.set(-6, 0, -22);
+  parked.rotation.y = 0.15;
+  scene.add(parked);
+  // jet bridge connecting to it
+  const bridge = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2, 7), mat(0x8a8f96));
+  bridge.position.set(-3, 2.4, -15.5);
+  scene.add(bridge);
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

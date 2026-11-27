@@ -85,6 +85,7 @@ const game = {
   scene: null,
   sceneApi: null,
   async switchScene(factory) {
+    try { localStorage.setItem('cp-checkpoint', factory.name.replace('Scene','')); } catch {}
     window.__sparkles = [];
     try { window.__radioStop?.(); } catch {}
     window.__camYaw = 0;
@@ -200,7 +201,18 @@ async function startGame(sceneName) {
   loop();
   await game.switchScene(factories[sceneName] || airportScene);
 }
-document.getElementById('start-button').addEventListener('click', () => startGame(), { once: true });
+// save/continue: if a checkpoint exists the start button resumes there, and a fresh-start link appears
+const cp = localStorage.getItem('cp-checkpoint');
+const sb = document.getElementById('start-button');
+if (cp && cp !== 'airport') {
+  sb.textContent = `continue — ${cp}`;
+  const fresh = document.createElement('div');
+  fresh.textContent = 'start over from the airport';
+  fresh.style.cssText = 'cursor:pointer;opacity:.7;font-size:14px;margin-top:10px;text-decoration:underline';
+  fresh.addEventListener('click', () => { localStorage.removeItem('cp-checkpoint'); startGame(); }, { once: true });
+  sb.parentElement.appendChild(fresh);
+}
+sb.addEventListener('click', () => startGame(cp && cp !== 'airport' ? cp : undefined), { once: true });
 for (const btn of document.querySelectorAll('.mg-btn')) {
   btn.addEventListener('click', () => startGame(btn.dataset.scene));
 }

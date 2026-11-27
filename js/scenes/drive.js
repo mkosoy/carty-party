@@ -626,9 +626,9 @@ export async function driveScene(game) {
     traffic.push(tc);
     return tc;
   }
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 8; i++) {
     const t = makeTrafficCar();
-    t.position.z = -40 - i * 55 - Math.random() * 20;
+    t.position.z = -25 - i * 34 - Math.random() * 14;
   }
 
   return {
@@ -689,6 +689,12 @@ export async function driveScene(game) {
         }
       }
 
+      if (phase === 'run' && !finished && input.consumeInteract()) {
+        stationIdx = (stationIdx + 1) % stations.length;
+        const st = stations[stationIdx];
+        showObjective(`📻 ${st.freq} — ${st.name}`, 3200);
+        try { startRadio(stationIdx); } catch {}
+      }
       if (phase === 'run' && !finished) {
         // steering
         const { x } = input.axes();

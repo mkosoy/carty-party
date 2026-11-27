@@ -314,11 +314,18 @@ export async function yogiScene(game) {
       followCam.update(dt, hero.group.position);
       pickups.update(dt, hero.group.position);
       // plates ride the belt forever — even outside the minigame it is alive
+      const tt3 = performance.now() / 1000;
       for (const pg of beltPlates) {
         pg.userData.t += dt * (st.active ? st.beltSpeed + st.round * 0.09 : 0.28);
         const t2 = pg.userData.t % (Math.PI * 2);
         pg.position.set(Math.cos(t2) * 3.4 * 1.25, 1.08, Math.sin(t2) * 3.4 * 0.75);
         pg.rotation.y = -t2;
+        // ordered plate glows so you can spot it coming around the belt
+        const isTarget = st.active && st.order && pg.userData.type === st.order.key;
+        pg.children.forEach((ch, ci) => {
+          if (ci > 0 && ch.material) ch.material.emissive = new THREE.Color(isTarget ? 0x30ff60 : 0x000000);
+          if (ci > 0 && ch.material) ch.material.emissiveIntensity = isTarget ? 0.45 + Math.sin(tt3 * 5) * 0.3 : 0;
+        });
       }
 
       const nearI = interactions.nearest(hero.group.position);

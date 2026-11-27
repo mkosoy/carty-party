@@ -71,6 +71,44 @@ export async function driveScene(game) {
       t.position.set(side * (9 + Math.random() * 24), 0, z);
       scene.add(t);
       decor.push(t);
+    } else if (Math.random() < 0.08) {
+      // white spheroid water tower — peak suburban maryland
+      const wt = new THREE.Group();
+      const tank = new THREE.Mesh(new THREE.SphereGeometry(2.2, 12, 10), mat(0xdfe4ea));
+      tank.position.y = 7.5;
+      wt.add(tank);
+      for (let li = 0; li < 4; li++) {
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 6.5, 6), mat(0xb8bec6));
+        const a = (li / 4) * Math.PI * 2;
+        leg.position.set(Math.cos(a) * 1.3, 3.2, Math.sin(a) * 1.3);
+        leg.rotation.z = Math.cos(a) * 0.18;
+        leg.rotation.x = -Math.sin(a) * 0.18;
+        wt.add(leg);
+      }
+      const snowTop = new THREE.Mesh(new THREE.SphereGeometry(1.4, 10, 6, 0, Math.PI * 2, 0, Math.PI / 3), mat(0xf4f8ff));
+      snowTop.position.y = 9.2;
+      wt.add(snowTop);
+      wt.position.set(side * (24 + Math.random() * 8), 0, z);
+      scene.add(wt);
+      decor.push(wt);
+    } else if (Math.random() < 0.10) {
+      // ag reserve red barn with snow roof — upper county moco
+      const barn = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.BoxGeometry(5, 3, 4), mat(0x9a2828));
+      body.position.y = 1.5;
+      barn.add(body);
+      const roof = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 5.2, 3, 1), mat(0xf4f8ff));
+      roof.rotation.z = Math.PI / 2;
+      roof.rotation.x = Math.PI / 2;
+      roof.position.y = 3.1;
+      roof.scale.set(0.5, 1, 1);
+      barn.add(roof);
+      const door = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.8, 0.1), mat(0xe8e0d0));
+      door.position.set(0, 0.9, 2.02);
+      barn.add(door);
+      barn.position.set(side * (18 + Math.random() * 10), 0, z);
+      scene.add(barn);
+      decor.push(barn);
     } else if (Math.random() < 0.5) {
       // strip mall — rockville pike energy: brick box, colorful awning, sign band
       const sm = new THREE.Group();

@@ -32,7 +32,7 @@ export function woodFloor(base = '#8a6a42', rx = 4, ry = 4) {
     const offset = (row % 2) * 64;
     for (let px = -1; px < 3; px++) {
       const x0 = px * 128 + offset;
-      const shade = 0.9 + Math.random() * 0.2;
+      const shade = 0.78 + Math.random() * 0.42;
       x.fillStyle = `rgba(${140 * shade | 0},${100 * shade | 0},${60 * shade | 0},0.5)`;
       x.fillRect(x0, y0, 126, 30);
       // grain lines

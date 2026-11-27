@@ -289,6 +289,35 @@ export async function driveScene(game) {
   roadSign('Wootton Pkwy', -5.5, -145);
   roadSign('Yo Yogi Sushi|NEXT RIGHT', 5.5, -160);
   roadSign('Baltimore 28|Washington 22', -5.5, -230);
+  // rio washingtonian center lakefront — frozen lake + boardwalk + waterfront silhouette, right side
+  const lake = new THREE.Mesh(new THREE.PlaneGeometry(30, 46), new THREE.MeshStandardMaterial({ color: 0x9ab8cc, roughness: 0.15, metalness: 0.5 }));
+  lake.rotation.x = -Math.PI / 2;
+  lake.position.set(34, 0.02, -190);
+  scene.add(lake);
+  decor.push(lake);
+  // boardwalk rail along the lake edge
+  const bw = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1, 40), mat(0x6a4a2e));
+  bw.position.set(17.2, 0.5, -190);
+  scene.add(bw);
+  decor.push(bw);
+  for (let li = 0; li < 6; li++) {
+    const lp = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 3.2, 6), mat(0x2a2e34));
+    lp.position.set(18.2, 1.6, -172 - li * 7);
+    scene.add(lp);
+    decor.push(lp);
+    const lampBall = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffe8b0 }));
+    lampBall.position.set(18.2, 3.3, -172 - li * 7);
+    scene.add(lampBall);
+    decor.push(lampBall);
+  }
+  // waterfront row silhouette behind the lake
+  for (let wi = 0; wi < 4; wi++) {
+    const wb = new THREE.Mesh(new THREE.BoxGeometry(6, 3 + wi % 2, 3), mat(0x8a7a68));
+    wb.position.set(44 + (wi % 2) * 5, (3 + wi % 2) / 2, -172 - wi * 11);
+    scene.add(wb);
+    decor.push(wb);
+  }
+
   // yo yogi billboard on the right shoulder — the payoff landmark
   const bbC = document.createElement('canvas');
   bbC.width = 512; bbC.height = 256;

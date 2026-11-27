@@ -4,6 +4,7 @@ import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectible
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { concrete } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, phoneOverlay, choice, GuideMarker } from '../engine/core.js';
+import { makeChatter } from '../engine/collectibles.js';
 
 // Scene 1 — Washington Dulles. Long concourse, big windows looking at snow,
 // seating rows, a wall TV playing "Churchill vs Wooton: The Big Game",
@@ -762,6 +763,7 @@ export async function airportScene(game) {
   });
   exitInteract.hidden = true;
 
+  const chatter = makeChatter(scene, travelers, ['✈️','🧳','☕','😴','🎄']);
   showObjective('You just landed at Dulles — follow the gold beacon and catch the game on the terminal TV.', 8000);
 
   let phoneTimer = -1;
@@ -907,6 +909,7 @@ export async function airportScene(game) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       elapsed += dt;
       player.update(dt);
+      chatter.update(dt);
       pickups.update(dt, christian.group.position);
       guide.update(dt, christian.group.position);
       // jet flyby loop

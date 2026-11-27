@@ -76,7 +76,10 @@ export function initMapScreen() {
   const cv = el.querySelector('#map-canvas');
   const pinsEl = el.querySelector('#map-pins');
   function xy(lng, lat, w, h) {
-    return [((lng - LNG0) / (LNG1 - LNG0)) * w, ((LAT1 - lat) / (LAT1 - LAT0)) * h];
+    // inset projection: edge pins keep their labels onscreen (labels render above/centered on pins)
+    const nx = 0.13 + ((lng - LNG0) / (LNG1 - LNG0)) * 0.74;
+    const ny = 0.12 + ((LAT1 - lat) / (LAT1 - LAT0)) * 0.78;
+    return [nx * w, ny * h];
   }
   function draw() {
     const r = cv.getBoundingClientRect();
@@ -195,9 +198,10 @@ export function initMapScreen() {
     for (const p of PLACES) {
       const [dx, dy] = xy(p.lng, p.lat, 100, 100);
       const pin = document.createElement('div');
-      pin.style.cssText = `position:absolute;left:${dx}%;top:${dy}%;transform:translate(-50%,-100%);cursor:pointer;text-align:center;z-index:5;transition:transform .15s`;
+      const hx = dx > 80 ? -100 : dx < 20 ? 0 : -50;
+      pin.style.cssText = `position:absolute;left:${dx}%;top:${dy}%;transform:translate(${hx}%,-100%);cursor:pointer;text-align:center;z-index:5;transition:transform .15s`;
       const done = localStorage.getItem('cp-done-' + p.id);
-      pin.innerHTML = `<div style="filter:drop-shadow(0 2px 4px #000)">${twimg(p.emoji, 26)}</div><div style="font-size:10px;color:#ffe;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:8px;white-space:nowrap;margin-top:1px">${p.name.split('—')[0]}${done ? ' <span style="color:#6f6">✓</span>' : ''}</div>`;
+      pin.innerHTML = `<div style="filter:drop-shadow(0 2px 4px #000)">${twimg(p.emoji, 26)}</div><div style="font-size:10px;color:#ffe;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:8px;white-space:nowrap;margin-top:1px;max-width:110px;overflow:hidden;text-overflow:ellipsis">${p.name.split('—')[0]}${done ? ' <span style="color:#6f6">✓</span>' : ''}</div>`;
       if (!done) {
         pin.style.animation = 'cpPinPulse 2.2s ease-in-out infinite';
       }
@@ -209,8 +213,8 @@ export function initMapScreen() {
         const tag = pin.querySelectorAll('div')[1];
         if (tag) tag.innerHTML = '◈ you are here';
       }
-      pin.addEventListener('mouseenter', () => pin.style.transform = 'translate(-50%,-100%) scale(1.2)');
-      pin.addEventListener('mouseleave', () => pin.style.transform = 'translate(-50%,-100%)');
+      pin.addEventListener('mouseenter', () => pin.style.transform = `translate(${hx}%,-100%) scale(1.2)`);
+      pin.addEventListener('mouseleave', () => pin.style.transform = `translate(${hx}%,-100%)`);
       pin.title = p.sub;
       pin.addEventListener('click', () => {
         hide();

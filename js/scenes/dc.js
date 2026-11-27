@@ -557,6 +557,33 @@ export async function dcScene(game) {
         if (splats[i].t > 8) { scene.remove(splats[i].m); splats.splice(i, 1); }
       }
       player.update(dt);
+      // footprints in the snow — alternating left/right steps that slowly fade
+      if (!window.__fp) window.__fp = { last: null, side: 1, list: [] };
+      const fp = window.__fp;
+      const pp = christian.group.position;
+      if (fp.last) {
+        const dx = pp.x - fp.last.x, dz = pp.z - fp.last.z;
+        if (dx * dx + dz * dz > 0.13) {
+          const ang = Math.atan2(dx, dz);
+          const lat = 0.09 * fp.side;
+          const foot = new THREE.Mesh(new THREE.CircleGeometry(0.055, 7), new THREE.MeshBasicMaterial({ color: 0xb8c8dd, transparent: true, opacity: 0.55 }));
+          foot.rotation.x = -Math.PI / 2;
+          foot.scale.set(0.7, 1.6, 1);
+          foot.position.set(pp.x + Math.cos(ang) * lat, 0.062, pp.z - Math.sin(ang) * lat);
+          foot.rotation.z = -ang;
+          scene.add(foot);
+          fp.list.push({ m: foot, t: 0 });
+          fp.side *= -1;
+          fp.last = { x: pp.x, z: pp.z };
+          if (fp.list.length > 90) { const old2 = fp.list.shift(); scene.remove(old2.m); }
+        }
+      } else fp.last = { x: pp.x, z: pp.z };
+      for (const f of fp.list) {
+        f.t += dt;
+        if (f.t > 20) f.m.material.opacity = Math.max(0, 0.55 - (f.t - 20) * 0.08);
+        if (f.m.material.opacity <= 0 && f.t > 26) { scene.remove(f.m); f.dead = true; }
+      }
+      fp.list = fp.list.filter(f => !f.dead);
       pickups.update(dt, christian.group.position);
       // skater glides around the rink
       if (typeof skater !== 'undefined') {

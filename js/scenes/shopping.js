@@ -329,6 +329,48 @@ export async function shoppingScene(game) {
       await dialogue.play([{ speaker: 'Christian', text: 'Lines to the back of the store. The true final boss of Christmas shopping.' }]);
     },
   });
+  interactions.add({
+    pos: new THREE.Vector3(-4.5, 0, -9), radius: 2.2, label: 'lululemon',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Kylie', text: 'I have enough alignment leggings. I have enough align— okay ONE pair. The list is law but the law has loopholes.' },
+        { speaker: 'Christian', text: 'Kylie. The list.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(11.5, 0, -9), radius: 2.4, label: "macy's perfume gauntlet",
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'You have to run the macy\'s perfume gauntlet to get anywhere. Three spritzes minimum. I now smell like a duty-free shop fell on me.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-16, 0, -5), radius: 2.2, label: 'The food court',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'The food court at christmastime — every table taken, and every kid in MoCo is here screaming at the exact same frequency.' },
+        { speaker: 'Kylie', text: 'After the list. Auntie Anne\'s is the reward. Both flavors. This is non-negotiable.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(16, 0, -5), radius: 2.2, label: 'Sephora',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Kylie', text: 'Do NOT go in there with me. Last time I went in for one mascara and came out with a skincare routine for a face I don\'t even have.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-16, 0, 3), radius: 2.2, label: 'Zara maze',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Zara\'s layout is a psychological experiment. No one has ever found the same shirt twice.' },
+      ]);
+    },
+  });
 
   const pickupsC = new Pickups(scene);
   const invC = inventory();

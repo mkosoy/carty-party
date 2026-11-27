@@ -9,7 +9,7 @@ const PLACES = [
   { id: 'shopping', name: 'Montgomery Mall — Bethesda',  lng: -77.10, lat: 38.98, emoji: '🛍️', sub: "kylie's last-minute run" },
   { id: 'dc',       name: 'National Mall — DC',          lng: -77.02, lat: 38.89, emoji: '⛸️', sub: 'the finale — tree, rink, monuments' },
   { id: 'echostage',name: 'Echostage — NE DC',           lng: -76.96, lat: 38.92, emoji: '🎧', sub: 'work a shift behind the stick' },
-  { id: 'yogi',     name: 'Yo Yogi — Gaithersburg',      lng: -77.20, lat: 39.14, emoji: '🍦', sub: 'rio — closes at 9. no exceptions.' },
+  { id: 'yogi',     name: 'Yo Yogi — Gaithersburg',      lng: -77.20, lat: 39.14, emoji: '🍣', sub: 'downtown crown — closes at 9. no exceptions.' },
   { id: 'dentist',  name: "Dr. Fritz's Office",          lng: -77.12, lat: 39.11, emoji: '🦷', sub: 'every tooth, sparkling' },
   { id: 'hopkins',  name: 'Johns Hopkins — Baltimore',   lng: -76.62, lat: 39.33, emoji: '🧪', sub: "stacy's environmental science lab" },
   { id: 'museum',   name: 'Air & Space — the Mall',      lng: -77.02, lat: 38.888, emoji: '🚀', sub: "mark's cathedral of flight" },

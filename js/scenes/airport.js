@@ -817,7 +817,6 @@ export async function airportScene(game) {
 
   const chatter = makeChatter(scene, travelers, ['✈️','🧳','☕','😴','🎄']);
   setTimeout(() => phoneText('Stacy ❤️', 'landed?? tell me you didn&#39;t miss the swap season poster at baggage claim'), 6000);
-  setTimeout(() => phoneText('Kylie', 'omw to the mall, please tell me you&#39;re actually in moco this time'), 12500);
   showObjective('You just landed at Dulles — follow the gold beacon and catch the game on the terminal TV.', 8000);
 
   let phoneTimer = -1;

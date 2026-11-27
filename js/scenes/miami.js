@@ -498,10 +498,71 @@ interactions.add({
   window.__sceneHint = 'WASD — dance floor · 1/2/3/4 — dance moves · drag — camera';
   setTimeout(() => phoneText('Kylie', 'YOU ARE IN MIAMI?? it is christmas eve?? the swap is IN BALTIMORE??'), 8000);
   setTimeout(() => phoneText('Stacy ❤️', 'come home. the flight is two hours. you can still make the monument. come home'), 19000);
+  // aerial hoop performer — the cirque signature E11EVEN is famous for.
+  // a ring hung from the ceiling slowly rotating, with a posed silhouette inside
+  const aerialHoop = new THREE.Group();
+  const hoopRing = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.045, 8, 28), new THREE.MeshStandardMaterial({ color: 0xd0d0e0, metalness: 0.8, roughness: 0.3 }));
+  aerialHoop.add(hoopRing);
+  const aerialist = makePerson({ top: 0xff40c0, bottom: 0x301040, hair: 0x201018, skin: 0xd0a080, party: true });
+  aerialist.group.scale.setScalar(0.9);
+  aerialist.group.position.set(0, -0.15, 0);
+  aerialist.group.rotation.z = 0.5;
+  aerialHoop.add(aerialist.group);
+  // suspension lines up into the dark ceiling
+  const ropeMat = mat(0x505060);
+  for (const rx of [-0.14, 0.14]) {
+    const rope = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 4.2, 4), ropeMat);
+    rope.position.set(rx, 2.95, 0);
+    aerialHoop.add(rope);
+  }
+  aerialHoop.position.set(-7.5, 3.1, -4);
+  scene.add(aerialHoop);
+  // second hoop on the other side for balance
+  const hoop2 = aerialHoop.clone();
+  hoop2.position.set(7.5, 3.4, -5.5);
+  scene.add(hoop2);
+
+  // confetti drops — E11EVEN blasts confetti over the crowd at peak moments.
+  // a rolling burst every ~14s from above the dance floor
+  const confettiColors = [0xff40c0, 0x40c0ff, 0xffe040, 0x60ff80, 0xff8040];
+  const confetti = [];
+  const confettiGeo = new THREE.PlaneGeometry(0.09, 0.06);
+  function confettiBurst() {
+    for (let i = 0; i < 40; i++) {
+      const cm = new THREE.Mesh(confettiGeo, new THREE.MeshBasicMaterial({ color: confettiColors[i % confettiColors.length], side: THREE.DoubleSide }));
+      cm.position.set((Math.random() - 0.5) * 8, 6.2 + Math.random(), -4 + (Math.random() - 0.5) * 6);
+      cm.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
+      scene.add(cm);
+      confetti.push({ m: cm, vy: -(0.5 + Math.random() * 0.6), vx: (Math.random() - 0.5) * 0.5, vz: (Math.random() - 0.5) * 0.5, spin: 2 + Math.random() * 4, life: 9 });
+    }
+  }
+  let confettiT = 6;
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: olivia, self: this };
       t += dt;
+      // aerial hoops sway + rotate slowly like real circus rigging
+      aerialHoop.rotation.y += dt * 0.35;
+      aerialHoop.rotation.z = Math.sin(t * 0.5) * 0.09;
+      hoop2.rotation.y -= dt * 0.28;
+      hoop2.rotation.z = Math.sin(t * 0.42 + 2) * 0.08;
+      // confetti lifecycle: flutter down, fade out at the floor, then the next drop
+      confettiT -= dt;
+      if (confettiT <= 0) { confettiBurst(); confettiT = 14; }
+      for (let i = confetti.length - 1; i >= 0; i--) {
+        const c = confetti[i];
+        c.life -= dt;
+        c.m.position.y += c.vy * dt;
+        c.m.position.x += c.vx * dt + Math.sin(t * 3 + i) * dt * 0.35;
+        c.m.position.z += c.vz * dt;
+        c.m.rotation.x += c.spin * dt;
+        c.m.rotation.z += c.spin * 0.7 * dt;
+        if (c.m.position.y < 0.03 || c.life <= 0) {
+          scene.remove(c.m);
+          confetti.splice(i, 1);
+        }
+      }
 
       // the player controls olivia — wasd/joystick walks her around the club
       player.update(dt);

@@ -305,6 +305,23 @@ export async function houseScene(game) {
   box(ground, 1.7, 0.08, 0.14, 0xd8cfc0, 5.5, 2.52, -5.8);
   box(ground, 1.7, 0.08, 0.14, 0xd8cfc0, 5.5, 1.08, -5.8);
   box(ground, 0.08, 1.4, 0.14, 0xd8cfc0, 5.5, 1.8, -5.8);
+  // curtains framing the snowy window — heavy winter drapes
+  const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.2, 8), mat(0x8a6a4a, 0.5));
+  rod.rotation.z = Math.PI / 2;
+  rod.position.set(5.5, 2.62, -5.75);
+  ground.add(rod);
+  for (const cside of [-1, 1]) {
+    const curtain = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.5, 0.08), mat(0x7a2a3a));
+    curtain.position.set(5.5 + cside * 1.0, 1.85, -5.72);
+    ground.add(curtain);
+    // gathered folds illusion: vertical stripes
+    for (let fi = 0; fi < 3; fi++) {
+      const fold = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1.5, 0.02), mat(0x5a1e2c));
+      fold.position.set(5.5 + cside * (0.86 + fi * 0.14), 1.85, -5.68);
+      ground.add(fold);
+    }
+  }
+
   // kitchen hint: counter along east wall
   box(ground, 0.9, 0.9, 3.2, 0xd0ccc0, 7.4, 0.45, -3);
   box(ground, 0.95, 0.06, 3.3, 0x8a8078, 7.4, 0.93, -3);

@@ -1001,6 +1001,38 @@ export async function houseScene(game) {
     },
   });
   interactions.add({
+    pos: new THREE.Vector3(-6.8, 0, -1.2), radius: 1.8, label: 'Look out the window', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Snow coming down over Columbia. Somewhere out there Lake Kittamaqundi is freezing over.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-2.5, 0, -4.8), radius: 1.8, label: 'Raid the fridge', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Kids drawings held on by magnets, leftover casserole, and exactly one fancy mustard. A proper family fridge.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(3.0, 0, -3.0), radius: 1.6, label: 'The dining table', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Set for six, candles and everything. Nobody in Columbia does a casual holiday dinner. It is always an Event.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-3.2, 0, 5.6), radius: 1.8, label: 'Pet Tre', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Who is a good cat. Who runs this entire house. It is Tre. It was always Tre.' },
+      ]);
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(7.2, 0, 4.6), radius: 1.8, label: 'Water the fiddle-leaf', floor: 'ground',
     action: async () => {
       await dialogue.play([

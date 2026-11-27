@@ -429,6 +429,36 @@ export async function driveScene(game) {
   adBillboard({ bg: '#14101e', fg: '#ffd2f0', title: 'THE FILLMORE', sub: 'silver spring — live music', sub2: 'georgia ave', size: 62 }, 12, -170, -0.4);
   adBillboard({ grad: ['#1e3a5a', '#101c30'], fg: '#f0e8d0', title: 'STRATHMORE', sub: 'music center — north bethesda', sub2: 'rockville pike', size: 60, font: 'Georgia' }, -12, -205, 0.4);
   adBillboard({ bg: '#2a1a0e', fg: '#ffe8b0', title: 'YO YOGI', sub: 'sushi — downtown crown, gaithersburg', sub2: 'exit 11 → rio blvd', size: 64 }, 12, -240, -0.4);
+  adBillboard({ bg: '#1a2e1a', fg: '#e8f0d8', title: 'MONTGOMERY MALL', sub: 'bethesda — shop the holidays', sub2: 'democracy blvd', size: 50, font: 'Georgia' }, -12, -268, 0.4);
+  adBillboard({ grad: ['#4a2e10', '#2a1a08'], fg: '#f0e0c0', title: 'KENTLANDS', sub: 'main street living — gaithersburg', size: 62, font: 'Georgia' }, 12, -292, -0.4);
+  adBillboard({ bg: '#20242c', fg: '#a8d8f0', title: 'RIO WASHINGTONIAN', sub: 'lakefront dining & movies', sub2: 'exit 11', size: 48 }, -12, -318, 0.4);
+  // green DOT-style welcome sign
+  {
+    const c = document.createElement('canvas');
+    c.width = 512; c.height = 256;
+    const ctx2 = c.getContext('2d');
+    ctx2.fillStyle = '#0a5c2e'; ctx2.fillRect(0, 0, 512, 256);
+    ctx2.strokeStyle = '#ffffff'; ctx2.lineWidth = 10; ctx2.strokeRect(8, 8, 496, 240);
+    ctx2.fillStyle = '#ffffff'; ctx2.textAlign = 'center';
+    ctx2.font = 'bold 52px Arial';
+    ctx2.fillText('MONTGOMERY', 256, 105);
+    ctx2.fillText('COUNTY', 256, 168);
+    ctx2.font = 'italic 30px Georgia';
+    ctx2.fillText('est. 1776 — happy holidays', 256, 220);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(7, 3.5), new THREE.MeshBasicMaterial({ map: t }));
+    m.position.set(12, 4.2, -60);
+    m.rotation.y = -0.35;
+    scene.add(m);
+    decor.push(m);
+    for (const px of [10.5, 13.5]) {
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 3, 8), mat(0x6a6f75));
+      pole.position.set(px, 1.5, -60);
+      scene.add(pole);
+      decor.push(pole);
+    }
+  }
 
   // overpass in the distance
   const op = new THREE.Mesh(new THREE.BoxGeometry(22, 1, 3), mat(0x8a8f98));

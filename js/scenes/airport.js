@@ -717,6 +717,24 @@ export async function airportScene(game) {
     scene.add(runner);
   }
 
+  // scattered luggage near the seating — lived-in terminal feel
+  const bagColors = [0x8a3040, 0x2a4a6a, 0x4a4a52, 0x6a5a3a, 0x3a5a4a];
+  const bagSpots = [[-8.2, 1.8, 0.3], [1.8, 2.4, -0.2], [9.5, 1.2, 0.5], [-14.5, 5.2, 0.1], [4.5, -3.5, -0.4], [-3.5, -5.8, 0.6], [16.5, -2.5, 0.2]];
+  for (let i = 0; i < bagSpots.length; i++) {
+    const [bx, bz, br] = bagSpots[i];
+    const bag = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.62, 0.26), mat(bagColors[i % bagColors.length]));
+    bag.position.set(bx, 0.31, bz);
+    bag.rotation.y = br * 3;
+    bag.castShadow = true;
+    scene.add(bag);
+    const handle = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.3, 0.05), mat(0x222226));
+    handle.position.set(bx, 0.75, bz);
+    handle.rotation.y = br * 3;
+    scene.add(handle);
+  }
+  // a few rolling travelers pulling bags
+  // (static props only — walkers already animate)
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

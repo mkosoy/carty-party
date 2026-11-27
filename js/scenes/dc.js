@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Pickups , npcFacePlayer } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
+import { sfxSplat } from '../engine/sfx.js';
 import { makePerson } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, GuideMarker } from '../engine/core.js';
 
@@ -461,6 +462,28 @@ export async function dcScene(game) {
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
+      // snowball physics: gravity arc, splat on ground
+      for (let i = snowballs.length - 1; i >= 0; i--) {
+        const sb = snowballs[i];
+        sb.vy -= 12 * dt;
+        sb.m.position.x += sb.vx * dt;
+        sb.m.position.y += sb.vy * dt;
+        sb.m.position.z += sb.vz * dt;
+        if (sb.m.position.y < 0.06) {
+          scene.remove(sb.m);
+          snowballs.splice(i, 1);
+          const patch = new THREE.Mesh(new THREE.CircleGeometry(0.22, 8), new THREE.MeshBasicMaterial({ color: 0xf4f8ff }));
+          patch.rotation.x = -Math.PI / 2;
+          patch.position.set(sb.m.position.x, 0.065, sb.m.position.z);
+          scene.add(patch);
+          splats.push({ m: patch, t: 0 });
+          try { sfxSplat(); } catch {}
+        }
+      }
+      for (let i = splats.length - 1; i >= 0; i--) {
+        splats[i].t += dt;
+        if (splats[i].t > 8) { scene.remove(splats[i].m); splats.splice(i, 1); }
+      }
       player.update(dt);
       pickups.update(dt, christian.group.position);
       // skater glides around the rink

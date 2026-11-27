@@ -172,3 +172,22 @@ export function sfxHorn() {
     o.start(t); o.stop(t + 0.4);
   }
 }
+
+// snowball splat: soft noise thump
+export function sfxSplat() {
+  const ctx = ac();
+  const t = ctx.currentTime;
+  const len = ctx.sampleRate * 0.18;
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const ch = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2);
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  const lp = ctx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.value = 900;
+  const g = ctx.createGain();
+  g.gain.value = 0.35;
+  src.connect(lp); lp.connect(g); g.connect(ctx.destination);
+  src.start(t);
+}

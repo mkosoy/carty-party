@@ -6,7 +6,7 @@ export class FollowCam {
   constructor(camera) {
     this.camera = camera;
     this.offset = new THREE.Vector3(0, 3.4, 5.6);
-    this.lookOffset = new THREE.Vector3(0, 1.5, 0);
+    this.lookOffset = new THREE.Vector3(0, 2.0, 0);
     this.pos = new THREE.Vector3();
     this.shake = 0;
     this.yaw = 0;
@@ -48,7 +48,7 @@ export class FollowCam {
     );
     let desired = target.clone().add(rot);
     if (this.room) {
-      const m = 1.1;
+      const m = 0.55;
       // pull-in instead of wall-slide: if the orbit position would leave the room,
       // shrink the camera distance toward the player until it fits — this keeps
       // rotation smooth in small venues instead of the camera grinding along walls
@@ -56,8 +56,8 @@ export class FollowCam {
         const cx = Math.max(this.room.minX + m, Math.min(this.room.maxX - m, desired.x));
         const cz = Math.max(this.room.minZ + m, Math.min(this.room.maxZ - m, desired.z));
         if (cx === desired.x && cz === desired.z) break;
-        desired = target.clone().add(rot.clone().multiplyScalar(1 - (shrink + 1) * 0.13));
-        desired.y = Math.max(desired.y, target.y + 1.1);
+        desired = target.clone().add(rot.clone().multiplyScalar(1 - (shrink + 1) * 0.11));
+        desired.y = Math.max(desired.y, target.y + 1.1 + shrink * 0.45);
       }
       desired.x = Math.max(this.room.minX + m, Math.min(this.room.maxX - m, desired.x));
       desired.z = Math.max(this.room.minZ + m, Math.min(this.room.maxZ - m, desired.z));
@@ -66,14 +66,21 @@ export class FollowCam {
     const obs = window.__playerBounds;
     if (obs && obs.length) {
       let guard = 0;
-      const inside = (p) => obs.some((b) => p.x > b.minX - 0.15 && p.x < b.maxX + 0.15 && p.z > b.minZ - 0.15 && p.z < b.maxZ + 0.15 && p.y < 2.6);
+      const inside = (p) => p.y < 1.55 && obs.some((b) => p.x > b.minX - 0.15 && p.x < b.maxX + 0.15 && p.z > b.minZ - 0.15 && p.z < b.maxZ + 0.15);
       while (inside(desired) && guard < 12) {
         desired.lerp(target.clone().add(new THREE.Vector3(0, 1.8, 0)), 0.28);
         guard++;
       }
     }
-    this.pos.lerp(desired, Math.min(1, dt * 4.5));
+    // fast pull-in, slow ease-out: collapsing must keep up instantly (never clip walls),
+    // but recovery drifts back gently so the frame doesn't pump while maneuvering
+    const curDist = this.pos.distanceTo(target);
+    const desDist = desired.distanceTo(target);
+    const rate = desDist < curDist ? 9.0 : 1.6;
+    this.pos.lerp(desired, Math.min(1, dt * rate));
     this.camera.position.copy(this.pos);
+    // publish horizontal camera distance — the player fade reads this
+    window.__camDistXZ = Math.hypot(this.camera.position.x - target.x, this.camera.position.z - target.z);
     if (this.room) {
       this.camera.position.y = Math.min(this.camera.position.y, this.room.maxY);
     }
@@ -269,7 +276,15 @@ export class PlayerController {
       this.grounded = false;
     }
   }
+  updateVisibility() {
+    // hysteresis so it doesn't flicker at the threshold
+    const d = window.__camDistXZ;
+    if (d === undefined) return;
+    if (this.person.group.visible && d < 1.25) this.person.group.visible = false;
+    else if (!this.person.group.visible && d > 1.7) this.person.group.visible = true;
+  }
   update(dt) {
+    this.updateVisibility();
     if (this.input.consumeJump && this.input.consumeJump()) this.jump();
     const gg = this.person.group;
     if (!this.grounded || this.vy > 0) {

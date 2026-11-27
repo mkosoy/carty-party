@@ -120,7 +120,7 @@ export async function swapScene(game) {
     draped.position.set(bx + 0.5, 0.42, bz + 0.44);
     draped.rotation.x = 0.35;
     scene.add(draped);
-    if (typeof boundsByFloor !== 'undefined' && boundsByFloor.ground) boundsByFloor.ground.push({ minX: bx - 0.75, maxX: bx + 0.75, minZ: bz - 0.55, maxZ: bz + 0.55 });
+    bounds.push({ minX: bx - 0.75, maxX: bx + 0.75, minZ: bz - 0.55, maxZ: bz + 0.55 });
   }
   // canvas tote bags dropped on the floor by shoppers
   for (const [tx, tz, tc] of [[-1.5, 4.5, 0xf0e8d8], [3.0, 3.8, 0x8a6a4a], [-6.0, 0.5, 0xd8c8a8]]) {

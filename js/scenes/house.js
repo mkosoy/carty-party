@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { positionalLoop } from '../engine/sfx.js';
 import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
@@ -1187,6 +1188,11 @@ export async function houseScene(game) {
       mp.needsUpdate = true;
     }
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, floor: typeof floor !== "undefined" ? floor : null, self: this };
+      if (!this._fireLoop) {
+        this._fireLoop = null;
+        try { this._fireLoop = positionalLoop({ type: 'noise', freq: 900, x: 2.5, z: -5.5, maxDist: 7, gain: 0.14, rate: 3 }); } catch {}
+      }
+      if (this._fireLoop) this._fireLoop.update(christian.group.position.x, christian.group.position.z);
       player.update(dt);
       pickups.update(dt, christian.group.position);
       // floor-aware breadcrumbs: in the basement with tre's item, lead back to the stairs first

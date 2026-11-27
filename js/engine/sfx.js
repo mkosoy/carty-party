@@ -191,3 +191,40 @@ export function sfxSplat() {
   src.connect(lp); lp.connect(g); g.connect(ctx.destination);
   src.start(t);
 }
+
+// positional loop helper: a noise/tone loop whose volume scales by inverse
+// distance to a world point. call .update(px, pz) each frame with player pos.
+export function positionalLoop({ freq = 200, type = 'noise', x = 0, z = 0, maxDist = 8, gain = 0.2, rate = 2 }) {
+  const ctx = ac();
+  const g = ctx.createGain();
+  g.gain.value = 0;
+  let src;
+  if (type === 'noise') {
+    const buf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    const ch = buf.getChannelData(0);
+    for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(Math.random(), rate);
+    src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = freq;
+    src.connect(lp).connect(g);
+  } else {
+    src = ctx.createOscillator();
+    src.type = type;
+    src.frequency.value = freq;
+    src.connect(g);
+  }
+  g.connect(ac().destination);
+  src.start();
+  return {
+    x, z, maxDist, gain,
+    update(px, pz) {
+      const d = Math.hypot(px - this.x, pz - this.z);
+      const v = Math.max(0, 1 - d / this.maxDist);
+      g.gain.value = v * v * this.gain;
+    },
+    stop() { try { src.stop(); } catch {} try { g.disconnect(); } catch {} }
+  };
+}

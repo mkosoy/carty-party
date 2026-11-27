@@ -132,7 +132,36 @@ export async function runclubScene(game) {
   // parametric position on lane: theta -> x,z (+ derivative for facing)
   function posOnTrack(theta, laneOffset) {
     const r = A + laneOffset;
-    return {
+    // school building silhouette beyond the field + perimeter trees
+  const school = new THREE.Mesh(new THREE.BoxGeometry(26, 7, 8), mat(0x5a4a3c));
+  school.position.set(0, 3.5, -42);
+  scene.add(school);
+  const roofline = new THREE.Mesh(new THREE.BoxGeometry(27, 0.6, 9), mat(0x3a3230));
+  roofline.position.set(0, 7.2, -42);
+  scene.add(roofline);
+  // lit windows
+  for (let i = 0; i < 10; i++) {
+    const win = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.6), new THREE.MeshBasicMaterial({ color: 0xffd890 }));
+    win.position.set(-10 + i * 2.2, 3.5, -37.9);
+    scene.add(win);
+  }
+  for (let i = 0; i < 8; i++) {
+    const ang = (i / 8) * Math.PI * 2;
+    const tx = Math.cos(ang) * (40 + (i % 3) * 4);
+    const tz = Math.sin(ang) * (34 + (i % 2) * 5);
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.26, 2.2, 6), mat(0x4a3a28));
+    trunk.position.set(tx, 1.1, tz);
+    scene.add(trunk);
+    const crown = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3.2, 8), mat(0x1e3a24));
+    crown.position.set(tx, 3.6, tz);
+    scene.add(crown);
+    // snowcap
+    const cap = new THREE.Mesh(new THREE.ConeGeometry(1.1, 1.2, 8), mat(0xe8ecf2));
+    cap.position.set(tx, 4.6, tz);
+    scene.add(cap);
+  }
+
+  return {
       x: r * Math.cos(theta),
       z: (r * (B / A)) * Math.sin(theta),
     };

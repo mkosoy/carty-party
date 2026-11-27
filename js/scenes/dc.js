@@ -358,6 +358,41 @@ export async function dcScene(game) {
     },
   });
 
+  // snowman in the plaza foreground + snow piles for ground interest
+  const snowman = new THREE.Group();
+  const sm1 = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 10), mat(0xf4f6f8));
+  sm1.position.y = 0.55;
+  const sm2 = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 10), mat(0xf4f6f8));
+  sm2.position.y = 1.3;
+  const sm3 = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 10), mat(0xf4f6f8));
+  sm3.position.y = 1.85;
+  snowman.add(sm1, sm2, sm3);
+  const nose = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.25, 8), mat(0xe07a20));
+  nose.rotation.x = Math.PI / 2;
+  nose.position.set(0, 1.87, 0.32);
+  snowman.add(nose);
+  for (const ex of [-0.09, 0.09]) {
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), mat(0x1a1a1a));
+    eye.position.set(ex, 1.95, 0.24);
+    snowman.add(eye);
+  }
+  const hat = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.22, 10), mat(0x222226));
+  hat.position.y = 2.12;
+  snowman.add(hat);
+  const hatBrim = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.03, 10), mat(0x222226));
+  hatBrim.position.y = 2.02;
+  snowman.add(hatBrim);
+  snowman.position.set(-5.5, 0, 14.5);
+  snowman.rotation.y = 0.4;
+  scene.add(snowman);
+  // snow piles along walkway edges
+  for (const [px, pz, ps] of [[-8, 16, 1.2], [7.5, 15, 0.9], [3, 18, 1.4], [-2.5, 17.5, 0.8], [10, 12, 1.0], [-11, 13, 1.1]]) {
+    const pile = new THREE.Mesh(new THREE.SphereGeometry(ps, 10, 8), mat(0xe8ecf2));
+    pile.scale.y = 0.35;
+    pile.position.set(px, 0.05, pz);
+    scene.add(pile);
+  }
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

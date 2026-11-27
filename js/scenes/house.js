@@ -470,6 +470,38 @@ export async function houseScene(game) {
     grp.position.set(x, baseY, z);
     parent.add(grp);
   }
+  // garland spiraling down the staircase railing with warm lights — the classic holiday shot
+  for (let i = 0; i < 6; i++) {
+    const garl = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 6), mat(0x1e5a2e));
+    garl.position.set(6.8, 0.8 + i * 0.4, 4.4 - i * 0.68);
+    garl.scale.set(1, 0.7, 1);
+    ground.add(garl);
+    const glight = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), new THREE.MeshBasicMaterial({ color: i % 2 ? 0xffd770 : 0xff5050 }));
+    glight.position.set(6.8, 0.88 + i * 0.4, 4.4 - i * 0.68);
+    ground.add(glight);
+  }
+  // mantel candles + greenery on the fireplace wall
+  for (const cxl of [-6.4, -5.6]) {
+    const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.035, 0.22, 8), mat(0xf0e8d8));
+    candle.position.set(cxl, 1.95, 5.82);
+    ground.add(candle);
+    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.02, 6, 6), new THREE.MeshBasicMaterial({ color: 0xffc040 }));
+    flame.position.set(cxl, 2.09, 5.82);
+    ground.add(flame);
+  }
+  const mantelGarland = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.1, 0.1), mat(0x1e5a2e));
+  mantelGarland.position.set(-6.0, 1.82, 5.82);
+  ground.add(mantelGarland);
+  // dining table centerpiece: candle trio + small wreath ring
+  const wreathRing = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.05, 8, 16), mat(0x1e5a2e));
+  wreathRing.rotation.x = Math.PI / 2;
+  wreathRing.position.set(3, 0.98, -3.0);
+  ground.add(wreathRing);
+  for (let ci3 = 0; ci3 < 3; ci3++) {
+    const tcandle = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.02, 0.14, 6), mat(0xc03838));
+    tcandle.position.set(2.92 + ci3 * 0.08, 1.05, -3.0);
+    ground.add(tcandle);
+  }
   staircase(ground, 6, 4.4, 0, true);
   staircase(upper, 6, 4.4, 0, false);
   staircase(basement, 6, 4.4, 0, false);

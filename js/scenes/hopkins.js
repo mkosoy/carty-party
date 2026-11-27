@@ -185,6 +185,7 @@ export async function hopkinsScene(game) {
         { speaker: 'Stacy', text: 'Time! Ugh — partial data. Science is patient. I am not, but science is.' },
       ]);
       player.frozen = false;
+      if (won) setTimeout(() => { if (window.__showMap) window.__showMap(); }, 2500);
     })();
   }
 

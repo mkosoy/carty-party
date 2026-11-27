@@ -225,6 +225,7 @@ export async function shoppingScene(game) {
         ]);
       }
       player.frozen = false;
+      if (won) setTimeout(() => { if (window.__showMap) window.__showMap(); }, 2500);
     })();
   }
 

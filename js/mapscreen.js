@@ -169,5 +169,6 @@ export function initMapScreen() {
   btn.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:80;background:rgba(10,12,24,.8);color:#ffd;border:1px solid rgba(212,175,105,.5);border-radius:10px;padding:9px 14px;font:bold 14px Arial;cursor:pointer;backdrop-filter:blur(4px)';
   btn.addEventListener('click', show);
   document.body.appendChild(btn);
+  window.__showMap = show;
   return { show, hide };
 }

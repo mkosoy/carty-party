@@ -372,6 +372,7 @@ export async function echostageScene(game) {
               { speaker: 'Christian', text: 'Echostage bartender: one night only. What a room to do it in.' },
             ]);
             player.frozen = false;
+            setTimeout(() => { if (window.__showMap) window.__showMap(); }, 2500);
           })();
         }
       }

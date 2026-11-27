@@ -464,6 +464,43 @@ export async function dcScene(game) {
     },
   });
 
+  interactions.add({
+    pos: new THREE.Vector3(-2, 0, -13),
+    radius: 2.4,
+    label: 'Read the inscription',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Every year I forget how quiet the mall gets in the snow. The whole city holding its breath.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(12, 0, 6),
+    radius: 2.4,
+    label: 'Watch the skaters',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Somebody out there is doing a triple salchow. Somebody else is clinging to the wall. No in-between.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-13, 0, 12),
+    radius: 2.4,
+    label: 'Catch a snowflake',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'LA does not have this. LA has traffic and vibes. This — this is a proper December.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+
   // snow-capped pines scattered around the park edges — softens the empty foreground
   for (const [px, pz, ps] of [[-11, 16, 1.2], [11.5, 15, 1.0], [-13, 4, 0.9], [13.5, 3, 1.1], [-9, 19, 0.8], [9, 18.5, 1.3]]) {
     const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12 * ps, 0.16 * ps, 0.8 * ps, 7), mat(0x4a3220));

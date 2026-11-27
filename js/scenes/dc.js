@@ -407,6 +407,20 @@ export async function dcScene(game) {
     },
   });
 
+  interactions.add({
+    pos: new THREE.Vector3(6, 0, -11),
+    radius: 2.8,
+    label: 'Photo by the tree',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Stacy', text: 'Everybody squeeze in — Christian, stop blinking this time!' },
+        { speaker: 'Christian', text: 'That was ONE time. The flash was in my eyes.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

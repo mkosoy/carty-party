@@ -757,6 +757,19 @@ export async function airportScene(game) {
     },
   });
 
+  interactions.add({
+    pos: new THREE.Vector3(0, 0, 10.5),
+    radius: 2.6,
+    label: 'Check the departure board',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Delayed, delayed, delayed... ours was the only one that landed early. Figures.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

@@ -767,6 +767,19 @@ export async function houseScene(game) {
   boundsByFloor.upper.push({ minX: -2.9, maxX: -1.5, minZ: 1.2, maxZ: 2.0 });
   boundsByFloor.basement = boundsByFloor.basement.filter(() => true);
 
+  interactions.add({
+    pos: new THREE.Vector3(7.3, 0, -3),
+    radius: 2.0,
+    label: 'Browse the shelf',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Cookbooks, a yearbook, and three identical copies of the same thriller. Classic.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, floor: typeof floor !== "undefined" ? floor : null, self: this };

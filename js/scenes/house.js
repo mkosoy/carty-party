@@ -236,6 +236,13 @@ export async function houseScene(game) {
   }
   bed(upper, -6.2, -4.2, 0x222226);
   bed(upper, -6.2, 4.2, 0xd07a92);
+  // nightstands with warm glowing lamps beside each bed
+  for (const nz of [-4.2, 4.2]) {
+    box(upper, 0.45, 0.5, 0.45, 0x6a4a2c, -5.2, 0.25, nz + 0.9);
+    const nlamp = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.13, 0.22, 8), new THREE.MeshStandardMaterial({ color: 0xffe0a0, emissive: 0xffca70, emissiveIntensity: 0.8 }));
+    nlamp.position.set(-5.2, 0.65, nz + 0.9);
+    upper.add(nlamp);
+  }
   box(upper, 1.2, 0.9, 0.5, 0x7a5a3a, -7.3, 0.45, -2.2);
   box(upper, 1.2, 0.9, 0.5, 0x7a5a3a, -7.3, 0.45, 2.2);
   wallArt(upper, -7.85, 2.0, -4, 0.9, 1.1, 0x30405a, Math.PI / 2);

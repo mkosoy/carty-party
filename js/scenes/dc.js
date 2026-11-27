@@ -393,6 +393,20 @@ export async function dcScene(game) {
     scene.add(pile);
   }
 
+  // bench breather flavor interaction
+  interactions.add({
+    pos: new THREE.Vector3(-14, 0, 7),
+    radius: 2.2,
+    label: 'Take a breather',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Cold night. Warm crowd. Best kind of December.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

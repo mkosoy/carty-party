@@ -592,6 +592,21 @@ export async function swapScene(game) {
   ctable.position.set(-11.8, 0.22, 7.2);
   scene.add(ctable);
 
+  // record crate digging flavor interaction
+  interactions.add({
+    pos: new THREE.Vector3(10.5, 0, -8.5),
+    radius: 2.4,
+    label: 'Dig through records',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Milk crates of vinyl. Somebody’s whole 2009 is in here.' },
+        { speaker: 'Maya', text: 'Careful with the pressing — that one’s a first edition!' },
+      ]);
+      player.frozen = false;
+    },
+  });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

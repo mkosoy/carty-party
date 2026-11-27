@@ -483,6 +483,47 @@ export async function dentistScene(game) {
   }
 
   interactions.add({
+    pos: new THREE.Vector3(-4.5, 0, -3), radius: 2.0, label: 'Read the diplomas',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Dr. Fritz, DDS. Magna cum laude. And a certificate in orthodontics. And one in sandwich artistry?? Hang on.' },
+        { speaker: 'Dr. Fritz', text: 'A man contains multitudes. Sit down.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(4.2, 0, -3.2), radius: 2.0, label: 'The instrument tray',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Picks, mirrors, scrapers. Arranged by size like a tiny terrifying orchestra.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-4.2, 0, 3), radius: 2.0, label: 'Waiting room magazines',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Highlights magazine from 2019. The hidden pictures are already circled. Every single one. Monsters.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(4.5, 0, 3), radius: 2.0, label: 'The goodie drawer',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Olivia', text: 'Dr. Fritz gives out the good toothbrushes. Not the floppy ones. The good ones.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(0, 0, 0.3), radius: 2.2, label: 'Sit in the chair',
     action: async () => {
       player.frozen = true;

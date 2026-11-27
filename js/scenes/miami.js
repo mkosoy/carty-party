@@ -407,6 +407,54 @@ export async function miamiScene(game) {
 
   const interactions = new Interactions(scene);
   interactions.add({
+    pos: new THREE.Vector3(0, 0, 0), radius: 3.0, label: 'The dance floor',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'The floor is literally vibrating. E11EVEN does not do anything at half volume.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-12, 0, -6), radius: 2.6, label: 'The visualizer wall',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'The wall is breathing with the bass. Somewhere an engineer is very proud of this wall. Correctly.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-10, 0, 8), radius: 2.4, label: 'VIP mezzanine',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Olivia', text: 'Bottle service up there. One day, bronco. Tonight we dance with the people.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(8, 0, 10), radius: 2.4, label: 'Neon everything',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Miami runs on three things: neon, bass, and the complete refusal to sleep.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(12, 0, -8), radius: 2.4, label: 'Watch the crowd',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'It is 3am energy in here and the night is young. The Philly fam does not mess around.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-13.4, 0, 2), radius: 2.4, label: 'Feel the lasers',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Olivia', text: 'Careful bronco — you stare into the lasers, the lasers stare back.' },
+      ]);
+    },
+  });
+interactions.add({
     pos: new THREE.Vector3(13.4, 0, 2), radius: 2.4, label: 'Order a drink',
     action: async () => {
       await dialogue.play([

@@ -96,6 +96,32 @@ export class FollowCam {
         guard++;
       }
     }
+    // line-of-sight occlusion: walk the segment from the player to the camera —
+    // if a BIG blocker (structural column, wall segment — not furniture) sits
+    // between them, pull the camera just in front of it. furniture stays exempt
+    // so the camera keeps flying over couches/tables.
+    if (obs && obs.length) {
+      const tx2 = target.x, tz2 = target.z;
+      const odx = desired.x - tx2, odz = desired.z - tz2;
+      const olen = Math.hypot(odx, odz);
+      if (olen > 0.8) {
+        const oux = odx / olen, ouz = odz / olen;
+        let cut = -1;
+        for (let s = 0.9; s < olen; s += 0.2) {
+          const px2 = tx2 + oux * s, pz2 = tz2 + ouz * s;
+          for (const b of obs) {
+            const bw = b.maxX - b.minX, bd = b.maxZ - b.minZ;
+            if (b.tall && px2 > b.minX - 0.05 && px2 < b.maxX + 0.05 && pz2 > b.minZ - 0.05 && pz2 < b.maxZ + 0.05) { cut = s; break; }
+          }
+          if (cut > 0) break;
+        }
+        if (cut > 0) {
+          const nl = Math.max(1.3, cut - 0.45);
+          desired.x = tx2 + oux * nl;
+          desired.z = tz2 + ouz * nl;
+        }
+      }
+    }
     // fast pull-in, slow ease-out: collapsing must keep up instantly (never clip walls),
     // but recovery drifts back gently so the frame doesn't pump while maneuvering
     const curDist = this.pos.distanceTo(target);

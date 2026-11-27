@@ -616,7 +616,7 @@ export async function airportScene(game) {
     col.position.set(cx, 3.5, 6.5);
     scene.add(col);
     wreath(cx, 6.0, 3.4);
-    bounds.push({ minX: cx - 0.5, maxX: cx + 0.5, minZ: 6.0, maxZ: 7.0 });
+    bounds.push({ minX: cx - 0.5, maxX: cx + 0.5, minZ: 6.0, maxZ: 7.0, tall: true });
   }
   // coffee cafe mid-hall with lit sign
   const cafe = new THREE.Group();

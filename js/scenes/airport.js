@@ -663,7 +663,7 @@ export async function airportScene(game) {
     bounds.push({ minX: sx - 0.4, maxX: sx + 2.9, minZ: -8.1, maxZ: -7.1 });
   }
   const christian = makePerson({
-    photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088,
+    photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, ...playerIdentity(faces),
   });
   christian.group.position.set(1.5, 0, 2);
   christian.group.rotation.y = 0;

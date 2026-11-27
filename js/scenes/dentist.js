@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
-import { makePerson } from '../engine/character.js';
+import { makePerson, playerIdentity } from '../engine/character.js';
 import { phoneText, FollowCam, PlayerController, Interactions, showObjective, choice , Pickups , npcFacePlayer } from '../engine/core.js';
 import { sfxChime } from '../engine/sfx.js';
 import { carpet, paintedWall } from '../engine/textures.js';
@@ -159,7 +159,7 @@ export async function dentistScene(game) {
 
   // ---- cast ----
   // playing as Olivia
-  const olivia = makePerson({ outfit: 'dress', photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
+  const olivia = makePerson({ outfit: 'dress', photo: faces.olivia, top: 0x222226, bottom: 0x222226, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', ...playerIdentity(faces) });
   olivia.group.position.set(-3, 0, 2);
   scene.add(olivia.group);
 

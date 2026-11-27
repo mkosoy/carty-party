@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
-import { makePerson } from '../engine/character.js';
+import { makePerson, playerIdentity } from '../engine/character.js';
 import { phoneText, FollowCam, PlayerController, Interactions, showObjective , Pickups } from '../engine/core.js';
 
 // E11EVEN Miami — the reward. Olivia dances in the neon heart of the club:
@@ -188,7 +188,7 @@ export async function miamiScene(game) {
   scene.add(cyanWash);
 
   // olivia on the stage — the reward dance
-  const olivia = makePerson({ photo: faces.olivia, outfit: 'dress', top: 0xff2a8a, bottom: 0x1a1a22, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', });
+  const olivia = makePerson({ photo: faces.olivia, outfit: 'dress', top: 0xff2a8a, bottom: 0x1a1a22, hair: 0x16100e, hairStyle: 'long', skin: 0xe8c098, name: 'Olivia', ...playerIdentity(faces) });
   olivia.group.position.set(0, 0.55, -4.5);
   scene.add(olivia.group);
 

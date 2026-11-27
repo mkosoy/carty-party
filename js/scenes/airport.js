@@ -735,6 +735,28 @@ export async function airportScene(game) {
   // a few rolling travelers pulling bags
   // (static props only — walkers already animate)
 
+  // vending machine corner + interaction
+  const vend = new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.1, 0.8), mat(0x8a2030));
+  vend.position.set(-20.5, 1.05, -8);
+  scene.add(vend);
+  solid(vend);
+  const vendGlass = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 1.4), new THREE.MeshBasicMaterial({ color: 0x2a4a6a }));
+  vendGlass.position.set(-20.5, 1.35, -7.55);
+  scene.add(vendGlass);
+  interactions.add({
+    pos: new THREE.Vector3(-20.5, 0, -7.2),
+    radius: 2.0,
+    label: 'Vending machine',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Four dollars for a water. Airport prices never change.' },
+        { speaker: 'Stacy', text: 'Get the pretzels. You always get the pretzels.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

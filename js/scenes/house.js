@@ -163,6 +163,14 @@ export async function houseScene(game) {
   const hClockRim = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.02, 8, 20), mat(0x4a3524));
   hClockRim.position.copy(hClockFace.position);
   ground.add(hClockRim);
+  const hhHand = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.09, 0.01), new THREE.MeshBasicMaterial({ color: 0x222222 }));
+  hhHand.position.set(-2.5, 2.32, -5.87);
+  hhHand.rotation.z = 0.8;
+  ground.add(hhHand);
+  const hmHand = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.13, 0.01), new THREE.MeshBasicMaterial({ color: 0x222222 }));
+  hmHand.position.set(-2.5, 2.34, -5.87);
+  hmHand.rotation.z = -1.9;
+  ground.add(hmHand);
   // kitchen counter clutter: kettle + fruit bowl + cutting board
   const kettle = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 8), mat(0xb8bec6, 0.4));
   kettle.position.set(7.35, 1.06, -2.2);
@@ -477,9 +485,16 @@ export async function houseScene(game) {
   box(upper, 1.2, 0.9, 0.5, 0x7a5a3a, -7.3, 0.45, 2.2);
   wallArt(upper, -7.85, 2.0, -4, 0.9, 1.1, 0x30405a, Math.PI / 2);
   wallArt(upper, -7.85, 2.0, 4, 0.9, 1.1, 0x8a4a5a, Math.PI / 2);
-  // bookshelf loaded with books
+  // wall-mounted bookshelf with shelf boards and loaded books
+  box(ground, 1.3, 0.06, 0.26, 0x6a4a30, 6.6, 1.16, -5.75);
+  box(ground, 1.3, 0.06, 0.26, 0x6a4a30, 6.6, 1.62, -5.75);
+  for (const sxb of [6.0, 7.2]) box(ground, 0.06, 0.52, 0.26, 0x6a4a30, sxb, 1.39, -5.75);
   for (let bi = 0; bi < 8; bi++) {
     box(ground, 0.12, 0.3, 0.2, [0x8a3a3a, 0x3a5a8a, 0x3a6a4a, 0x9a7a3a][bi % 4], 6.1 + bi * 0.14, 1.35, -5.75);
+  }
+  // second row of books on the upper shelf
+  for (let bi = 0; bi < 6; bi++) {
+    box(ground, 0.12, 0.28, 0.2, [0x3a5a8a, 0x9a7a3a, 0x8a3a3a][bi % 3], 6.2 + bi * 0.15, 1.79, -5.75);
   }
 
   // front door + stair landing

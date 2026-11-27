@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { sfxCrash, sfxGobble, sfxBoost } from '../engine/sfx.js';
+import { sfxCrash, sfxHorn, sfxGobble, sfxBoost } from '../engine/sfx.js';
 import { showObjective, choice } from '../engine/core.js';
 import { asphalt } from '../engine/textures.js';
 
@@ -299,7 +299,12 @@ export async function driveScene(game) {
   camera.position.set(0, 4.4, 8.5);
   camera.lookAt(0, 0.8, -6);
   function chaseCam(dt) {
-    // locked chase view: behind and above the car, tracking its lane position
+    // horn: press H — pure joy
+  window.addEventListener('keydown', (e) => {
+    if ((e.key === 'h' || e.key === 'H')) { try { sfxHorn(); } catch {} }
+  });
+
+  // locked chase view: behind and above the car, tracking its lane position
     const tx = car.position.x * 0.85;
     camera.position.x += (tx - camera.position.x) * Math.min(1, dt * 5);
     camera.position.y = 4.4;
@@ -339,6 +344,27 @@ export async function driveScene(game) {
   window.__radioStop = stopRadio;
   // engine hum: continuous low osc whose pitch tracks speed
   let engineOsc = null, engineGain = null, engineFilter = null;
+  let windSrc = null, windGain = null;
+  function startWind() {
+    const ctx = radioAC();
+    const len = ctx.sampleRate * 2;
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const ch = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
+    windSrc = ctx.createBufferSource();
+    windSrc.buffer = buf;
+    windSrc.loop = true;
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 800;
+    bp.Q.value = 0.6;
+    windGain = ctx.createGain();
+    windGain.gain.value = 0.0;
+    windSrc.connect(bp); bp.connect(windGain); windGain.connect(ctx.destination);
+    windSrc.start();
+  }
+  try { startWind(); } catch {}
+
   function startEngine() {
     try {
       const AC = radioAC();
@@ -821,7 +847,8 @@ export async function driveScene(game) {
 
         // arrival: cover enough distance before timer ends
         this._distance = (this._distance || 0) + dz;
-        if (engineOsc) { try { engineOsc.frequency.setTargetAtTime(48 + speed * 2.6, radioAC().currentTime, 0.15); } catch {} }
+        if (engineOsc) { try { engineOsc.frequency.setTargetAtTime(48 + speed * 2.6, radioAC().currentTime, 0.15)
+        if (windGain) windGain.gain.setTargetAtTime(Math.max(0, (speed - 8) * 0.004), radioAC().currentTime, 0.2);; } catch {} }
         if (this._distance > (window.__runDistance || 1050) && !finished) {
           finished = true;
           (async () => {

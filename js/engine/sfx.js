@@ -150,3 +150,25 @@ export function sfxBoost() {
   o.connect(g); g.connect(AC.destination);
   o.start(t); o.stop(t + 0.34);
 }
+
+// car horn: two-tone detuned square blare, 0.35s
+export function sfxHorn() {
+  const ctx = ac();
+  const t = ctx.currentTime;
+  const master = ctx.createGain();
+  master.gain.setValueAtTime(0.0001, t);
+  master.gain.exponentialRampToValueAtTime(0.09, t + 0.02);
+  master.gain.setValueAtTime(0.09, t + 0.28);
+  master.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+  master.connect(ctx.destination);
+  for (const f of [370, 463]) {
+    const o = ctx.createOscillator();
+    o.type = 'square';
+    o.frequency.value = f;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 1400;
+    o.connect(lp); lp.connect(master);
+    o.start(t); o.stop(t + 0.4);
+  }
+}

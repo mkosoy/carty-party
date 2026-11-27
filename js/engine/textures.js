@@ -83,6 +83,29 @@ export function concrete(base = '#9a9a98', rx = 4, ry = 4) {
   x.fillRect(0, 0, 256, 256);
   noise(x, 256, 256, 0.09, [20, 90]);
   noise(x, 256, 256, 0.05, [140, 200]);
+  // large-scale tonal patches — real poured concrete is never uniform
+  for (let i = 0; i < 7; i++) {
+    const px = Math.random() * 256, py = Math.random() * 256, pr = 30 + Math.random() * 60;
+    const pg = x.createRadialGradient(px, py, 0, px, py, pr);
+    const lighten = Math.random() > 0.5;
+    pg.addColorStop(0, lighten ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)');
+    pg.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = pg;
+    x.fillRect(0, 0, 256, 256);
+  }
+  // expansion joint seams — reads as huge terminal/floor slabs
+  x.strokeStyle = 'rgba(30,30,34,0.5)';
+  x.lineWidth = 1.6;
+  x.beginPath();
+  x.moveTo(128, 0); x.lineTo(128, 256);
+  x.moveTo(0, 128); x.lineTo(256, 128);
+  x.stroke();
+  x.strokeStyle = 'rgba(255,255,255,0.12)';
+  x.lineWidth = 1;
+  x.beginPath();
+  x.moveTo(130, 0); x.lineTo(130, 256);
+  x.moveTo(0, 130); x.lineTo(256, 130);
+  x.stroke();
   return tex(c, rx, ry);
 }
 

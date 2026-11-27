@@ -220,6 +220,48 @@ export async function museumScene(game) {
     { speaker: 'Christian', text: 'A whole ceiling of flying machines. This is Mark\u2019s cathedral.' },
   ]) });
 
+  // ---- paper airplane station minigame ----
+  const station = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.9, 0.9), mat(0x5a4a38));
+  station.position.set(10, 0.45, 8);
+  scene.add(station);
+  bounds.push({ minX: 9.2, maxX: 10.8, minZ: 7.5, maxZ: 8.5 });
+  const paperOnTable = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.5, 4), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 }));
+  paperOnTable.rotation.x = Math.PI / 2;
+  paperOnTable.position.set(10, 0.95, 8);
+  scene.add(paperOnTable);
+
+  const fl = { active: false, plane: null, vx: 0, vy: 0, heading: 0, rings: [], score: 0, done: false };
+  function ringAt(x, y, z) {
+    const r = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.08, 8, 24), new THREE.MeshStandardMaterial({ color: 0x40c8ff, emissive: 0x2090c0, emissiveIntensity: 0.7 }));
+    r.position.set(x, y, z);
+    r.visible = false;
+    scene.add(r);
+    return r;
+  }
+  for (const [rx, ry, rz] of [[0, 2.2, 2], [-4, 2.8, -3], [3, 3.2, -7], [-1, 2.4, -9]]) fl.rings.push(ringAt(rx, ry, rz));
+
+  interactions.add({ pos: new THREE.Vector3(10, 0, 7), radius: 2.2, label: 'Paper airplane station', action: async () => {
+    if (fl.active) return;
+    player.frozen = true;
+    if (!fl.done) {
+      await dialogue.play([
+        { speaker: 'Mark', text: 'The paper airplane station. Aerodynamics for the people. Watch this — a perfect dart fold.' },
+        { speaker: 'Christian', text: 'Steer with left and right, hold forward to keep lift. Through the rings!' },
+      ]);
+    }
+    fl.active = true;
+    fl.score = 0;
+    fl.heading = Math.PI;
+    fl.vy = 0.6;
+    const dart = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.7, 4), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85 }));
+    dart.position.set(hero.group.position.x, 1.6, hero.group.position.z - 0.5);
+    dart.rotation.x = -Math.PI / 2;
+    scene.add(dart);
+    fl.plane = dart;
+    for (const r of fl.rings) { r.visible = true; r.userData.hit = false; r.material.emissiveIntensity = 0.7; }
+    showObjective('FLY! steer left/right · hold W for lift · thread the rings!', 3500);
+  }});
+
   window.__sceneHint = 'WASD — move · E — interact · explore the hall';
   showObjective('Air & Space — wander the great hall. Mark knows every bolt here.', 6000);
 
@@ -227,7 +269,7 @@ export async function museumScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };
       player.update(dt);
-      followCam.update(dt, hero.group.position);
+      if (!fl.active) followCam.update(dt, hero.group.position);
       const nearI = interactions.nearest(hero.group.position);
       const promptEl = document.getElementById('interact-prompt');
       if (nearI && !player.frozen) {
@@ -235,7 +277,52 @@ export async function museumScene(game) {
         promptEl.classList.remove('hidden');
       } else if (promptEl) promptEl.classList.add('hidden');
       if (nearI && !player.frozen && input.consumeInteract()) nearI.action();
-      const t = performance.now() / 1000;
+      if (fl.active && fl.plane) {
+        const pl = fl.plane;
+        const steer = (input.keys.has('ArrowLeft') || input.keys.has('KeyA') || input.joyX < -0.3) ? 1 : (input.keys.has('ArrowRight') || input.keys.has('KeyD') || input.joyX > 0.3) ? -1 : 0;
+        fl.heading += steer * dt * 1.9;
+        const lift = (input.keys.has('ArrowUp') || input.keys.has('KeyW') || input.joyY < -0.3) ? 1.15 : 0;
+        fl.vy += (-0.55 + lift * 0.9) * dt;
+        fl.vy = Math.max(-1.4, Math.min(0.9, fl.vy));
+        const spd = 4.2;
+        pl.position.x += Math.sin(fl.heading) * spd * dt;
+        pl.position.z += Math.cos(fl.heading) * spd * dt;
+        pl.position.y += fl.vy * dt * 2.2;
+        pl.rotation.z = -steer * 0.5;
+        pl.rotation.y = fl.heading + Math.PI;
+        pl.position.x = Math.max(-16, Math.min(16, pl.position.x));
+        pl.position.z = Math.max(-9.5, Math.min(9.5, pl.position.z));
+        camera.position.lerp(new THREE.Vector3(pl.position.x - Math.sin(fl.heading) * 3.4, pl.position.y + 1.6, pl.position.z - Math.cos(fl.heading) * 3.4), 0.12);
+        camera.lookAt(pl.position.x, pl.position.y, pl.position.z);
+        for (const r of fl.rings) {
+          if (!r.userData.hit && pl.position.distanceTo(r.position) < 0.95) {
+            r.userData.hit = true;
+            r.material.emissiveIntensity = 2.2;
+            r.material.color.set(0x60ff80);
+            fl.score++;
+            showObjective('RING! ' + fl.score + '/4', 1200);
+          }
+        }
+        if (pl.position.y <= 0.15) {
+          fl.active = false;
+          fl.done = true;
+          scene.remove(pl);
+          fl.plane = null;
+          for (const r of fl.rings) r.visible = false;
+          const lines = fl.score >= 3
+            ? [{ speaker: 'Mark', text: 'FOUR-ring aerobatics! The Smithsonian should hire you. I mean it. I know the director. I do not know the director.' }]
+            : fl.score >= 1
+              ? [{ speaker: 'Mark', text: 'Respectable glide ratio! Bernoulli would nod politely. Try again — the rings are right there.' }]
+              : [{ speaker: 'Christian', text: 'The lawn dart approach. Bold. The floor appreciated it.' }];
+          player.frozen = true;
+          dialogue.play(lines).then(() => {
+            player.frozen = false;
+            if (fl.score >= 3) try { localStorage.setItem('cp-done-museum', '1'); } catch {}
+            followCam.snap(hero.group.position);
+          });
+        }
+      }
+            const t = performance.now() / 1000;
       for (const f of flyers) f.pl.position.y = f.baseY + Math.sin(t * 0.5 + f.off) * 0.08;
       for (const v of visitors) v.animateIdle(t);
     },

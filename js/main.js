@@ -90,6 +90,17 @@ const game = {
   scene: null,
   sceneApi: null,
   async switchScene(factory) {
+    // fade out before tearing down, fade back in after the first frames render
+    let veil = document.getElementById('scene-veil');
+    if (!veil) {
+      veil = document.createElement('div');
+      veil.id = 'scene-veil';
+      veil.style.cssText = 'position:fixed;inset:0;z-index:70;background:#04060e;opacity:0;pointer-events:none;transition:opacity .38s ease';
+      document.body.appendChild(veil);
+    }
+    veil.style.opacity = '1';
+    await new Promise((r) => setTimeout(r, 400));
+    setTimeout(() => { veil.style.opacity = '0'; }, 900);
     try { localStorage.setItem('cp-checkpoint', factory.name.replace('Scene','')); } catch {}
     window.__sparkles = [];
     try { window.__radioStop?.(); } catch {}

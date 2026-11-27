@@ -595,13 +595,23 @@ export async function houseScene(game) {
   diningRugInner.position.set(3, 0.021, -3);
   ground.add(diningRugInner);
 
-  // dining chairs — four wooden chairs tucked around the table
-  for (const [cx, cz, cry] of [[2.2, -3.0, 0], [3.8, -3.0, Math.PI], [3.0, -2.3, Math.PI / 2], [3.0, -3.7, -Math.PI / 2]]) {
-    const seat = box(ground, 0.42, 0.06, 0.42, 0x6a4a2a, cx, 0.46, cz);
-    const chairBack = box(ground, 0.42, 0.55, 0.06, 0x6a4a2a, cx, 0.78, cz + (cry === 0 ? -0.19 : cry === Math.PI ? 0.19 : 0));
+  // dining chairs — proper rotated groups, backs facing away from the table
+  for (const [cx, cz, cry] of [[2.2, -3.0, Math.PI / 2], [3.8, -3.0, -Math.PI / 2], [3.0, -2.3, Math.PI], [3.0, -3.7, 0]]) {
+    const chair = new THREE.Group();
+    const seatM = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.06, 0.42), mat(0x6a4a2a));
+    seatM.position.y = 0.46;
+    chair.add(seatM);
+    const backM = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.55, 0.06), mat(0x6a4a2a));
+    backM.position.set(0, 0.78, -0.19);
+    chair.add(backM);
     for (const [lx, lz] of [[-0.17, -0.17], [0.17, -0.17], [-0.17, 0.17], [0.17, 0.17]]) {
-      box(ground, 0.05, 0.46, 0.05, 0x5a3a20, cx + lx, 0.23, cz + lz);
+      const legM = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.46, 0.05), mat(0x5a3a20));
+      legM.position.set(lx, 0.23, lz);
+      chair.add(legM);
     }
+    chair.position.set(cx, 0, cz);
+    chair.rotation.y = cry;
+    ground.add(chair);
     boundsByFloor.ground.push({ minX: cx - 0.25, maxX: cx + 0.25, minZ: cz - 0.25, maxZ: cz + 0.25 });
   }
 

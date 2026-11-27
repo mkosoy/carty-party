@@ -711,7 +711,7 @@ export async function airportScene(game) {
 
   // concourse carpet runners — dark blue walking lanes like real terminals
   for (const rz of [-4, 4]) {
-    const runner = new THREE.Mesh(new THREE.BoxGeometry(54, 0.03, 1.5), new THREE.MeshStandardMaterial({ color: 0x2a3a5c, roughness: 0.95 }));
+    const runner = new THREE.Mesh(new THREE.BoxGeometry(54, 0.03, 1.1), new THREE.MeshStandardMaterial({ color: 0x232e48, roughness: 0.98 }));
     runner.position.set(0, 0.02, rz);
     runner.receiveShadow = true;
     scene.add(runner);

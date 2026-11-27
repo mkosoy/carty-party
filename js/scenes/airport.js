@@ -184,6 +184,9 @@ export async function airportScene(game) {
     colIn.position.set(cx, 4.75, 12.2);
     colIn.rotation.x = -0.22;
     scene.add(colIn);
+    // registered for camera occlusion — a leaning column must never eat the frame during story beats
+    bounds.push({ minX: cx - 0.5, maxX: cx + 0.5, minZ: -12.7, maxZ: -11.7, tall: true });
+    bounds.push({ minX: cx - 0.5, maxX: cx + 0.5, minZ: 11.7, maxZ: 12.7, tall: true });
   }
   // the swooping curved ceiling — segments sag between columns like the real catenary slab
   const roofMat = new THREE.MeshLambertMaterial({ color: 0x9a9288 });
@@ -1037,7 +1040,6 @@ export async function airportScene(game) {
       if (phase === 'ringing' && input.consumeInteract()) {
         phase = 'called';
         phoneOverlay('Stacy ❤️', false);
-        document.getElementById('objective-banner').classList.add('hidden');
         player.frozen = true;
         (async () => {
           await dialogue.play([

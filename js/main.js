@@ -238,6 +238,9 @@ function tick() {
   const portrait = camera.aspect < 0.75;
   const base = portrait ? 72 : 58;
   const fovGoal = inDialogue ? base - 8 : (sprinting ? base + 8 : base);
+  // controls hint never competes with dialogue for the bottom third
+  const hintEl = document.getElementById('controls-hint');
+  if (hintEl) hintEl.style.visibility = inDialogue ? 'hidden' : '';
   fovTarget += (fovGoal - fovTarget) * Math.min(1, dt * 5);
   if (Math.abs(camera.fov - fovTarget) > 0.05) {
     camera.fov += (fovTarget - camera.fov) * Math.min(1, dt * 6);

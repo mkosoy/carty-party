@@ -209,7 +209,13 @@ export class GuideMarker {
     // screen-edge objective arrow: gold chevron pinned to the screen rim pointing
     // toward the target whenever it's offscreen — works through walls, unlike the 3D beacon
     const el = document.createElement('div');
-    el.style.cssText = 'position:fixed;z-index:55;pointer-events:none;display:none;font-size:36px;color:#ffd663;text-shadow:0 0 8px rgba(255,214,99,.9),0 2px 4px #000;transition:opacity .2s;font-family:Arial,sans-serif';
+    el.style.cssText = 'position:fixed;z-index:55;pointer-events:none;display:none;font-size:44px;color:#ffd663;text-shadow:0 0 12px rgba(255,214,99,1),0 0 4px rgba(255,214,99,1),0 2px 4px #000;font-family:Arial,sans-serif;background:rgba(8,8,16,.55);width:58px;height:58px;border-radius:50%;display:none;align-items:center;justify-content:center;line-height:1';
+    if (!document.getElementById('edgepulse-style')) {
+      const st = document.createElement('style');
+      st.id = 'edgepulse-style';
+      st.textContent = '@keyframes edgepulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}';
+      document.head.appendChild(st);
+    }
     el.textContent = '\u27A4';
     document.body.appendChild(el);
     this.edgeEl = el;
@@ -276,9 +282,9 @@ export class GuideMarker {
           const rx = cx2 - 44, ry = cy2 - 70;
           const ex = cx2 + Math.cos(ang) * rx;
           const ey = cy2 + Math.sin(ang) * ry;
-          this.edgeEl.style.display = 'block';
-          this.edgeEl.style.left = (ex - 13) + 'px';
-          this.edgeEl.style.top = (ey - 13) + 'px';
+          this.edgeEl.style.display = 'flex';
+          this.edgeEl.style.left = (ex - 29) + 'px';
+          this.edgeEl.style.top = (ey - 29) + 'px';
           this.edgeEl.style.transform = 'rotate(' + (-ang) + 'rad)';
         }
       } else if (this.edgeEl) {

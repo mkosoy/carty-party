@@ -1100,7 +1100,6 @@ export async function driveScene(game) {
         if (this._distance > (window.__runDistance || 1050) && !finished) {
           finished = true;
           (async () => {
-            document.getElementById('objective-banner').classList.add('hidden');
             await dialogue.play([
               { speaker: 'Passenger', text: 'YO YOGI! There — the little sushi spot with the fogged-up windows! You made it!' },
               { speaker: 'Passenger', text: 'Thanks, Christian. Seriously.' },

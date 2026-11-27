@@ -535,14 +535,14 @@ export function phoneText(sender, text, ms = 5200) {
   if (!box) {
     box = document.createElement('div');
     box.id = 'phone-text-toast';
-    box.style.cssText = 'position:fixed;top:104px;left:50%;transform:translate(-50%,-80px);background:rgba(20,24,34,0.94);border:1px solid rgba(255,255,255,0.25);border-radius:14px;padding:8px 14px;max-width:250px;z-index:60;transition:transform 0.35s ease;color:#fff;font-family:inherit;box-shadow:0 4px 18px rgba(0,0,0,0.5);cursor:pointer;';
+    box.style.cssText = 'position:fixed;top:158px;left:50%;transform:translate(-50%,-260px);background:rgba(20,24,34,0.94);border:1px solid rgba(255,255,255,0.25);border-radius:14px;padding:8px 14px;max-width:250px;z-index:60;transition:transform 0.35s ease;color:#fff;font-family:inherit;box-shadow:0 4px 18px rgba(0,0,0,0.5);cursor:pointer;';
     document.body.appendChild(box);
-    box.addEventListener('click', () => { box.style.transform = 'translate(-50%,-80px)'; });
+    box.addEventListener('click', () => { box.style.transform = 'translate(-50%,-260px)'; });
   }
   if (window.__ptTimer) clearTimeout(window.__ptTimer);
   box.innerHTML = '<div style="font-size:11px;color:#8fd0ff;font-weight:700;margin-bottom:2px;">💬 ' + sender + '</div><div style="font-size:13px;line-height:1.35;">' + text + '</div>';
   requestAnimationFrame(() => { box.style.transform = 'translate(-50%,0)'; });
-  window.__ptTimer = setTimeout(() => { box.style.transform = 'translate(-50%,-80px)'; }, ms);
+  window.__ptTimer = setTimeout(() => { box.style.transform = 'translate(-50%,-260px)'; }, ms);
   if (window.__sfxBuzz) window.__sfxBuzz();
 }
 

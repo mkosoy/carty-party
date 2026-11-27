@@ -103,6 +103,8 @@ export async function houseScene(game) {
   boundsByFloor.upper.push(
     { minX: -6.8, maxX: -5.6, minZ: -5.3, maxZ: -3.1 }, // olivia's bed
     { minX: -6.8, maxX: -5.6, minZ: 3.1, maxZ: 5.3 },   // olivia2's bed
+    { minX: -8, maxX: -3.4, minZ: -0.2, maxZ: 0.2 },   // divider west segment
+    { minX: -2.0, maxX: -0.4, minZ: -0.2, maxZ: 0.2 },   // divider east segment
     { minX: -7.9, maxX: -6.7, minZ: -2.7, maxZ: -1.7 }, // dresser n
     { minX: -7.9, maxX: -6.7, minZ: 1.7, maxZ: 2.7 },   // dresser s
   );
@@ -753,6 +755,25 @@ export async function houseScene(game) {
     box(parent, 0.5, 0.12, 0.4, 0xf0ece0, x, 0.5, z - 0.6);
     box(parent, 1.1, 0.7, 0.1, 0x6a4a2a, x, 0.5, z - 1.0);
   }
+  // bedroom divider wall — the upstairs is TWO bedrooms, not one open room:
+  // wall along z=0 across the west half, with a doorway gap into each room
+  const divMat = new THREE.MeshStandardMaterial({ color: 0xbfbdb8, roughness: 0.85 });
+  const div1 = new THREE.Mesh(new THREE.BoxGeometry(4.6, 3.4, 0.24), divMat);
+  div1.position.set(-5.7, 1.7, 0);
+  upper.add(div1);
+  const div2 = new THREE.Mesh(new THREE.BoxGeometry(1.6, 3.4, 0.24), divMat);
+  div2.position.set(-1.2, 1.7, 0);
+  upper.add(div2);
+  // door frames on the gap
+  for (const fx of [-3.35, -2.15]) {
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(0.12, 2.2, 0.3), mat(0xe8e0d0));
+    frame.position.set(fx, 1.1, 0);
+    upper.add(frame);
+  }
+  const lintel = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.16, 0.3), mat(0xe8e0d0));
+  lintel.position.set(-2.75, 2.26, 0);
+  upper.add(lintel);
+
   // upstairs hallway runner rug
   const uprug = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.02, 20), mat(0x5a4a6a));
   uprug.scale.set(1.6, 1, 0.9);

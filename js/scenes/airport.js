@@ -354,6 +354,9 @@ export async function airportScene(game) {
     tvCtx.strokeStyle = '#ffe060';
     tvCtx.lineWidth = 2;
     tvCtx.beginPath(); tvCtx.arc(Math.min(492, ballX), 144 + Math.sin(t * 3) * 10, 11, 0, Math.PI * 2); tvCtx.stroke();
+    const __nowMs = performance.now();
+    if (window.__texLast && __nowMs - window.__texLast < 66) { /* throttle texture upload */ } else {
+    window.__texLast = __nowMs;
     // scoreboard
     tvCtx.fillStyle = '#000000cc';
     tvCtx.fillRect(96, 8, 320, 44);
@@ -367,6 +370,7 @@ export async function airportScene(game) {
     tvCtx.font = 'italic 20px Georgia';
     tvCtx.fillText('THE BIG GAME — live', 256, 272);
     tvTex.needsUpdate = true;
+    }
   }
   drawTV(0);
 

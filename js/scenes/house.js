@@ -252,6 +252,9 @@ export async function houseScene(game) {
   ground.add(hTvScreen);
   function drawHouseTV() {
     const t = performance.now() / 1000;
+    const __nowMs = performance.now();
+    if (window.__texLast && __nowMs - window.__texLast < 66) { /* throttle texture upload */ } else {
+    window.__texLast = __nowMs;
     hTvCtx.fillStyle = '#0d3311';
     hTvCtx.fillRect(0, 0, 256, 144);
     hTvCtx.strokeStyle = '#ffffff';
@@ -278,6 +281,7 @@ export async function houseScene(game) {
     const w = 7 + Math.floor(Math.cos(t * 0.23) * 3 + 3);
     hTvCtx.fillText('CHURCHILL ' + c + ' — WOOTON ' + w, 128, 19);
     hTvTex.needsUpdate = true;
+    }
   }
   drawHouseTV();
   setInterval(drawHouseTV, 120);

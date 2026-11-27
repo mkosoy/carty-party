@@ -581,6 +581,9 @@ interactions.add({
         h.sp.intensity = 45 + Math.sin(t * 6 + h.phase) * 20;
       }
 
+      const __nowMs = performance.now();
+      if (window.__texLast && __nowMs - window.__texLast < 66) { /* throttle texture upload */ } else {
+      window.__texLast = __nowMs;
       // LED wall visualizer bars
       ledCtx.fillStyle = '#0a0612';
       ledCtx.fillRect(0, 0, 256, 96);
@@ -591,6 +594,7 @@ interactions.add({
         ledCtx.fillRect(b * 8, 96 - hgt, 6, hgt);
       }
       ledTex.needsUpdate = true;
+      }
 
       // confetti drifts down, swirls
       const pos = confetti.geometry.attributes.position;

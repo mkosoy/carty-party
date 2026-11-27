@@ -407,6 +407,27 @@ export async function miamiScene(game) {
   pickups.add(makeRecordMesh(), 11.5, 6, 'record-miami', (id) => { inv.records++; showObjective('🎵 vinyl record — new sound unlocked!', 2500); });
 
   const interactions = new Interactions(scene);
+  // ===== REAL E11EVEN MATCH: the 24/7 neon signage it is famous for =====
+  const e24C = document.createElement('canvas');
+  e24C.width = 512; e24C.height = 128;
+  const ex2 = e24C.getContext('2d');
+  ex2.fillStyle = '#0a0812';
+  ex2.fillRect(0, 0, 512, 128);
+  ex2.font = 'bold 64px Arial';
+  ex2.textAlign = 'center';
+  ex2.fillStyle = '#ff2a68';
+  ex2.shadowColor = '#ff2a68';
+  ex2.shadowBlur = 30;
+  ex2.fillText('OPEN 24/7', 256, 88);
+  const e24T = new THREE.CanvasTexture(e24C);
+  e24T.colorSpace = THREE.SRGBColorSpace;
+  const e24M = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 1.15), new THREE.MeshBasicMaterial({ map: e24T }));
+  e24M.position.set(0, 4.4, -11.5);
+  scene.add(e24M);
+  const e24glow = new THREE.PointLight(0xff2a68, 3.5, 12);
+  e24glow.position.set(0, 4.0, -10.5);
+  scene.add(e24glow);
+
   interactions.add({
     pos: new THREE.Vector3(0, 0, 0), radius: 3.0, label: 'The dance floor',
     action: async () => {

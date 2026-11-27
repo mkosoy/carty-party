@@ -194,6 +194,56 @@ export async function hopkinsScene(game) {
   }
 
   const interactions = new Interactions(scene);
+  // ===== REAL JHU MATCH: fume hood, periodic table, whiteboard equations, brick accents =====
+  // fume hood along the wall — the signature chemistry-lab object
+  const fumeHood = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2.4, 1.0), mat(0xb8bcc4));
+  fumeHood.position.set(-7.2, 1.2, -5.6);
+  scene.add(fumeHood);
+  const fhGlass = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.2), new THREE.MeshStandardMaterial({ color: 0xc8dde8, transparent: true, opacity: 0.3, roughness: 0.1 }));
+  fhGlass.position.set(-7.2, 1.5, -5.05);
+  scene.add(fhGlass);
+  const fhVent = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.5, 0.8), mat(0x8a8e96));
+  fhVent.position.set(-7.2, 2.7, -5.6);
+  scene.add(fhVent);
+  bounds.push({ minX: -8.3, maxX: -6.1, minZ: -6.1, maxZ: -5.1 });
+  // periodic table poster
+  const ptC = document.createElement('canvas');
+  ptC.width = 256; ptC.height = 160;
+  const px2 = ptC.getContext('2d');
+  px2.fillStyle = '#f0ead8';
+  px2.fillRect(0, 0, 256, 160);
+  const ptCols = ['#e8a0a0', '#a0c8e8', '#a0e8b0', '#e8d8a0'];
+  for (let pr = 0; pr < 7; pr++) {
+    for (let pc2 = 0; pc2 < 18; pc2++) {
+      px2.fillStyle = ptCols[(pr + pc2) % 4];
+      px2.fillRect(6 + pc2 * 13.5, 8 + pr * 20, 11, 16);
+    }
+  }
+  const ptT = new THREE.CanvasTexture(ptC);
+  ptT.colorSpace = THREE.SRGBColorSpace;
+  const ptM = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 1.6), new THREE.MeshStandardMaterial({ map: ptT, roughness: 0.9 }));
+  ptM.position.set(5, 2.2, -7.85);
+  scene.add(ptM);
+  // whiteboard with climate equations — half erased like a real working lab
+  const wbC = document.createElement('canvas');
+  wbC.width = 256; wbC.height = 128;
+  const wx2 = wbC.getContext('2d');
+  wx2.fillStyle = '#f4f4f0';
+  wx2.fillRect(0, 0, 256, 128);
+  wx2.fillStyle = '#2a2a4a';
+  wx2.font = '16px Arial';
+  wx2.fillText('ΔT = λ·ΔF  →  1.5–4.5°C', 14, 30);
+  wx2.fillText('CO₂: 421 ppm ▲', 14, 56);
+  wx2.fillText('Chesapeake bay sampling', 14, 82);
+  wx2.font = 'italic 14px Arial';
+  wx2.fillStyle = '#8a4a6a';
+  wx2.fillText('field data due FRIDAY', 14, 108);
+  const wbT = new THREE.CanvasTexture(wbC);
+  wbT.colorSpace = THREE.SRGBColorSpace;
+  const wbM = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 1.4), new THREE.MeshStandardMaterial({ map: wbT, roughness: 0.7 }));
+  wbM.position.set(-2, 2.2, -7.85);
+  scene.add(wbM);
+
   interactions.add({
     pos: new THREE.Vector3(0, 0, 5), radius: 2.6, label: 'Start the field study',
     action: async () => {

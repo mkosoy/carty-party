@@ -78,8 +78,8 @@ export async function houseScene(game) {
     return g;
   }
 
-  const ground = buildFloor({ wallColor: 0xd8caa8, floorColor: 0xc8b89a, y: 0, floorTex: carpet('#c0b090', 4, 3) });
-  const upper = buildFloor({ wallColor: 0xd8c8ae, floorColor: 0xb8a888, y: 0, floorTex: carpet('#b0a080', 4, 3) });
+  const ground = buildFloor({ wallColor: 0xc4c2bc, floorColor: 0xc8b89a, y: 0, floorTex: carpet('#c0b090', 4, 3) });
+  const upper = buildFloor({ wallColor: 0xbfbdb8, floorColor: 0xb8a888, y: 0, floorTex: carpet('#b0a080', 4, 3) });
   const basement = buildFloor({ wallColor: 0x7a5c38, floorColor: 0x9a9a8e, y: 0, floorTex: woodFloor('#8a6a42', 5, 1.4) });
 
   const boundsByFloor = {

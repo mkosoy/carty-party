@@ -1277,6 +1277,51 @@ export async function houseScene(game) {
 
   setTimeout(() => phoneText('Olivia', 'make yourself at home! wine&#39;s in the kitchen, obviously'), 6000);
   setTimeout(() => phoneText('Olivia (the other one)', 'whoever is playing music in the basement turn it UP'), 12500);
+
+  // ---- crystal hunt: Olivia calls after you settle in — 5 crystals hidden in the house ----
+  const crystalState = { active: false, found: 0, started: false };
+  function makeCrystalMesh() {
+    const g = new THREE.Group();
+    const geo = new THREE.OctahedronGeometry(0.16, 0);
+    const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
+      color: 0xb080ff, emissive: 0x7040c0, emissiveIntensity: 0.9, roughness: 0.1, metalness: 0.3,
+    }));
+    m.scale.y = 1.6;
+    g.add(m);
+    const glow = new THREE.PointLight(0x9060ff, 0.7, 2.2);
+    glow.position.y = 0.2;
+    g.add(glow);
+    return g;
+  }
+  const crystalSpots = [
+    { x: -6.5, z: -3.5, hint: 'the kitchen' },      // behind kitchen clutter
+    { x: 6.8, z: 4.8, hint: 'the dining room' },     // under dining table
+    { x: -7.2, z: 5.8, hint: 'the living room' },    // behind the couch
+    { x: 2.5, z: -6.5, hint: 'near the fireplace' }, // by the hearth
+    { x: -2.0, z: 7.0, hint: 'the stairs' },         // near stair base
+  ];
+  const crystalMeshes = [];
+  crystalSpots.forEach((sp, i) => {
+    const cm = makeCrystalMesh();
+    cm.position.set(sp.x, 0.55, sp.z);
+    cm.visible = false;
+    scene.add(cm);
+    crystalMeshes.push({ mesh: cm, taken: false, x: sp.x, z: sp.z, hint: sp.hint });
+  });
+  window.__startCrystalHunt = () => {
+    if (crystalState.started) return;
+    crystalState.started = true;
+    crystalState.active = true;
+    crystalMeshes.forEach((c) => { c.mesh.visible = true; });
+    showObjective('🔮 find 5 crystals around the house — Olivia needs them tonight', 6000);
+  };
+  // Olivia's call fires 35s into the scene (or instantly if you already finished the photo game)
+  setTimeout(() => {
+    if (crystalState.started) return;
+    phoneText("Olivia", "omg hey — I&#39;m heading out but I lost my crystals around the house?? there&#39;s 5 of them. can you grab them and bring them to DC tonight — I NEED them for the full moon 🌕");
+    setTimeout(() => { window.__startCrystalHunt(); }, 4500);
+  }, 34000);
+
   return {
     update(dt) {
     if (window.__motes) {
@@ -1295,6 +1340,28 @@ export async function houseScene(game) {
       }
       if (this._fireLoop) this._fireLoop.update(christian.group.position.x, christian.group.position.z);
       player.update(dt);
+      if (crystalState.active) {
+        const pp2 = christian.group.position;
+        const tt = performance.now() / 1000;
+        for (const c of crystalMeshes) {
+          if (c.taken) continue;
+          c.mesh.rotation.y += dt * 2.2;
+          c.mesh.position.y = 0.55 + Math.sin(tt * 2.4 + c.x) * 0.08;
+          if (Math.hypot(pp2.x - c.x, pp2.z - c.z) < 1.0) {
+            c.taken = true;
+            scene.remove(c.mesh);
+            crystalState.found++;
+            const left = 5 - crystalState.found;
+            showObjective(left > 0 ? '🔮 crystal ' + crystalState.found + ' of 5 — ' + left + ' still hidden' : '🔮 all 5 crystals! bring them to Olivia in DC tonight 🌕', 4000);
+            if (window.__sfxBuzz) window.__sfxBuzz();
+            if (left === 0) {
+              crystalState.active = false;
+              localStorage.setItem('cp-crystals', '1');
+              setTimeout(() => phoneText("Olivia", "you found them?? you're a lifesaver — see you at the monument 🌕🔮"), 5000);
+            }
+          }
+        }
+      }
       pickups.update(dt, christian.group.position);
       // floor-aware breadcrumbs: in the basement with tre's item, lead back to the stairs first
       if (items.treItem && floor === 'basement') {

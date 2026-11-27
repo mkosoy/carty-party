@@ -113,7 +113,7 @@ const game = {
     this.sceneApi = await factory(this);
     rebuildComposer();
     // chapter title card: scene name fades in/out on entry
-    const titles = { airport: 'chapter 1 — dulles', drive: 'chapter 2 — the yo yogi run', house: "chapter 3 — olivia's", swap: 'chapter 4 — the baltimore swap', dc: 'chapter 5 — dc at night', dentist: "dr. fritz's office", miami: 'e11even miami', runclub: "kylie's run club" };
+    const titles = { airport: 'chapter 1 — dulles', drive: 'chapter 2 — the yo yogi run', house: "chapter 3 — olivia's", swap: 'chapter 4 — the baltimore swap', dc: 'chapter 5 — dc at night', dentist: "dr. fritz's office", miami: 'e11even miami', runclub: "kylie's run club", echostage: 'echostage — bar shift' };
     const sName = factory.name ? factory.name.replace('Scene', '') : '';
     const titleText = titles[sName];
     if (titleText && !window.__menuSkipCard) {
@@ -208,6 +208,7 @@ async function startGame(sceneName) {
     dentist: (await import('./scenes/dentist.js')).dentistScene,
     miami: (await import('./scenes/miami.js')).miamiScene,
     runclub: (await import('./scenes/runclub.js')).runclubScene,
+    echostage: (await import('./scenes/echostage.js')).echostageScene,
   };
   music.play(sceneName || 'airport');
   loop();

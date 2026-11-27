@@ -85,6 +85,7 @@ const game = {
   scene: null,
   sceneApi: null,
   async switchScene(factory) {
+    window.__sparkles = [];
     window.__camYaw = 0;
     const mb = document.getElementById('menu-button');
     if (mb) mb.classList.remove('hidden');
@@ -145,6 +146,15 @@ function loop() {
 }
 function tick() {
   const dt = Math.min(clock.getDelta(), 0.05);
+  // animate interaction sparkles: bob + pulse
+  if (window.__sparkles) {
+    const tt = performance.now() / 1000;
+    for (const sp of window.__sparkles) {
+      sp.spr.position.y = sp.base + Math.sin(tt * 2.2 + sp.phase) * 0.12;
+      const s = 0.4 + Math.sin(tt * 3.1 + sp.phase) * 0.1;
+      sp.spr.scale.set(s, s, 1);
+    }
+  }
   if (game.sceneApi?.update) game.sceneApi.update(dt);
   if (game.scene) {
     if (composer.passes.length) composer.render();

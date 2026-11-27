@@ -298,7 +298,7 @@ export async function swapScene(game) {
   followCam.setRoom(-16.5, 16.5, -11.5, 11.5);
   followCam.snap(christian.group.position);
   const player = new PlayerController(christian, input, bounds);
-  const interactions = new Interactions();
+  const interactions = new Interactions(scene);
   const guide = new GuideMarker(scene);
   guide.setTarget(-4, 8);
   // Kylie's Run Club flyer by the entrance — unlocks the track race

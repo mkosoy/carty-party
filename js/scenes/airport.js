@@ -589,7 +589,7 @@ export async function airportScene(game) {
     { minX: 29.4, maxX: 30, minZ: -13, maxZ: 13 },
     { minX: -30, maxX: -29.4, minZ: -13, maxZ: 13 },
   ]);
-  const interactions = new Interactions();
+  const interactions = new Interactions(scene);
   const guide = new GuideMarker(scene);
   guide.setTarget(-6, 10.8);
 

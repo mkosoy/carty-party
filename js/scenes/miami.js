@@ -398,7 +398,7 @@ export async function miamiScene(game) {
   pickups.add(makeCameraMesh(), -11, 5.5, 'camera-miami', (id) => { inv.cameras++; showObjective('📷 vintage camera for Stacy!', 2500); });
   pickups.add(makeRecordMesh(), 11.5, 6, 'record-miami', (id) => { inv.records++; showObjective('🎵 vinyl record — new sound unlocked!', 2500); });
 
-  const interactions = new Interactions();
+  const interactions = new Interactions(scene);
   interactions.add({
     pos: new THREE.Vector3(13.4, 0, 2), radius: 2.4, label: 'Order a drink',
     action: async () => {

@@ -531,7 +531,7 @@ export async function houseScene(game) {
   followCam.offset.set(0, 2.6, 4.2);
   followCam.setRoom(-7.9, 7.9, -5.9, 5.9);
   const player = new PlayerController(christian, input, boundsByFloor.ground);
-  const interactions = new Interactions();
+  const interactions = new Interactions(scene);
   const guide = new GuideMarker(scene);
   guide.setTarget(-4, 3.2);
 

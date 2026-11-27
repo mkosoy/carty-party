@@ -259,7 +259,7 @@ export async function dcScene(game) {
   const followCam = new FollowCam(camera);
   followCam.snap(christian.group.position);
   const player = new PlayerController(christian, input, []);
-  const interactions = new Interactions();
+  const interactions = new Interactions(scene);
   const guide = new GuideMarker(scene);
 
   let phase = 'arrive';

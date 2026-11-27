@@ -175,7 +175,7 @@ export async function dentistScene(game) {
   followCam.setRoom(-6.8, 6.8, -4.8, 4.8);
   followCam.snap(olivia.group.position);
   const player = new PlayerController(olivia, input, bounds);
-  const interactions = new Interactions();
+  const interactions = new Interactions(scene);
 
   // intro dialogue
   setTimeout(async () => {

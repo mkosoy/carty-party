@@ -306,9 +306,38 @@ export class PlayerController {
 
 // Interaction registry: points in the world the player can walk up to and
 // press E on. Each: {pos: Vector3, radius, label, action, once, done}.
+let sparkleTex = null;
+function getSparkleTex() {
+  if (sparkleTex) return sparkleTex;
+  const cv = document.createElement('canvas');
+  cv.width = 64; cv.height = 64;
+  const x = cv.getContext('2d');
+  const grad = x.createRadialGradient(32, 32, 2, 32, 32, 30);
+  grad.addColorStop(0, 'rgba(255,235,170,1)');
+  grad.addColorStop(0.4, 'rgba(255,210,110,0.55)');
+  grad.addColorStop(1, 'rgba(255,210,110,0)');
+  x.fillStyle = grad;
+  x.fillRect(0, 0, 64, 64);
+  sparkleTex = new THREE.CanvasTexture(cv);
+  return sparkleTex;
+}
+
 export class Interactions {
-  constructor() { this.items = []; }
-  add(item) { this.items.push(item); return item; }
+  constructor(scene) { this.items = []; this.scene = scene || null; }
+  add(item) {
+    this.items.push(item);
+    // floating gold glint so interactive spots are visible in the world
+    if (this.scene && !item.noSparkle) {
+      const smat = new THREE.SpriteMaterial({ map: getSparkleTex(), transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending });
+      const spr = new THREE.Sprite(smat);
+      spr.scale.set(0.45, 0.45, 1);
+      spr.position.copy(item.pos).add(new THREE.Vector3(0, 1.7, 0));
+      this.scene.add(spr);
+      window.__sparkles = window.__sparkles || [];
+      window.__sparkles.push({ spr, base: spr.position.y, phase: Math.random() * 6.28 });
+    }
+    return item;
+  }
   nearest(pos) {
     let best = null, bestD = Infinity;
     for (const it of this.items) {

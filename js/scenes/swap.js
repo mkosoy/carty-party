@@ -99,6 +99,43 @@ export async function swapScene(game) {
     }
   }
 
+  // dig-through bins in the open floor — the heart of a real swap: big bins heaped with clothes
+  const binPalette = [0xd06060, 0x6080c0, 0x60a060, 0xc0a050, 0x9060b0, 0xe0e0d8, 0x406080, 0xc07040];
+  for (const [bx, bz] of [[-2.5, 1.5], [1.5, 2.5], [-4.5, 3.5], [4.5, 0.5]]) {
+    const bin = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.55, 0.9), mat(0x3a5a8a));
+    bin.position.set(bx, 0.28, bz);
+    scene.add(bin);
+    const rim = new THREE.Mesh(new THREE.BoxGeometry(1.38, 0.06, 0.98), mat(0x2a4a7a));
+    rim.position.set(bx, 0.56, bz);
+    scene.add(rim);
+    // heaped clothes spilling over the rim
+    for (let hi = 0; hi < 5; hi++) {
+      const heap = new THREE.Mesh(new THREE.SphereGeometry(0.22, 7, 6), mat(binPalette[(hi + Math.floor(bx)) % binPalette.length]));
+      heap.scale.set(1.1, 0.55, 0.9);
+      heap.position.set(bx - 0.4 + (hi % 3) * 0.38, 0.6, bz - 0.2 + Math.floor(hi / 3) * 0.4);
+      scene.add(heap);
+    }
+    // one garment draped over the bin edge
+    const draped = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.06), mat(binPalette[(Math.floor(bz) + 3) % binPalette.length]));
+    draped.position.set(bx + 0.5, 0.42, bz + 0.44);
+    draped.rotation.x = 0.35;
+    scene.add(draped);
+    if (typeof boundsByFloor !== 'undefined' && boundsByFloor.ground) boundsByFloor.ground.push({ minX: bx - 0.75, maxX: bx + 0.75, minZ: bz - 0.55, maxZ: bz + 0.55 });
+  }
+  // canvas tote bags dropped on the floor by shoppers
+  for (const [tx, tz, tc] of [[-1.5, 4.5, 0xf0e8d8], [3.0, 3.8, 0x8a6a4a], [-6.0, 0.5, 0xd8c8a8]]) {
+    const tote = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.4, 0.15), mat(tc));
+    tote.position.set(tx, 0.2, tz);
+    tote.rotation.y = tx;
+    scene.add(tote);
+    for (const hs of [-1, 1]) {
+      const strap = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.02, 6, 10, Math.PI), mat(tc));
+      strap.position.set(tx + hs * 0.08 * Math.cos(tx), 0.42, tz);
+      strap.rotation.y = tx;
+      scene.add(strap);
+    }
+  }
+
   // brewing tanks in the back corner (it's a brewery)
   for (let i = 0; i < 3; i++) {
     const tank = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 3.4, 14), mat(0xb8bcc4));

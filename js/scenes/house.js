@@ -1145,6 +1145,11 @@ export async function houseScene(game) {
   let floor = 'ground';
   const groups = { ground, upper, basement };
   function showFloor(name) {
+    if (name === 'upper' && !window.__houseUpperHinted) {
+      window.__houseUpperHinted = true;
+      setTimeout(() => showObjective('Two bedrooms up here — Olivia is in one of them. Explore or find her when ready.', 6000), 800);
+    }
+
     for (const k of Object.keys(groups)) groups[k].visible = k === name;
     floor = name;
     player.bounds = boundsByFloor[name];
@@ -1501,7 +1506,7 @@ export async function houseScene(game) {
   });
   exitInt.hidden = true;
 
-  showObjective('Olivia’s townhouse. Say hi to Jim.', 6000);
+  showObjective('Olivia’s townhouse. Explore — or say hi to Jim by the fire when you’re ready.', 7000);
 
 
   // collectibles: vintage cameras for Stacy + vinyl records
@@ -1558,7 +1563,6 @@ export async function houseScene(game) {
   }
 
   setTimeout(() => phoneText('Olivia', 'make yourself at home! wine&#39;s in the kitchen, obviously'), 6000);
-  setTimeout(() => phoneText('Olivia (the other one)', 'whoever is playing music in the basement turn it UP'), 12500);
 
   // ---- crystal hunt: Olivia calls after you settle in — 5 crystals hidden in the house ----
   const crystalState = { active: false, found: 0, started: false };

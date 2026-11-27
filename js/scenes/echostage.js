@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
+import { sfxChime } from '../engine/sfx.js';
 
 // ECHOSTAGE DC — the warehouse cathedral of dance music on Queens Chapel Rd.
 // You are working the bar tonight: customers step up with orders, pour the
@@ -296,12 +298,18 @@ export async function echostageScene(game) {
   });
 
   let spawnT = 0;
+  const pickupsC = new Pickups(scene);
+  const invC = inventory();
+  pickupsC.add(makeCameraMesh(), -14, 8, 'camera-echo-1', () => { invC.cameras++; sfxChime(); showObjective('📷 vintage camera for Stacy — left on a speaker!', 2500); });
+  pickupsC.add(makeRecordMesh(), 6, -8, 'record-echo-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — the DJs secret stash!', 2500); });
+
   window.__sceneHint = 'WASD — move · E — interact · 1-4 — pour drinks on shift';
 
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian, self: this };
       player.update(dt);
+      pickupsC.update(dt, christian.group.position);
       if (state.active || christian.group.position.x > 14.8) {
         // cinema camera: high behind the bar looking across the counter into the club
         const cz = Math.max(-5.5, Math.min(5.5, christian.group.position.z));

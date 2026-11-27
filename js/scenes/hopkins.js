@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { sfxChime } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 
 // Johns Hopkins — environmental science field lab. Stacy's research world:
 // sample stations, the greenhouse, water quality testing, specimen jars.
@@ -220,6 +221,11 @@ export async function hopkinsScene(game) {
     { speaker: 'Stacy', text: 'Homewood campus after dark. Baltimore does winter better than people admit.' },
   ]) });
 
+  const pickupsC = new Pickups(scene);
+  const invC = inventory();
+  pickupsC.add(makeCameraMesh(), 15, 8, 'camera-hopkins-1', () => { invC.cameras++; sfxChime(); showObjective('📷 vintage camera for Stacy — of course it was in HER lab!', 2500); });
+  pickupsC.add(makeRecordMesh(), -15, 8, 'record-hopkins-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — on the specimen shelf?!', 2500); });
+
   window.__sceneHint = 'WASD — move · E — interact · collect samples on the clock';
   showObjective("Hopkins field lab — Stacy's world. Start the study when ready.", 6000);
 
@@ -227,6 +233,7 @@ export async function hopkinsScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };
       player.update(dt);
+      pickupsC.update(dt, hero.group.position);
       followCam.update(dt, hero.group.position);
       const nearI = interactions.nearest(hero.group.position);
       const promptEl = document.getElementById('interact-prompt');

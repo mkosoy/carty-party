@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { sfxChime } from '../engine/sfx.js';
 import { makePerson } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
+import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 
 // Kylie's last-minute Christmas shopping — Montgomery Mall, dec 23rd, peak
 // chaos. Her list has six gifts; the store is a maze; the clock is cruel.
@@ -267,12 +268,18 @@ export async function shoppingScene(game) {
     },
   });
 
+  const pickupsC = new Pickups(scene);
+  const invC = inventory();
+  pickupsC.add(makeCameraMesh(), 12, 9.5, 'camera-shop-1', () => { invC.cameras++; sfxChime(); showObjective('📷 vintage camera for Stacy — on the clearance shelf!', 2500); });
+  pickupsC.add(makeRecordMesh(), -12, 9.5, 'record-shop-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — hidden behind the gift wrap!', 2500); });
+
   window.__sceneHint = 'WASD — move · E — interact · grab the listed gifts, dodge the decoys';
 
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: kylie, self: this };
       player.update(dt);
+      pickupsC.update(dt, kylie.group.position);
       followCam.update(dt, kylie.group.position);
       const nearI = interactions.nearest(kylie.group.position);
       const promptEl = document.getElementById('interact-prompt');

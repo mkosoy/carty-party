@@ -187,6 +187,14 @@ export function initMapScreen() {
       if (!done) {
         pin.style.animation = 'cpPinPulse 2.2s ease-in-out infinite';
       }
+      // you-are-here: the venue you're standing in gets a gold ring
+      if (window.__currentScene === p.id) {
+        pin.style.animation = 'cpPinPulse 1.6s ease-in-out infinite';
+        const ring = pin.querySelector('div');
+        if (ring) ring.style.filter = 'drop-shadow(0 0 8px #ffd76a) drop-shadow(0 2px 4px #000)';
+        const tag = pin.querySelectorAll('div')[1];
+        if (tag) tag.innerHTML = '◈ you are here';
+      }
       pin.addEventListener('mouseenter', () => pin.style.transform = 'translate(-50%,-100%) scale(1.2)');
       pin.addEventListener('mouseleave', () => pin.style.transform = 'translate(-50%,-100%)');
       pin.title = p.sub;

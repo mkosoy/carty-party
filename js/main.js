@@ -203,6 +203,7 @@ function tick() {
 
 const titleFx = initTitle();
 async function startGame(sceneName) {
+  window.__currentScene = sceneName;
   (await titleFx).stop();
   document.getElementById('title-screen').style.display = 'none';
   game.faces = await loadFaces();

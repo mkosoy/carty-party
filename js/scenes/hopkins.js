@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { sfxChime } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
 
@@ -163,7 +164,8 @@ export async function hopkinsScene(game) {
     pickups.add(sampleMesh(), sx, sz, 'sample' + i, () => {
       if (!st.active) return;
       st.got++;
-      showObjective(`🧪 sample ${st.got}/5 collected`, 1800);
+      sfxChime();
+            showObjective(`🧪 sample ${st.got}/5 collected`, 1800);
       if (st.got >= 5) finish(true);
     });
   });

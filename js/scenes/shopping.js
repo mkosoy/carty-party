@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { sfxChime } from '../engine/sfx.js';
 import { makePerson } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
 

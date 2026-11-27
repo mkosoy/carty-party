@@ -976,6 +976,39 @@ export async function houseScene(game) {
     },
   });
 
+  interactions.add({
+    pos: new THREE.Vector3(1.8, 0, -5.0), radius: 1.8, label: 'Merriweather poster', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Merriweather Post Pavilion. Half of Columbia has a story that starts with a show on that lawn.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(3, 0, -4.0), radius: 1.7, label: 'Watch the game', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Churchill versus Wooton. The whole county picks a side whether they mean to or not.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(6.8, 0, -5.2), radius: 1.8, label: 'Browse the bookshelf', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Cookbooks, a James Rouse biography, and three copies of the same thriller. This is the most Columbia shelf possible.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(7.2, 0, 4.6), radius: 1.8, label: 'Water the fiddle-leaf', floor: 'ground',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'This plant is thriving. One of the Olivias has a serious green thumb. Or both of them. Still unclear how many Olivias.' },
+      ]);
+    },
+  });
+
   // Dr. Fritz reminder card on the fridge — unlocks the dentist office
   interactions.add({
     pos: new THREE.Vector3(-7.2, 0, -3.2), radius: 2, label: 'Dr. Fritz reminder card', floor: 'ground',

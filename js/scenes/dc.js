@@ -557,8 +557,8 @@ export async function dcScene(game) {
         if (splats[i].t > 8) { scene.remove(splats[i].m); splats.splice(i, 1); }
       }
       // ice momentum: on the rink you keep gliding after you stop pushing
-      const pos = christian.group.position;
-      const onIce = Math.abs(pos.x) < 7.8 && pos.z > 0.7 && pos.z < 11.3;
+      const icePos = christian.group.position;
+      const onIce = Math.abs(icePos.x) < 7.8 && icePos.z > 0.7 && icePos.z < 11.3;
       if (onIce) {
         const ax = input.axes();
         const moving = Math.hypot(ax.x, ax.z) > 0.15;
@@ -566,10 +566,10 @@ export async function dcScene(game) {
           window.__glideVx = ax.x * 4.2;
           window.__glideVz = ax.z * 4.2;
         } else if (window.__glideVx) {
-          pos.x += window.__glideVx * dt;
-          pos.z += window.__glideVz * dt;
-          pos.x = Math.max(-7.6, Math.min(7.6, pos.x));
-          pos.z = Math.max(0.9, Math.min(11.1, pos.z));
+          icePos.x += window.__glideVx * dt;
+          icePos.z += window.__glideVz * dt;
+          icePos.x = Math.max(-7.6, Math.min(7.6, icePos.x));
+          icePos.z = Math.max(0.9, Math.min(11.1, icePos.z));
           window.__glideVx *= Math.pow(0.4, dt);
           window.__glideVz *= Math.pow(0.4, dt);
           if (Math.hypot(window.__glideVx, window.__glideVz) < 0.2) { window.__glideVx = 0; window.__glideVz = 0; }

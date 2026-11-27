@@ -428,6 +428,8 @@ export async function dcScene(game) {
     },
   });
 
+  window.__sceneHint = 'WASD — explore · E — interact · F — throw snowball · drag — camera';
+
   // snowball throwing — press F, lobbed arc, splat particles
   const snowballs = [];
   const splats = [];

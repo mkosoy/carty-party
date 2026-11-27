@@ -823,6 +823,23 @@ export async function driveScene(game) {
   const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.15 }));
   scene.add(snow);
 
+  // big touch steering buttons — mobile-standard explicit controls (joystick still works too)
+  let btnSteer = 0;
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    for (const [side, glyph, val] of [['left', '\u25C0', -1], ['right', '\u25B6', 1]]) {
+      const b = document.createElement('div');
+      b.className = 'scene-dom-extra';
+      b.style.cssText = 'position:fixed;bottom:110px;' + side + ':14px;width:84px;height:84px;border-radius:50%;background:rgba(20,24,40,.45);border:2px solid rgba(255,255,255,.35);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;z-index:40;touch-action:none;user-select:none;-webkit-user-select:none;font-family:Arial,sans-serif';
+      b.textContent = glyph;
+      const on = (e) => { btnSteer = val; b.style.background = 'rgba(255,214,99,.5)'; e.preventDefault(); };
+      const off = () => { if (btnSteer === val) btnSteer = 0; b.style.background = 'rgba(20,24,40,.45)'; };
+      b.addEventListener('touchstart', on, { passive: false });
+      b.addEventListener('touchend', off);
+      b.addEventListener('touchcancel', off);
+      document.body.appendChild(b);
+    }
+  }
+
   // ---- narrative intro ----
   player_frozen: {
     await dialogue.play([
@@ -839,6 +856,7 @@ export async function driveScene(game) {
 
 
   window.__sceneHint = '\u2190 \u2192 steer \u00b7 avoid the hazards \u00b7 grab turkeys for speed boost · E — radio · H — honk';
+
   // the mormon temple on 495 — the most recognizable moco drive landmark: white spires glowing
   const temple = new THREE.Group();
   const tbase = new THREE.Mesh(new THREE.BoxGeometry(4, 2.5, 3), new THREE.MeshStandardMaterial({ color: 0xe8e8f0, emissive: 0x8890a8, emissiveIntensity: 0.25 }));
@@ -948,7 +966,7 @@ export async function driveScene(game) {
           }
         }
         // steerable even in the cruise — the car must never feel dead
-        const { x: steerX } = input.axes();
+        const steerX = Math.max(-1, Math.min(1, input.axes().x + btnSteer));
         carLaneX = Math.max(-5.5, Math.min(5.5, carLaneX + steerX * dt * 17));
         car.position.x += (carLaneX - car.position.x) * Math.min(1, dt * 13);
         car.rotation.z = -steerX * 0.12;
@@ -988,7 +1006,7 @@ export async function driveScene(game) {
       }
       if (phase === 'run' && !finished) {
         // steering
-        const { x } = input.axes();
+        const x = Math.max(-1, Math.min(1, input.axes().x + btnSteer));
         carLaneX = Math.max(-5.5, Math.min(5.5, carLaneX + x * dt * 17));
         car.position.x += (carLaneX - car.position.x) * Math.min(1, dt * 13);
         car.rotation.z = -x * 0.12;

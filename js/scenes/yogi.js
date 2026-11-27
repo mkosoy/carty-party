@@ -337,6 +337,17 @@ export async function yogiScene(game) {
   });
 
   interactions.add({
+    pos: new THREE.Vector3(0, 0, -8), radius: 2.4, label: 'The sacred sign',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'CLOSES AT 9. Underlined twice. It is a sushi place, not a nightclub.' },
+        { speaker: 'Olivia', text: 'They mean it too. Once they flipped the sign while I was mid-order. I respect it, honestly. Boundaries.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(3.6, 0, 0.5), radius: 2.4, label: 'Grab from the conveyor belt',
     action: async () => {
       if (st.active || st.done) return;

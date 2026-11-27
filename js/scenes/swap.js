@@ -680,6 +680,80 @@ export async function swapScene(game) {
   const guide = new GuideMarker(scene);
   guide.setTarget(-4, 8);
   // Kylie's Run Club flyer by the entrance — unlocks the track race
+  // ===== REAL BALTIMORE MATCH: the rowhouse soul of the swap =====
+  // iconic white marble steps at the entrance — THE baltimore thing
+  for (let ms = 0; ms < 3; ms++) {
+    const marbleSteps = new THREE.Mesh(new THREE.BoxGeometry(1.8 - ms * 0.15, 0.22, 0.55), new THREE.MeshStandardMaterial({ color: 0xe8e6e0, roughness: 0.25 }));
+    marbleSteps.position.set(-8, 0.11 + ms * 0.22, 11.4 + ms * 0.4);
+    scene.add(marbleSteps);
+  }
+  // formstone-ish brick facade texture strip visible through the entry — baltimore rowhouse signature
+  const fsC = document.createElement('canvas');
+  fsC.width = 128; fsC.height = 128;
+  const fx2 = fsC.getContext('2d');
+  fx2.fillStyle = '#8a6a58';
+  fx2.fillRect(0, 0, 128, 128);
+  fx2.strokeStyle = '#6a4e40';
+  fx2.lineWidth = 3;
+  for (let sy = 0; sy < 128; sy += 21) {
+    fx2.beginPath();
+    fx2.moveTo(0, sy);
+    fx2.lineTo(128, sy);
+    fx2.stroke();
+    for (let sx2 = (sy / 21) % 2 ? 0 : 16; sx2 < 128; sx2 += 32) {
+      fx2.beginPath();
+      fx2.moveTo(sx2, sy);
+      fx2.lineTo(sx2, sy + 21);
+      fx2.stroke();
+    }
+  }
+  const fsT = new THREE.CanvasTexture(fsC);
+  fsT.wrapS = fsT.wrapT = THREE.RepeatWrapping;
+  fsT.repeat.set(4, 2);
+  fsT.colorSpace = THREE.SRGBColorSpace;
+  const fsWall = new THREE.Mesh(new THREE.PlaneGeometry(9, 3.2), new THREE.MeshStandardMaterial({ map: fsT, roughness: 0.85 }));
+  fsWall.position.set(-8, 1.6, 12.6);
+  fsWall.rotation.y = Math.PI;
+  scene.add(fsWall);
+  // natty boh poster — baltimore's beer, every rowhouse party has one
+  const nbC = document.createElement('canvas');
+  nbC.width = 128; nbC.height = 160;
+  const nx2 = nbC.getContext('2d');
+  nx2.fillStyle = '#f0e8d8';
+  nx2.fillRect(0, 0, 128, 160);
+  nx2.fillStyle = '#1a1a2a';
+  nx2.font = 'bold 17px Arial';
+  nx2.textAlign = 'center';
+  nx2.fillText('NATTY BOH', 64, 148);
+  // the mustache man
+  nx2.fillStyle = '#f0c8a0';
+  nx2.beginPath();
+  nx2.arc(64, 62, 30, 0, 7);
+  nx2.fill();
+  nx2.fillStyle = '#1a1a1a';
+  nx2.beginPath();
+  nx2.ellipse(64, 76, 18, 7, 0, 0, 7);
+  nx2.fill();
+  nx2.fillStyle = '#fff';
+  nx2.beginPath();
+  nx2.arc(53, 54, 5, 0, 7);
+  nx2.arc(75, 54, 5, 0, 7);
+  nx2.fill();
+  const nbT = new THREE.CanvasTexture(nbC);
+  nbT.colorSpace = THREE.SRGBColorSpace;
+  const nbM = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 1.05), new THREE.MeshStandardMaterial({ map: nbT, roughness: 0.85 }));
+  nbM.position.set(9.5, 1.9, -9.85);
+  scene.add(nbM);
+  // ravens purple + orioles orange string lights alternating — baltimore sports loyalty lighting
+  for (let li = 0; li < 14; li++) {
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), new THREE.MeshBasicMaterial({ color: li % 2 ? 0x7030c0 : 0xff7020 }));
+    bulb.position.set(-6 + li * 1.0, 3.5 + Math.sin(li * 1.2) * 0.15, -9.7);
+    scene.add(bulb);
+  }
+  const baltGlow1 = new THREE.PointLight(0x8040e0, 1.6, 8);
+  baltGlow1.position.set(-2, 3, -8.5);
+  scene.add(baltGlow1);
+
   interactions.add({
     pos: new THREE.Vector3(-14.5, 0, 9.5), radius: 2.2, label: 'Run Club flyer',
     action: async () => {

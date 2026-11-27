@@ -780,6 +780,30 @@ export async function houseScene(game) {
     },
   });
 
+  // fridge with kids' drawings held by magnets — peak lived-in energy
+  const fridge = box(ground, 0.9, 1.9, 0.8, 0xd8d4cc, 7.4, 0.95, -0.2);
+  boundsByFloor.ground.push({ minX: 6.9, maxX: 7.9, minZ: -0.65, maxZ: 0.25 });
+  const drawColors = [0xc05a6a, 0x5a8ac0, 0x6ac05a];
+  for (let i = 0; i < 3; i++) {
+    const dc2 = document.createElement('canvas');
+    dc2.width = 32; dc2.height = 40;
+    const dx2 = dc2.getContext('2d');
+    dx2.fillStyle = '#f5f2e8';
+    dx2.fillRect(0, 0, 32, 40);
+    dx2.strokeStyle = '#' + drawColors[i].toString(16).padStart(6, '0');
+    dx2.lineWidth = 2;
+    dx2.beginPath();
+    dx2.arc(16, 14, 6, 0, 6.28);
+    dx2.moveTo(16, 20); dx2.lineTo(16, 32);
+    dx2.moveTo(8, 24); dx2.lineTo(24, 24);
+    dx2.stroke();
+    const dt2 = new THREE.CanvasTexture(dc2);
+    const drawing = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.2), new THREE.MeshBasicMaterial({ map: dt2 }));
+    drawing.position.set(7.4 - 0.41, 1.3 - i * 0.35, -0.35 + i * 0.3);
+    drawing.rotation.y = -Math.PI / 2;
+    scene.add(drawing);
+  }
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, floor: typeof floor !== "undefined" ? floor : null, self: this };

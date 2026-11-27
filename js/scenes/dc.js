@@ -371,6 +371,34 @@ export async function dcScene(game) {
       player.frozen = true;
       player.speed = 4.1;
       guide.clear();
+      // fireworks over the monument — the night earns its finale
+      const fwGeo = new THREE.BufferGeometry();
+      const FW_N = 400;
+      const fwPos = new Float32Array(FW_N * 3);
+      const fwVel = [];
+      const fwMeta = []; // {t0, life, color}
+      fwGeo.setAttribute('position', new THREE.BufferAttribute(fwPos, 3));
+      const fwMat = new THREE.PointsMaterial({ color: 0xffd070, size: 0.24, transparent: true, opacity: 0.95 });
+      const fw = new THREE.Points(fwGeo, fwMat);
+      fw.frustumCulled = false;
+      scene.add(fw);
+      for (let i = 0; i < FW_N; i++) { fwVel.push([0, 0, 0]); fwMeta.push({ t0: -1, life: 0 }); fwPos[i * 3 + 1] = -50; }
+      window.__fireworks = { geo: fwGeo, pos: fwPos, vel: fwVel, meta: fwMeta, next: 0, active: true };
+      const burst = (cx, cy, cz) => {
+        const fw2 = window.__fireworks;
+        let placed = 0;
+        for (let i = 0; i < FW_N && placed < 70; i++) {
+          if (fw2.meta[i].t0 >= 0) continue;
+          const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+          const sp = 3.2 + Math.random() * 2.6;
+          fw2.vel[i] = [Math.sin(ph) * Math.cos(th) * sp, Math.cos(ph) * sp, Math.sin(ph) * Math.sin(th) * sp];
+          fw2.pos[i * 3] = cx; fw2.pos[i * 3 + 1] = cy; fw2.pos[i * 3 + 2] = cz;
+          fw2.meta[i] = { t0: performance.now() / 1000, life: 1.4 + Math.random() * 0.7 };
+          placed++;
+        }
+      };
+      window.__fwBurst = burst;
+      window.__fwT = 0;
       await dialogue.play([
         { speaker: 'Mark', text: 'Same time next year?' },
         { speaker: 'Kylie ❤️', text: 'Same time every year. This is the whole point.' },
@@ -649,6 +677,27 @@ export async function dcScene(game) {
         christian.group.rotation.x = 0;
       }
       player.update(dt);
+      // finale fireworks: periodic bursts + particle integration
+      if (window.__fireworks && window.__fireworks.active) {
+        const fw2 = window.__fireworks;
+        window.__fwT = (window.__fwT || 0) - dt;
+        if (window.__fwT <= 0) {
+          window.__fwBurst(-22 + Math.random() * 14, 12 + Math.random() * 5, -16 + Math.random() * 6 - 3);
+          window.__fwT = 0.7 + Math.random() * 0.8;
+        }
+        const nowT = performance.now() / 1000;
+        for (let i = 0; i < fw2.meta.length; i++) {
+          const m = fw2.meta[i];
+          if (m.t0 < 0) continue;
+          const age = nowT - m.t0;
+          if (age > m.life) { fw2.pos[i * 3 + 1] = -50; m.t0 = -1; continue; }
+          fw2.vel[i][1] -= 4.5 * dt;
+          fw2.pos[i * 3] += fw2.vel[i][0] * dt;
+          fw2.pos[i * 3 + 1] += fw2.vel[i][1] * dt;
+          fw2.pos[i * 3 + 2] += fw2.vel[i][2] * dt;
+        }
+        fw2.geo.attributes.position.needsUpdate = true;
+      }
       if (typeof chatter !== 'undefined') chatter.update(dt);
       // ambient cold wind off the potomac
       if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 480, x: 0, z: 0, maxDist: 40, gain: 0.05, rate: 3 }); } catch {} }

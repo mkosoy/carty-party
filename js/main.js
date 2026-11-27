@@ -11,6 +11,7 @@ import { cropPhotoSquare } from './engine/character.js';
 import { airportScene } from './scenes/airport.js';
 import { Music } from './engine/music.js';
 import { initTitle } from './title.js';
+import { initMapScreen } from './mapscreen.js';
 
 const container = document.getElementById('game-container');
 
@@ -226,6 +227,8 @@ if (cp && cp !== 'airport') {
   fresh.addEventListener('click', () => { localStorage.removeItem('cp-checkpoint'); startGame(); }, { once: true });
   sb.parentElement.appendChild(fresh);
 }
+window.__startGame = startGame;
+initMapScreen();
 sb.addEventListener('click', () => startGame(cp && cp !== 'airport' ? cp : undefined), { once: true });
 for (const btn of document.querySelectorAll('.mg-btn')) {
   btn.addEventListener('click', () => startGame(btn.dataset.scene));

@@ -324,3 +324,27 @@ export function skyDome(scene, texture, radius = 300) {
   scene.add(dome);
   return dome;
 }
+
+// snow — soft white with sparkle glints and wind-drifting tonal variation
+export function snowGround(rx = 6, ry = 6) {
+  const [c, x] = canvas(256, 256);
+  x.fillStyle = '#e8eef8';
+  x.fillRect(0, 0, 256, 256);
+  // wind-drifted tonal patches
+  for (let i = 0; i < 9; i++) {
+    const px = Math.random() * 256, py = Math.random() * 256, pr = 40 + Math.random() * 70;
+    const pg = x.createRadialGradient(px, py, 0, px, py, pr);
+    pg.addColorStop(0, Math.random() > 0.5 ? 'rgba(255,255,255,0.35)' : 'rgba(180,200,230,0.25)');
+    pg.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = pg;
+    x.fillRect(0, 0, 256, 256);
+  }
+  // sparkle glints
+  for (let i = 0; i < 90; i++) {
+    x.fillStyle = `rgba(255,255,255,${0.5 + Math.random() * 0.5})`;
+    x.fillRect(Math.random() * 256, Math.random() * 256, 1.4, 1.4);
+  }
+  // subtle blue shadows in hollows
+  noise(x, 256, 256, 0.04, [160, 210]);
+  return tex(c, rx, ry);
+}

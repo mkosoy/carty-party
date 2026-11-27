@@ -143,6 +143,17 @@ export function initMapScreen() {
     const riverPts = [[-77.45, 39.10], [-77.35, 39.02], [-77.30, 38.95], [-77.20, 38.90], [-77.10, 38.87], [-77.02, 38.855], [-76.95, 38.84]];
     for (const [lg, lt] of riverPts) { const [qx, qy] = xy(lg, lt, W, H); x.lineTo(qx, qy); }
     x.stroke();
+    // chesapeake bay — the big water east of baltimore, essential maryland geography
+    x.fillStyle = 'rgba(60,110,170,0.5)';
+    x.beginPath();
+    const [bx1, by1] = xy(-76.55, 39.35, W, H);
+    x.ellipse(bx1 + W * 0.06, by1 - H * 0.02, W * 0.055, H * 0.34, 0.1, 0, 6.29);
+    x.fill();
+    x.fillStyle = 'rgba(255,255,255,0.16)';
+    x.font = `italic ${Math.round(W * 0.017)}px Georgia`;
+    const [blx, bly] = xy(-76.48, 39.15, W, H);
+    x.fillText('chesapeake bay', blx, bly);
+
     // highways as glowing ribbons
     function road(pts, color, width) {
       x.strokeStyle = color;

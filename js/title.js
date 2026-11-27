@@ -64,6 +64,11 @@ export async function initTitle() {
     if (el) el.src = 'assets/portraits/' + name + '.png';
   }
 
+  // completion stars on venues you've finished — progress you can see
+  for (const btn of document.querySelectorAll('.mg-btn[data-scene]')) {
+    if (localStorage.getItem('cp-done-' + btn.dataset.scene)) btn.classList.add('done-venue');
+  }
+
   // procedural chime loop — silent until user interacts (browser policy)
   let audioStarted = false;
   const startAudio = () => {

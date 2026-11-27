@@ -155,3 +155,14 @@ body.touch #touch-controls { display: block; }
 #levels-section { margin: 10px 0 4px; text-align: center; }
 #levels-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .skip-warn { color: #e8a0a0; font-size: 0.75em; font-style: italic; }
+
+/* homepage polish: tighter rhythm on phones + venue completion stars */
+.mg-btn.done-venue { border-color: rgba(110,220,130,.55); }
+.mg-btn.done-venue::after { content: '✓'; position: absolute; top: 4px; right: 7px; color: #6fdc86; font-size: 13px; font-weight: bold; text-shadow: 0 1px 3px #000; }
+.mg-btn { position: relative; }
+@media (max-width: 560px) {
+  #title-cast { margin-top: 6px; gap: 8px; }
+  #title-inner { gap: 7px; }
+  #start-button { font-size: 20px; padding: 12px 30px; }
+  .mg-title { margin: 8px 0 4px; font-size: 12px; }
+}

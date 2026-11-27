@@ -346,6 +346,12 @@ export async function swapScene(game) {
     const sm = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.41), new THREE.MeshBasicMaterial({ map: st, side: THREE.DoubleSide }));
     sm.position.set(x, 2.45, z);
     scene.add(sm);
+    // hanging wires up to the ceiling — real swap signage hangs
+    for (const wx of [-0.45, 0.45]) {
+      const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 3.2, 4), mat(0x222222));
+      wire.position.set(x + wx, 4.25, z);
+      scene.add(wire);
+    }
   }
   sectionSign('TOPS', -8, -4);
   sectionSign('BOTTOMS', -1, -4);

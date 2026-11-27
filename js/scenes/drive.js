@@ -898,6 +898,12 @@ export async function driveScene(game) {
             tc.position.x = [-16.5, -13.5, -10.5][Math.floor(Math.random() * 3)];
           }
         }
+        // steerable even in the cruise — the car must never feel dead
+        const { x: steerX } = input.axes();
+        carLaneX = Math.max(-5.5, Math.min(5.5, carLaneX + steerX * dt * 17));
+        car.position.x += (carLaneX - car.position.x) * Math.min(1, dt * 13);
+        car.rotation.z = -steerX * 0.12;
+        car.rotation.y = -steerX * 0.2;
         if (input.consumeInteract()) {
           stationIdx = (stationIdx + 1) % stations.length;
           const st = stations[stationIdx];

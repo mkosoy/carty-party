@@ -172,7 +172,47 @@ export async function dentistScene(game) {
   scene.add(fritz.group);
 
   const followCam = new FollowCam(camera);
+  // density pass — a real operatory: counter run, dental lamp, plant, clock, diplomas
+  const counter = new THREE.Mesh(new THREE.BoxGeometry(4.6, 0.9, 0.6), mat(0xcfd6dd));
+  counter.position.set(-3.4, 0.45, -4.4);
+  scene.add(counter);
+  const counterTop = new THREE.Mesh(new THREE.BoxGeometry(4.7, 0.06, 0.66), mat(0x8a94a0));
+  counterTop.position.set(-3.4, 0.93, -4.4);
+  scene.add(counterTop);
+  const sink = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.16, 0.1, 14), mat(0xe8ecf0));
+  sink.position.set(-4.4, 0.98, -4.4);
+  scene.add(sink);
+  // upper cabinets
+  const upper = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.8, 0.4), mat(0xdde3e9));
+  upper.position.set(-3.2, 2.2, -4.6);
+  scene.add(upper);
+  // framed diplomas on wall
+  for (let di = 0; di < 3; di++) {
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.66, 0.03), mat(0x6a4a2a));
+    frame.position.set(3.2 + di * 0.8, 1.9, -4.82);
+    scene.add(frame);
+    const paper = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.55), new THREE.MeshBasicMaterial({ color: 0xf4eedd }));
+    paper.position.set(3.2 + di * 0.8, 1.9, -4.79);
+    scene.add(paper);
+  }
+  // wall clock
+  const clockFace = new THREE.Mesh(new THREE.CircleGeometry(0.22, 16), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  clockFace.position.set(-0.5, 2.4, -4.82);
+  scene.add(clockFace);
+  const clockRim = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.025, 8, 20), mat(0x333333));
+  clockRim.position.copy(clockFace.position);
+  scene.add(clockRim);
+  // plant in corner
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.15, 0.3, 10), mat(0xa05030));
+  pot.position.set(-6.2, 0.15, -4.2);
+  scene.add(pot);
+  const leaves = new THREE.Mesh(new THREE.SphereGeometry(0.34, 8, 8), mat(0x2a6a3a));
+  leaves.position.set(-6.2, 0.65, -4.2);
+  leaves.scale.y = 1.4;
+  scene.add(leaves);
+
   followCam.setRoom(-6.8, 6.8, -4.8, 4.8);
+  followCam.offset.set(0, 2.3, 3.9);
   followCam.snap(olivia.group.position);
   const player = new PlayerController(olivia, input, bounds);
   const interactions = new Interactions(scene);

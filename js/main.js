@@ -92,8 +92,9 @@ fetch('assets/voice/manifest.json').then((r) => r.ok ? r.json() : null).then((m)
   const f = (n) => 'assets/faces2/' + n + '.png';
   dialogue.faceMap = {
     'Christian': f('christian'), 'Stacy': f('stacy'), 'Olivia': f('olivia'),
-    'Olivia #2': f('olivia2'), 'Olivia??': f('olivia2'), 'Jim': f('jim'),
-    'Mark': f('mark'), 'Kylie ❤️': f('kylie'), 'Tre': f('tre'), 'The Pilot': f('pilot'),
+    'Olivia #2': f('olivia2'), 'Olivia??': f('olivia2'), 'Olivia?': f('olivia2'), 'Jim': f('jim'),
+    'Mark': f('mark'), 'Kylie': f('kylie'), 'Kylie ❤️': f('kylie'), 'Tre': f('tre'),
+    'The Pilot': f('pilot'), 'Dr. Fritz': f('fritz'),
   };
 }
 

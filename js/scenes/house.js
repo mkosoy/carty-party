@@ -55,6 +55,12 @@ export async function houseScene(game) {
       if (horizontal) rail.position.set(x, 1.03, z + inward * 0.17);
       else rail.position.set(x + inward * 0.17, 1.03, z);
       g.add(rail);
+      // crown molding where wall meets ceiling
+      const crownGeo = horizontal ? new THREE.BoxGeometry(len - 0.1, 0.09, 0.08) : new THREE.BoxGeometry(0.08, 0.09, len - 0.1);
+      const crown = new THREE.Mesh(crownGeo, new THREE.MeshStandardMaterial({ color: 0xf5efe2, roughness: 0.55 }));
+      if (horizontal) crown.position.set(x, 3.32, z + inward * 0.17);
+      else crown.position.set(x + inward * 0.17, 3.32, z);
+      g.add(crown);
       // vertical beadboard grooves illusion: thin shadow lines on the panel
       for (let gi = 1; gi < 10; gi++) {
         const grooveGeo = horizontal ? new THREE.BoxGeometry(0.015, 0.96, 0.045) : new THREE.BoxGeometry(0.045, 0.96, 0.015);

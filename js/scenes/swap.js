@@ -854,6 +854,33 @@ export async function swapScene(game) {
     },
   });
 
+  interactions.add({
+    pos: new THREE.Vector3(10.5, 0, -4),
+    radius: 2.4,
+    label: 'Browse the Curated Rack',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'The Curated Rack. Vintage, high-end, everything labeled with the seller\'s name.' },
+        { speaker: 'Olivia', text: 'That leather jacket has your name on it. Well — someone\'s name. That\'s the point.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-5, 0, 7.8),
+    radius: 2.2,
+    label: 'Grab a matcha',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Matcha pop-up at a clothing swap. Baltimore you\'re doing the most, and I respect it.' },
+      ]);
+      showObjective('🍵 matcha acquired. antioxidants +5.', 2500);
+      player.frozen = false;
+    },
+  });
+
   // central round clothing rack — fills the middle like a real swap meet
   const rack = new THREE.Group();
   const ring = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.05, 8, 24), mat(0x8a8f96));

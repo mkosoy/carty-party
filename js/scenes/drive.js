@@ -836,6 +836,9 @@ export async function driveScene(game) {
     const tcab = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.45, 2), mat(0x2c3140));
     tcab.position.set(0, 1, 0.2);
     tc.add(tcab);
+    const tsnow = new THREE.Mesh(new THREE.BoxGeometry(1.52, 0.08, 2.02), mat(0xf4f8ff));
+    tsnow.position.set(0, 1.26, 0.2);
+    tc.add(tsnow);
     // headlights: bright glows facing the camera
     for (const hx of [-0.6, 0.6]) {
       const hl = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.14, 0.06), new THREE.MeshBasicMaterial({ color: 0xfff5d0 }));

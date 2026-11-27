@@ -3,7 +3,7 @@ import { Pickups , npcFacePlayer, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { sfxSplat } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, GuideMarker } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, setObjective, GuideMarker } from '../engine/core.js';
 import { nightSky, skyDome, snowGround } from '../engine/textures.js';
 
 // Scene 5 — DC at night. Washington Monument, the big Christmas tree,
@@ -308,7 +308,7 @@ export async function dcScene(game) {
         { speaker: 'Mark', text: '…two WHAT?' },
         { speaker: 'Christian', text: 'On the ice. I’ll tell you on the ice.' },
       ]);
-      showObjective('Onto the rink — follow the gold light and press E to skate!', 5000);
+      setObjective('Onto the rink — follow the gold light and press E to skate!');
       rinkInt.hidden = false;
       guide.setTarget(0, 6);
       player.frozen = false;
@@ -348,7 +348,7 @@ export async function dcScene(game) {
       rinkInt.hidden = true;
       player.frozen = false;
       player.speed = 7;
-      showObjective('Skate! When you’re ready, glide to the glowing center to end the night.', 6000);
+      setObjective('Skate! When you’re ready, glide to the glowing center to end the night.');
       centerInt.hidden = false;
       guide.setTarget(0, 6);
       // olivia waves you over once

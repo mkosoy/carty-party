@@ -4,7 +4,7 @@ import { npcFacePlayer, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { concrete } from '../engine/textures.js';
-import { FollowCam, PlayerController, Interactions, showObjective, phoneOverlay, choice, GuideMarker } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, setObjective, phoneOverlay, choice, GuideMarker } from '../engine/core.js';
 import { makeChatter } from '../engine/collectibles.js';
 
 // Scene 1 — Washington Dulles. Long concourse, big windows looking at snow,
@@ -817,7 +817,7 @@ export async function airportScene(game) {
 
   const chatter = makeChatter(scene, travelers, ['✈️','🧳','☕','😴','🎄']);
   setTimeout(() => phoneText('Stacy ❤️', 'landed?? tell me you didn&#39;t miss the swap season poster at baggage claim'), 6000);
-  showObjective('You just landed at Dulles — follow the gold beacon and catch the game on the terminal TV.', 8000);
+  setObjective('You just landed at Dulles — follow the gold beacon and catch the game on the terminal TV.');
 
   let phoneTimer = -1;
   let elapsed = 0;
@@ -1047,7 +1047,7 @@ export async function airportScene(game) {
             { speaker: 'Christian', text: 'No problem.' },
             { speaker: 'Stacy', text: 'Drive safe, it’s snowing! See you at the swap ❤️' },
           ]);
-          showObjective('Head to the car — the exit is by baggage claim, on the right.', 6000);
+          setObjective('Head to the car — the exit is by baggage claim, on the right.');
           exitInteract.hidden = false;
           guide.setTarget(14, 12);
           player.frozen = false;

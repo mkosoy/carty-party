@@ -571,6 +571,11 @@ export class Dialogue {
 }
 
 let __persistentObjective = '';
+export function clearObjective() {
+  __persistentObjective = '';
+  const el = document.getElementById('objective-banner');
+  if (el) el.classList.add('hidden');
+}
 export function setObjective(text) {
   __persistentObjective = text;
   showObjective(text, 0);

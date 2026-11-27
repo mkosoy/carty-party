@@ -5,7 +5,7 @@ import { Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { brickWall, concrete } from '../engine/textures.js';
-import { FollowCam, PlayerController, Interactions, showObjective, choice, GuideMarker } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, setObjective, choice, GuideMarker } from '../engine/core.js';
 
 // Scene 4 — the swap. A Baltimore brewery venue: brick + string lights +
 // shade sails outside the window, clothing racks everywhere, DJ booth,
@@ -843,7 +843,7 @@ export async function swapScene(game) {
       }
       state.met = true;
       guide.setTarget(6, 8);
-      showObjective('Hang the clothes on the marked rack — 4 pieces. Walk away anytime to bail.', 5000);
+      setObjective('Hang the clothes on the marked rack — 4 pieces.');
       hangInt.hidden = false;
       player.frozen = false;
     },
@@ -886,7 +886,7 @@ export async function swapScene(game) {
         danceInt.hidden = false;
         yogaInt.hidden = false;
         stacy2Int.hidden = false;
-        showObjective('The swap is yours — dance, do yoga, or talk to Stacy when ready for DC.', 6000);
+        setObjective('The swap is yours — dance, do yoga, or talk to Stacy when ready for DC.');
       } else {
         showObjective(`Hung ${state.hung}/4 — press E again for the next piece.`, 2500);
       }
@@ -989,7 +989,7 @@ export async function swapScene(game) {
   });
   stacy2Int.hidden = true;
 
-  showObjective('The swap! Find Stacy — she’s filming near the entrance.', 6500);
+  setObjective('The swap! Find Stacy — she’s filming near the entrance.');
 
 
   // collectibles: vintage cameras for Stacy + vinyl records

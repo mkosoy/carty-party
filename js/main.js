@@ -6,7 +6,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { VignetteShader } from 'three/addons/shaders/VignetteShader.js';
 import { Input } from './engine/input.js';
-import { Dialogue } from './engine/core.js';
+import { clearObjective, Dialogue } from './engine/core.js';
 import { cropPhotoSquare } from './engine/character.js';
 import { airportScene } from './scenes/airport.js';
 import { Music } from './engine/music.js';
@@ -129,6 +129,7 @@ const game = {
     window.__sparkles = [];
     try { window.__radioStop?.(); } catch {}
     document.querySelectorAll('.scene-dom-extra').forEach((el) => el.remove());
+    try { clearObjective(); } catch {}
     window.__camYaw = 0;
     const mb = document.getElementById('menu-button');
     if (mb) mb.classList.remove('hidden');

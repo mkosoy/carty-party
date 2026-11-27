@@ -30,10 +30,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #0b0e1a; f
   #objective-banner { top: 56px; font-size: 13px; padding: 8px 14px; max-width: 82vw; }
 }
 #interact-prompt {
-  position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%);
-  min-width: 44px; height: 44px; border-radius: 22px; background: #e8b64c; color: #20240f;
-  display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;
-  padding: 0 16px; white-space: nowrap; pointer-events: none;
+  position: absolute; bottom: 24%; left: 50%; transform: translateX(-50%);
+  min-width: 36px; height: 34px; border-radius: 17px; background: rgba(232,182,76,.92); color: #20240f;
+  display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12.5px;
+  padding: 0 12px; white-space: nowrap; pointer-events: none;
   animation: pulse 1.2s infinite; box-shadow: 0 0 18px rgba(232,182,76,.7);
 }
 @keyframes pulse { 50% { transform: translateX(-50%) scale(1.15); } }

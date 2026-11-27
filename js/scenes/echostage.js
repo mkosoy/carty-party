@@ -406,10 +406,14 @@ export async function echostageScene(game) {
   window.__sceneHint = 'WASD — move · E — interact · 1-4 — pour drinks on shift';
 
   setObjective('Echostage — explore the club, then start your shift behind the bar (east side).');
+  // soft key light following the player — the club stays moody but you're never a silhouette
+  const heroLight = new THREE.PointLight(0xffe8c0, 9, 7);
+  scene.add(heroLight);
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian, self: this };
       player.update(dt);
+      heroLight.position.set(christian.group.position.x, 2.6, christian.group.position.z + 0.6);
       chatter.update(dt);
       pickupsC.update(dt, christian.group.position);
       if (state.active || christian.group.position.x > 14.8) {

@@ -176,7 +176,7 @@ const game = {
     if (!hint) {
       hint = document.createElement('div');
       hint.id = 'controls-hint';
-      hint.style.cssText = 'position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:30;background:rgba(10,12,22,.55);color:#e8dfc8;padding:6px 14px;border-radius:20px;font-family:Georgia;font-size:12.5px;pointer-events:none;transition:opacity 1.2s;white-space:nowrap';
+      hint.style.cssText = 'position:fixed;bottom:' + (('ontouchstart' in window) ? '58px' : '12px') + ';left:50%;transform:translateX(-50%);z-index:30;background:rgba(10,12,22,.55);color:#e8dfc8;padding:6px 14px;border-radius:20px;font-family:Georgia;font-size:12.5px;pointer-events:none;transition:opacity 1.2s;max-width:86vw;text-align:center';
       document.body.appendChild(hint);
     }
     const touch = 'ontouchstart' in window;

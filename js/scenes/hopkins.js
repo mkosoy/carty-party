@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { sfxChime } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makeChatter } from '../engine/collectibles.js';
 
@@ -229,6 +229,7 @@ export async function hopkinsScene(game) {
   pickupsC.add(makeRecordMesh(), -15, 8, 'record-hopkins-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — on the specimen shelf?!', 2500); });
 
   const chatter = makeChatter(scene, researchers, ['🧪','🌱','📊','💧','🔬']);
+  setTimeout(() => phoneText('Stacy ❤️', 'label the samples BEFORE you put them in the cooler this time'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · collect samples on the clock';
   showObjective("Hopkins field lab — Stacy's world. Start the study when ready.", 6000);
 

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { sfxChime } from '../engine/sfx.js';
 import { makeChatter } from '../engine/collectibles.js';
@@ -305,6 +305,7 @@ export async function echostageScene(game) {
   pickupsC.add(makeRecordMesh(), 6, -8, 'record-echo-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — the DJs secret stash!', 2500); });
 
   const chatter = makeChatter(scene, crowd, ['🎵','🍸','💃','🕺','🔊']);
+  setTimeout(() => phoneText('Mark', 'if you&#39;re bartending I want a free pour. this is legally binding'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · 1-4 — pour drinks on shift';
 
   return {

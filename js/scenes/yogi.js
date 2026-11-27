@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { sfxChime } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh, makeChatter } from '../engine/collectibles.js';
 
 // Yo Yogi Sushi — downtown crown / rio, Gaithersburg. The whole drive chapter
@@ -308,6 +308,7 @@ export async function yogiScene(game) {
   pickups.add(makeRecordMesh(), 13.5, 8.5, 'record-yogi-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — someone traded it for sushi!', 2500); });
 
   const chatter = makeChatter(scene, visitors, ['🍣','🍱','😋','🥢','💬']);
+  setTimeout(() => phoneText('Kayla', 'you made it before 9. I am almost impressed. the belt waits for no one'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · grab sushi off the conveyor belt';
   showObjective('Yo Yogi Sushi — you made it before 9. The belt is moving.', 6000);
 

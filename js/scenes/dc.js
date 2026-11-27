@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Pickups , npcFacePlayer } from '../engine/core.js';
+import { Pickups , npcFacePlayer, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { sfxSplat } from '../engine/sfx.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
@@ -531,6 +531,8 @@ export async function dcScene(game) {
     }
   }
 
+  setTimeout(() => phoneText('Mark', 'if you fall on the ice I am legally obligated to laugh first and help second'), 6000);
+  setTimeout(() => phoneText('Kylie', 'hot cocoa is on me if you beat me around the rink'), 12500);
   window.__sceneHint = 'WASD — explore · E — interact · F — throw snowball · drag — camera';
 
   // snowball throwing — press F, lobbed arc, splat particles

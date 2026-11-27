@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { sfxChime } from '../engine/sfx.js';
 import { makePerson } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makeChatter } from '../engine/collectibles.js';
 
@@ -275,6 +275,7 @@ export async function shoppingScene(game) {
   pickupsC.add(makeRecordMesh(), -12, 9.5, 'record-shop-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — hidden behind the gift wrap!', 2500); });
 
   const chatter = makeChatter(scene, shoppers, ['🎁','🛍️','😅','🎄','🏃']);
+  setTimeout(() => phoneText('Stacy ❤️', 'if you don&#39;t find the record player I will actually cry'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · grab the listed gifts, dodge the decoys';
 
   return {

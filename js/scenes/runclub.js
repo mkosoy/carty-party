@@ -78,6 +78,77 @@ export async function runclubScene(game) {
   bigSign('WOOTTON', 'P A T R I O T S', 8, 4, 0, 4.4, -13.4);
   bigSign("KYLIE'S RUN CLUB", 'marathon prep — respect the grind', 5, 2.5, -17.5, 4.6, 12, 2.2);
 
+  // stadium scoreboard at the far end — animated clock
+  const sbC = document.createElement('canvas');
+  sbC.width = 512; sbC.height = 288;
+  const sbx = sbC.getContext('2d');
+  const sbT = new THREE.CanvasTexture(sbC);
+  sbT.colorSpace = THREE.SRGBColorSpace;
+  function drawScoreboard(secs) {
+    sbx.fillStyle = '#101418';
+    sbx.fillRect(0, 0, 512, 288);
+    sbx.strokeStyle = '#c8a040';
+    sbx.lineWidth = 8;
+    sbx.strokeRect(6, 6, 500, 276);
+    sbx.fillStyle = '#f0d060';
+    sbx.font = 'bold 44px Arial';
+    sbx.textAlign = 'center';
+    sbx.fillText('WOOTTON PATRIOTS', 256, 62);
+    sbx.fillStyle = '#ff5040';
+    sbx.font = 'bold 92px monospace';
+    const mm = Math.floor(secs / 60), ss = Math.floor(secs % 60);
+    sbx.fillText(mm + ':' + String(ss).padStart(2, '0'), 256, 176);
+    sbx.fillStyle = '#e8e8e8';
+    sbx.font = '28px Arial';
+    sbx.fillText('TURKEY TROT — LAP TIMER', 256, 240);
+    sbT.needsUpdate = true;
+  }
+  drawScoreboard(0);
+  setInterval(() => drawScoreboard(performance.now() / 1000 % 600), 500);
+  const scoreboard = new THREE.Mesh(new THREE.PlaneGeometry(6, 3.4), new THREE.MeshBasicMaterial({ map: sbT }));
+  scoreboard.position.set(0, 5.2, -21);
+  scene.add(scoreboard);
+  for (const spx of [-2.4, 2.4]) {
+    const sbPost = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 3.6, 8), mat(0x4a5058));
+    sbPost.position.set(spx, 1.8, -21.1);
+    scene.add(sbPost);
+  }
+  // concession stand with striped awning — it is not a real turkey trot without hot chocolate
+  const stand = new THREE.Group();
+  const standBody = new THREE.Mesh(new THREE.BoxGeometry(3.4, 2.2, 1.8), mat(0x8a6a4a));
+  standBody.position.y = 1.1;
+  stand.add(standBody);
+  const awnC = document.createElement('canvas');
+  awnC.width = 256; awnC.height = 64;
+  const aw = awnC.getContext('2d');
+  for (let si = 0; si < 8; si++) {
+    aw.fillStyle = si % 2 ? '#c03838' : '#f0ead8';
+    aw.fillRect(si * 32, 0, 32, 64);
+  }
+  const awnT = new THREE.CanvasTexture(awnC);
+  awnT.colorSpace = THREE.SRGBColorSpace;
+  const awning2 = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.06, 1.1), new THREE.MeshStandardMaterial({ map: awnT, roughness: 0.85 }));
+  awning2.position.set(0, 2.35, 1.2);
+  awning2.rotation.x = 0.25;
+  stand.add(awning2);
+  const standSignC = document.createElement('canvas');
+  standSignC.width = 256; standSignC.height = 64;
+  const ss2 = standSignC.getContext('2d');
+  ss2.fillStyle = '#3a2a1a';
+  ss2.fillRect(0, 0, 256, 64);
+  ss2.fillStyle = '#ffd663';
+  ss2.font = 'bold 30px Georgia';
+  ss2.textAlign = 'center';
+  ss2.fillText('HOT COCOA · CIDER', 128, 42);
+  const ssT = new THREE.CanvasTexture(standSignC);
+  ssT.colorSpace = THREE.SRGBColorSpace;
+  const standSign = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.6), new THREE.MeshBasicMaterial({ map: ssT }));
+  standSign.position.set(0, 1.75, 0.95);
+  stand.add(standSign);
+  stand.position.set(17, 0, -18);
+  stand.rotation.y = -0.5;
+  scene.add(stand);
+
   // bleachers along one straightaway
   for (let r = 0; r < 4; r++) {
     const row = new THREE.Mesh(new THREE.BoxGeometry(16, 0.3, 0.9), mat(0x8a9098));

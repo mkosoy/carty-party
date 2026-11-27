@@ -267,7 +267,7 @@ export async function echostageScene(game) {
 
   // overlay UI
   const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;pointer-events:none;font-family:Arial,sans-serif';
+  overlay.style.cssText = 'position:fixed;left:0;right:0;bottom:188px;z-index:40;display:none;pointer-events:none;font-family:Arial,sans-serif';
   overlay.innerHTML = `
     <div style="display:flex;justify-content:center;gap:10px;padding:12px;flex-wrap:wrap">
       ${DRINKS.map((d, i) => `<button data-drink="${i}" style="pointer-events:auto;font-size:30px;padding:12px 18px;border-radius:12px;border:2px solid rgba(255,255,255,.25);background:rgba(10,10,20,.8);cursor:pointer;touch-action:manipulation;min-width:74px;color:#fff">${d.emoji}<div style="font-size:11px;opacity:.7;margin-top:2px">${d.key}</div></button>`).join('')}
@@ -275,7 +275,7 @@ export async function echostageScene(game) {
   overlay.classList.add('scene-dom-extra');
   document.body.appendChild(overlay);
   const hud = document.createElement('div');
-  hud.style.cssText = 'position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:40;display:none;color:#fff;font:bold 17px Arial;text-shadow:0 2px 6px #000;text-align:center';
+  hud.style.cssText = 'position:fixed;top:148px;left:50%;transform:translateX(-50%);z-index:40;display:none;color:#fff;font:bold 17px Arial;text-shadow:0 2px 6px #000;text-align:center';
   hud.classList.add('scene-dom-extra');
   document.body.appendChild(hud);
 

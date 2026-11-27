@@ -16,7 +16,7 @@ const PLACES = [
   { id: 'dentist',  name: "Dr. Fritz's Office",          lng: -77.12, lat: 39.11, emoji: '🦷', sub: 'every tooth, sparkling' },
   { id: 'hopkins',  name: 'Johns Hopkins — Baltimore',   lng: -76.62, lat: 39.33, emoji: '🧪', sub: "stacy's environmental science lab" },
   { id: 'museum',   name: 'Air & Space — the Mall',      lng: -77.02, lat: 38.888, emoji: '🚀', sub: "mark's cathedral of flight" },
-  { id: 'miami',    name: 'E11EVEN Miami ✈',             lng: -76.55, lat: 38.86, emoji: '🌴', sub: 'the reward — very much not local' },
+  { id: 'miami',    name: 'E11EVEN Miami',             lng: -76.55, lat: 38.86, emoji: '🌴', sub: 'the reward — very much not local' },
 ];
 const CAST = [
   { id: 'christian', name: 'Christian' },

@@ -464,6 +464,17 @@ export async function houseScene(game) {
     st.position.set(-6.2 + si * 0.4, 1.6, 5.82);
     ground.add(st);
   }
+  // designed lighting: warm pools under each fixture + cool moonlight spill from the window
+  for (const [lx, lz, li] of [[-3, 1.5, 5], [3, -3, 4], [-5, 4, 3.5]]) {
+    const pool = new THREE.PointLight(0xffd9a0, li, 6.5, 1.8);
+    pool.position.set(lx, 2.7, lz);
+    ground.add(pool);
+  }
+  const moonlight = new THREE.DirectionalLight(0x8ab0e0, 0.35);
+  moonlight.position.set(5.5, 3, -8);
+  moonlight.target.position.set(0, 0, 2);
+  ground.add(moonlight);
+  ground.add(moonlight.target);
   // ceiling light fixtures
   for (const [fx, fz, fl] of [[0, 0, ground], [0, 0, upper]]) {
     const fix = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), new THREE.MeshStandardMaterial({ color: 0xfff2cc, emissive: 0xffe9b0, emissiveIntensity: 0.35 }));

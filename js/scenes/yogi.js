@@ -265,6 +265,77 @@ export async function yogiScene(game) {
   grabRing.visible = false;
   beltGroup.add(grabRing);
 
+
+  // interior enrichment: ukiyo-e wave prints, hanging menu boards, floor variation
+  function waveArt(x, y, z, w, h, variant) {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 160;
+    const x2 = c.getContext('2d');
+    x2.fillStyle = '#e8dcc0';
+    x2.fillRect(0, 0, 256, 160);
+    // stylized waves — layered arcs
+    const cols = ['#2a4a7a', '#3a6a9a', '#5a8aba'];
+    for (let row = 0; row < 3; row++) {
+      x2.fillStyle = cols[(row + variant) % 3];
+      x2.beginPath();
+      x2.moveTo(0, 160);
+      for (let wx = 0; wx <= 256; wx += 8) {
+        x2.lineTo(wx, 70 + row * 26 + Math.sin((wx + variant * 40) * 0.05 + row) * 14);
+      }
+      x2.lineTo(256, 160);
+      x2.closePath();
+      x2.fill();
+    }
+    // sun/moon disc
+    x2.fillStyle = variant % 2 ? '#c84838' : '#e8b830';
+    x2.beginPath();
+    x2.arc(200, 40, 20, 0, Math.PI * 2);
+    x2.fill();
+    // foam dots
+    x2.fillStyle = 'rgba(255,255,255,0.7)';
+    for (let i = 0; i < 20; i++) {
+      x2.beginPath();
+      x2.arc(Math.random() * 256, 60 + Math.random() * 60, 1.5, 0, Math.PI * 2);
+      x2.fill();
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: t, roughness: 0.9 }));
+    m.position.set(x, y, z);
+    scene.add(m);
+    // frame
+    const fr = new THREE.Mesh(new THREE.BoxGeometry(w + 0.1, h + 0.1, 0.04), mat(0x2a1a10));
+    fr.position.set(x, y, z - 0.03);
+    scene.add(fr);
+  }
+  waveArt(-6, 3.6, -9.75, 2.6, 1.6, 0);
+  waveArt(-2.5, 3.6, -9.75, 2.2, 1.4, 1);
+  waveArt(5.8, 3.6, -9.75, 2.4, 1.5, 2);
+  // hanging wooden menu boards over the bar
+  const dishes = [['maguro', 6], ['sake', 5], ['toro', 9], ['uni', 8], ['edamame', 4], ['miso', 3]];
+  dishes.forEach((d, i) => {
+    const c = document.createElement('canvas');
+    c.width = 96; c.height = 160;
+    const x2 = c.getContext('2d');
+    x2.fillStyle = '#c8a060';
+    x2.fillRect(0, 0, 96, 160);
+    x2.fillStyle = '#2a1a10';
+    x2.font = 'bold 15px Georgia';
+    x2.textAlign = 'center';
+    x2.fillText(d[0], 48, 70);
+    x2.font = 'bold 18px Georgia';
+    x2.fillText('$' + d[1], 48, 100);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    const bd = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.85), new THREE.MeshStandardMaterial({ map: t, roughness: 0.8, side: THREE.DoubleSide }));
+    bd.position.set(-3.5 + i * 1.4, 3.1, -8.55);
+    bd.rotation.x = 0.06;
+    scene.add(bd);
+    const str = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.9), mat(0x1a1a1a));
+    str.position.set(-3.5 + i * 1.4, 3.95, -8.55);
+    scene.add(str);
+  });
+
   interactions.add({
     pos: new THREE.Vector3(3.6, 0, 0.5), radius: 2.4, label: 'Grab from the conveyor belt',
     action: async () => {

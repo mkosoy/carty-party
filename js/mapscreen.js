@@ -1,6 +1,9 @@
 // world map overlay — a painted winter map of the region, geographically
 // accurate relative positions, pins jump into scenes, character picker.
+  const TW = { '🧥': '1f9e5', '🏠': '1f3e0', '🏃': '1f3c3', '✈️': '2708', '🛍️': '1f6cd', '⛸️': '26f8', '🎧': '1f3a7', '🍣': '1f363', '🦷': '1f9b7', '🧪': '1f9ea', '🚀': '1f680', '🌴': '1f334' };
+  const twimg = (emoji, px) => `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/${TW[emoji] || '2753'}.png" style="width:${px}px;height:${px}px;vertical-align:middle" alt="">`;
 const PLACES = [
+
   // id matches scene key; lng/lat real; emoji pin label
   { id: 'swap',     name: 'The Swap — Baltimore',        lng: -76.61, lat: 39.29, emoji: '🧥', sub: 'swap season, more taste less waste' },
   { id: 'house',    name: "Olivia's — Columbia",         lng: -76.86, lat: 39.20, emoji: '🏠', sub: 'two olivias. somehow.' },
@@ -194,7 +197,7 @@ export function initMapScreen() {
       const pin = document.createElement('div');
       pin.style.cssText = `position:absolute;left:${dx}%;top:${dy}%;transform:translate(-50%,-100%);cursor:pointer;text-align:center;z-index:5;transition:transform .15s`;
       const done = localStorage.getItem('cp-done-' + p.id);
-      pin.innerHTML = `<div style="font-size:24px;filter:drop-shadow(0 2px 4px #000)">${p.emoji}</div><div style="font-size:10px;color:#ffe;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:8px;white-space:nowrap;margin-top:1px">${p.name.split('—')[0]}${done ? ' <span style="color:#6f6">✓</span>' : ''}</div>`;
+      pin.innerHTML = `<div style="filter:drop-shadow(0 2px 4px #000)">${twimg(p.emoji, 26)}</div><div style="font-size:10px;color:#ffe;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:8px;white-space:nowrap;margin-top:1px">${p.name.split('—')[0]}${done ? ' <span style="color:#6f6">✓</span>' : ''}</div>`;
       if (!done) {
         pin.style.animation = 'cpPinPulse 2.2s ease-in-out infinite';
       }
@@ -214,7 +217,7 @@ export function initMapScreen() {
         // travel card — feels like a journey, not a teleport
         const card = document.createElement('div');
         card.style.cssText = 'position:fixed;inset:0;z-index:95;background:#060810;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Georgia,serif;opacity:0;transition:opacity .45s';
-        card.innerHTML = `<div style="font-size:44px;margin-bottom:12px">${p.emoji}</div><div style="color:#d4af69;font-size:22px;letter-spacing:1.5px">${p.name}</div><div style="color:#778;font-style:italic;font-size:14px;margin-top:6px">${p.sub}</div><div style="color:#556;font-size:12px;margin-top:18px;letter-spacing:2px">traveling…</div>`;
+        card.innerHTML = `<div style="margin-bottom:12px">${twimg(p.emoji, 46)}</div><div style="color:#d4af69;font-size:22px;letter-spacing:1.5px">${p.name}</div><div style="color:#778;font-style:italic;font-size:14px;margin-top:6px">${p.sub}</div><div style="color:#556;font-size:12px;margin-top:18px;letter-spacing:2px">traveling…</div>`;
         document.body.appendChild(card);
         requestAnimationFrame(() => card.style.opacity = '1');
         setTimeout(() => {

@@ -838,6 +838,43 @@ export async function airportScene(game) {
     },
   });
 
+  interactions.add({
+    pos: new THREE.Vector3(14, 0, 2),
+    radius: 2.2,
+    label: 'Watch the plane',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'There it is. The metal bird that carried me out of LA sunshine and into a Maryland winter.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-9, 0, 8.5),
+    radius: 2.0,
+    label: 'Overpriced coffee',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Seven dollar coffee. I missed you, east coast. I think.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-16, 0, 3),
+    radius: 2.2,
+    label: 'People-watch',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Everybody at Dulles is either coming home or leaving it. Guess which one I am.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+
   // parked jet visible through the windows at the gate — big tail fin anchor
   const parked = new THREE.Group();
   const pfus = new THREE.Mesh(new THREE.CapsuleGeometry(1.1, 10, 6, 10), mat(0xd8dde4));

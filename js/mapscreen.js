@@ -42,6 +42,9 @@ export function initMapScreen() {
       <div style="color:#889;font-size:12px;margin-top:6px">tap a pin to travel — roads are real: I-270 · I-95 · I-495</div>
     </div>`;
   document.body.appendChild(el);
+  const styleEl = document.createElement('style');
+  styleEl.textContent = '@keyframes cpPinPulse { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(255,220,150,.35)); } 50% { transform: scale(1.12); filter: drop-shadow(0 0 10px rgba(255,220,150,.8)); } }';
+  document.head.appendChild(styleEl);
   el.querySelector('#map-close').addEventListener('click', hide);
 
   // character picker
@@ -138,6 +141,9 @@ export function initMapScreen() {
       pin.style.cssText = `position:absolute;left:${dx}%;top:${dy}%;transform:translate(-50%,-100%);cursor:pointer;text-align:center;z-index:5;transition:transform .15s`;
       const done = localStorage.getItem('cp-done-' + p.id);
       pin.innerHTML = `<div style="font-size:24px;filter:drop-shadow(0 2px 4px #000)">${p.emoji}</div><div style="font-size:10px;color:#ffe;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:8px;white-space:nowrap;margin-top:1px">${p.name.split('—')[0]}${done ? ' <span style="color:#6f6">✓</span>' : ''}</div>`;
+      if (!done) {
+        pin.style.animation = 'cpPinPulse 2.2s ease-in-out infinite';
+      }
       pin.addEventListener('mouseenter', () => pin.style.transform = 'translate(-50%,-100%) scale(1.2)');
       pin.addEventListener('mouseleave', () => pin.style.transform = 'translate(-50%,-100%)');
       pin.title = p.sub;
@@ -157,8 +163,32 @@ export function initMapScreen() {
       pinsEl.appendChild(pin);
     }
   }
+  // gentle snow drifting across the map while it is open
+  let snowRaf = null;
+  function snowLoop() {
+    if (el.style.display === 'none') { snowRaf = null; cv._base = null; return; }
+    const x = cv.getContext('2d');
+    // cache the painted base once per open, blit it every frame, draw snow over
+    if (!cv._base) {
+      draw();
+      cv._base = document.createElement('canvas');
+      cv._base.width = cv.width; cv._base.height = cv.height;
+      cv._base.getContext('2d').drawImage(cv, 0, 0);
+    }
+    if (!cv._snowFlakes) cv._snowFlakes = Array.from({ length: 90 }, () => ({ x: Math.random(), y: Math.random(), s: 0.4 + Math.random() * 1.6, v: 0.0002 + Math.random() * 0.0006 }));
+    x.drawImage(cv._base, 0, 0);
+    for (const f of cv._snowFlakes) {
+      x.fillStyle = 'rgba(255,255,255,0.65)';
+      x.fillRect(f.x * cv.width, f.y * cv.height, f.s * 2, f.s * 2);
+      f.y += f.v * 16;
+      f.x += Math.sin(f.y * 30) * 0.0004;
+      if (f.y > 1) { f.y = -0.01; f.x = Math.random(); }
+    }
+    snowRaf = requestAnimationFrame(snowLoop);
+  }
   function show() {
     el.style.display = 'block';
+    if (!snowRaf) snowRaf = requestAnimationFrame(snowLoop);
     draw();
   }
   function hide() { el.style.display = 'none'; }

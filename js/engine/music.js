@@ -228,7 +228,8 @@ export class Music {
       const variant = Math.floor(step / 16) % 3;
       const melSeq = variant === 1 && pat.melody2 ? pat.melody2 : variant === 2 && pat.melody3 ? pat.melody3 : pat.melody;
       const mel = melSeq[step % 16];
-      if (mel >= 0) {
+      const breakBar = (bar % 8 === 7);
+      if (mel >= 0 && !breakBar) {
         // octave lift on the back half of each 8-bar phrase — keeps long loops fresh
         const lift = (bar % 8 >= 4) ? 12 : 0;
         this.bell(N(mel + lift), t, pat.bellVol);

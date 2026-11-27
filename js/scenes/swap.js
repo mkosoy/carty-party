@@ -755,6 +755,28 @@ export async function swapScene(game) {
   scene.add(baltGlow1);
 
   interactions.add({
+    pos: new THREE.Vector3(9.5, 0, -9), radius: 2.0, label: 'Natty Boh poster',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'The mustache man. Baltimore in a single frame.' },
+        { speaker: 'Stacy', text: 'It is literally the law. Every rowhouse party has one. I think the city inspects.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-8, 0, 11), radius: 2.0, label: 'The marble steps',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'White marble steps. People really scrub these by hand?' },
+        { speaker: 'Stacy', text: 'For a hundred years, yes. Baltimore has opinions about its steps. Do not chip them.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(-14.5, 0, 9.5), radius: 2.2, label: 'Run Club flyer',
     action: async () => {
       player.frozen = true;

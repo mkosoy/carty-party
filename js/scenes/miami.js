@@ -71,6 +71,13 @@ export async function miamiScene(game) {
   sign.position.set(0, 6.2, -10.6);
   scene.add(sign);
 
+  // volumetric light shafts: translucent additive cones catching the club haze
+  for (const [sx, sz, col] of [[-4, -6, 0xff50c0], [4, -6, 0x40c0ff], [0, -10, 0xffe080], [-7, -2, 0x9060ff], [7, -2, 0x50ffc0]]) {
+    const shaftMat = new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.07, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+    const shaft = new THREE.Mesh(new THREE.ConeGeometry(1.9, 9, 12, 1, true), shaftMat);
+    shaft.position.set(sx, 5.5, sz);
+    scene.add(shaft);
+  }
   // laser beams: thin emissive planes sweeping
   const lasers = [];
   const laserColors = [0x20ff80, 0xff2060, 0x20c0ff, 0xffe020];

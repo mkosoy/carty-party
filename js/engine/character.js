@@ -86,6 +86,26 @@ export function makePerson({
       g.add(panel);
     }
   }
+  // shirt construction details: center placket with buttons, chest pocket, shoulder seams
+  const placket = new THREE.Mesh(new THREE.BoxGeometry(0.028 * u, 0.5 * u, 0.012 * u), mat(new THREE.Color(top).multiplyScalar(0.88).getHex()));
+  placket.position.set(0, 1.13 * u, 0.121 * u);
+  g.add(placket);
+  for (let bi = 0; bi < 3; bi++) {
+    const btn = new THREE.Mesh(new THREE.SphereGeometry(0.011 * u, 6, 6), smoothMat(0xe8e4da, 0.4));
+    btn.position.set(0, (1.3 - bi * 0.14) * u, 0.13 * u);
+    g.add(btn);
+  }
+  const pocket = new THREE.Mesh(new THREE.BoxGeometry(0.075 * u, 0.085 * u, 0.012 * u), mat(new THREE.Color(top).multiplyScalar(0.85).getHex()));
+  pocket.position.set(-0.075 * u, 1.26 * u, 0.117 * u);
+  g.add(pocket);
+  for (const side of [-1, 1]) {
+    const seam = new THREE.Mesh(new THREE.CylinderGeometry(0.006 * u, 0.006 * u, 0.16 * u, 4), mat(new THREE.Color(top).multiplyScalar(0.8).getHex()));
+    seam.position.set(side * 0.14 * u, 1.47 * u, 0.03 * u);
+    seam.rotation.z = side * 0.9;
+    seam.rotation.x = 0.3;
+    g.add(seam);
+  }
+
   // hips + belt
   const hips = new THREE.Mesh(new THREE.SphereGeometry(0.155 * u, 24, 18), mat(bottom));
   hips.position.y = 0.84 * u;

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective, choice , Pickups , npcFacePlayer } from '../engine/core.js';
+import { phoneText, FollowCam, PlayerController, Interactions, showObjective, choice , Pickups , npcFacePlayer } from '../engine/core.js';
 import { sfxChime } from '../engine/sfx.js';
 import { carpet, paintedWall } from '../engine/textures.js';
 
@@ -632,6 +632,8 @@ export async function dentistScene(game) {
     },
   });
 
+  setTimeout(() => phoneText('Stacy ❤️', 'did they do the thing where they ask you questions while their hands are in your mouth'), 9000);
+  setTimeout(() => phoneText('Mark', 'teeth are bones you can see. think about that. anyway good luck with the scraping sounds'), 18000);
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: olivia, self: this };

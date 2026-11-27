@@ -383,6 +383,8 @@ export async function yogiScene(game) {
   window.__sceneHint = 'WASD — move · E — interact · grab sushi off the conveyor belt';
   showObjective('Yo Yogi Sushi — you made it before 9. The belt is moving.', 6000);
 
+  setTimeout(() => phoneText('Olivia', 'they close at 9. it is 8:40. order everything. trust me.'), 8000);
+  setTimeout(() => phoneText('Jim', 'the unagi. you want the unagi. tell them jim sent you, it means nothing but say it anyway'), 17000);
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };

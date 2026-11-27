@@ -422,6 +422,7 @@ export async function museumScene(game) {
   window.__sceneHint = 'WASD — move · E — interact · explore the hall';
   showObjective('Air & Space — wander the great hall. Mark knows every bolt here.', 6000);
 
+  setTimeout(() => phoneText('Olivia', 'tell mark if he cries at the moon rock again I am telling everyone at the swap'), 11000);
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };

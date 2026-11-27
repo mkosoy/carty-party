@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { nightSky, skyDome } from '../engine/textures.js';
 import { makePerson } from '../engine/character.js';
-import { showObjective, choice } from '../engine/core.js';
+import { phoneText, showObjective, choice } from '../engine/core.js';
 
 // Kylie's Run Club — Wootton High School track. Marathon prep: hurdles,
 // racing three other runners, two laps, best lap time wins. SPACE / tap
@@ -391,6 +391,7 @@ export async function runclubScene(game) {
   window.addEventListener('beforeunload', cleanupH);
 
   let t = 0;
+  setTimeout(() => phoneText('Kylie', 'we are doing a FUN pace today. fun means I decide what fun means. keep up'), 6000);
   return {
     update(dt) {
       window.__sceneHooks = { christian: kylie, self: this };

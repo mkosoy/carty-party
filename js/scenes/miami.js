@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
-import { FollowCam, PlayerController, Interactions, showObjective , Pickups } from '../engine/core.js';
+import { phoneText, FollowCam, PlayerController, Interactions, showObjective , Pickups } from '../engine/core.js';
 
 // E11EVEN Miami — the reward. Olivia dances in the neon heart of the club:
 // laser grids, LED walls, smoke, a crowd moving with the beat, confetti
@@ -496,6 +496,8 @@ interactions.add({
   window.addEventListener('keydown', dmKeys);
 
   window.__sceneHint = 'WASD — dance floor · 1/2/3/4 — dance moves · drag — camera';
+  setTimeout(() => phoneText('Kylie', 'YOU ARE IN MIAMI?? it is christmas eve?? the swap is IN BALTIMORE??'), 8000);
+  setTimeout(() => phoneText('Stacy ❤️', 'come home. the flight is two hours. you can still make the monument. come home'), 19000);
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: olivia, self: this };

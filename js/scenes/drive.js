@@ -900,7 +900,7 @@ export async function driveScene(game) {
         if (input.consumeInteract()) {
           stationIdx = (stationIdx + 1) % stations.length;
           const st = stations[stationIdx];
-          showObjective(`📻 ${st.freq} — ${st.name}`, 3200);
+          showObjective(`♪ ${st.freq} — ${st.name}`, 3200);
           try { startRadio(stationIdx); } catch {}
         }
         if (cruiseTimer > 4.5 && !this._uberStarted) {
@@ -926,7 +926,7 @@ export async function driveScene(game) {
       if (phase === 'run' && !finished && input.consumeInteract()) {
         stationIdx = (stationIdx + 1) % stations.length;
         const st = stations[stationIdx];
-        showObjective(`📻 ${st.freq} — ${st.name}`, 3200);
+        showObjective(`♪ ${st.freq} — ${st.name}`, 3200);
         try { startRadio(stationIdx); } catch {}
       }
       if (phase === 'run' && !finished) {

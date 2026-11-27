@@ -576,7 +576,7 @@ export async function driveScene(game) {
 
         // arrival: cover enough distance before timer ends
         this._distance = (this._distance || 0) + dz;
-        if (this._distance > (window.__runDistance || 1400) && !finished) {
+        if (this._distance > (window.__runDistance || 1050) && !finished) {
           finished = true;
           (async () => {
             document.getElementById('objective-banner').classList.add('hidden');

@@ -207,6 +207,7 @@ export async function shoppingScene(game) {
     hud.innerHTML = `⏱ ${Math.max(0, Math.ceil(st.timeLeft))}s — list: ${remaining || 'done!'} `;
   }
   function finish(won) {
+    if (won) try { localStorage.setItem('cp-done-shopping', '1'); } catch {}
     if (st.done) return;
     st.done = true;
     st.active = false;

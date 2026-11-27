@@ -136,7 +136,8 @@ export function initMapScreen() {
       const [dx, dy] = xy(p.lng, p.lat, 100, 100);
       const pin = document.createElement('div');
       pin.style.cssText = `position:absolute;left:${dx}%;top:${dy}%;transform:translate(-50%,-100%);cursor:pointer;text-align:center;z-index:5;transition:transform .15s`;
-      pin.innerHTML = `<div style="font-size:24px;filter:drop-shadow(0 2px 4px #000)">${p.emoji}</div><div style="font-size:10px;color:#ffe;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:8px;white-space:nowrap;margin-top:1px">${p.name.split('—')[0]}</div>`;
+      const done = localStorage.getItem('cp-done-' + p.id);
+      pin.innerHTML = `<div style="font-size:24px;filter:drop-shadow(0 2px 4px #000)">${p.emoji}</div><div style="font-size:10px;color:#ffe;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:8px;white-space:nowrap;margin-top:1px">${p.name.split('—')[0]}${done ? ' <span style="color:#6f6">✓</span>' : ''}</div>`;
       pin.addEventListener('mouseenter', () => pin.style.transform = 'translate(-50%,-100%) scale(1.2)');
       pin.addEventListener('mouseleave', () => pin.style.transform = 'translate(-50%,-100%)');
       pin.title = p.sub;

@@ -357,6 +357,7 @@ export async function echostageScene(game) {
         if (state.timeLeft <= 0) {
           state.active = false;
           state.shiftDone = true;
+          try { if (state.served >= 5) localStorage.setItem('cp-done-echostage', '1'); } catch {}
           overlay.style.display = 'none';
           hud.style.display = 'none';
           for (const c of state.customers) { scene.remove(c.p.group); scene.remove(c.bub); }

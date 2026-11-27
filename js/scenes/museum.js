@@ -236,6 +236,66 @@ export async function museumScene(game) {
   wallBanner(-17.7, 2, Math.PI / 2, ['SPACE', 'RACE'], '#4a2838');
   wallBanner(17.7, -6, -Math.PI / 2, ['APOLLO', 'TO THE', 'MOON'], '#2a3c2c');
   wallBanner(17.7, 2, -Math.PI / 2, ['WRIGHT', 'BROTHERS', '1903'], '#3c3428');
+  // ===== REAL SMITHSONIAN AIR & SPACE MATCH =====
+  // Spirit of St. Louis — silver monoplane hanging center hall, the signature exhibit
+  const spirit = new THREE.Group();
+  const fus = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.18, 2.6, 10), mat(0xc8ccd4));
+  fus.rotation.z = Math.PI / 2;
+  spirit.add(fus);
+  const wing = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.06, 4.6), mat(0xb8bcc8));
+  wing.position.set(0.3, 0.25, 0);
+  spirit.add(wing);
+  const tail = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.5, 0.9), mat(0xb8bcc8));
+  tail.position.set(-1.3, 0.15, 0);
+  spirit.add(tail);
+  const prop = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1.1, 0.12), mat(0x5a4a2a));
+  prop.position.set(1.35, 0, 0);
+  spirit.add(prop);
+  // N-X-211 on the wing
+  spirit.position.set(3.5, 5.2, 1.5);
+  spirit.rotation.y = 0.6;
+  scene.add(spirit);
+  for (const wx of [[2.2, 1.5], [4.8, 1.5]]) {
+    const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 3.4), mat(0x2a2a2a));
+    wire.position.set(wx[0], 7.5, wx[1]);
+    scene.add(wire);
+  }
+  // Wright Flyer — wood and muslin biplane on a low platform, the other marquee piece
+  const flyer = new THREE.Group();
+  const fmat = mat(0xd8cdb0);
+  for (const wy of [0.35, 0.85]) {
+    const fw = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.05, 0.9), fmat);
+    fw.position.y = wy;
+    flyer.add(fw);
+  }
+  for (const fx of [-1.1, -0.4, 0.4, 1.1]) {
+    const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.5, 5), mat(0x6a4a2a));
+    strut.position.set(fx, 0.6, 0);
+    flyer.add(strut);
+  }
+  const skid1 = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.06, 0.08), mat(0x6a4a2a));
+  skid1.position.set(0, 0.1, 0.3);
+  flyer.add(skid1);
+  const skid2 = skid1.clone();
+  skid2.position.z = -0.3;
+  flyer.add(skid2);
+  flyer.position.set(-5.5, 0.15, 6.5);
+  flyer.rotation.y = -0.5;
+  scene.add(flyer);
+  bounds.push({ minX: -7.2, maxX: -3.8, minZ: 5.4, maxZ: 7.6 });
+  // the touchable moon rock — small dark rock on a pedestal under glass
+  const moonPed = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.34, 1.1, 10), mat(0x3a3f4a));
+  moonPed.position.set(5.5, 0.55, 6.8);
+  scene.add(moonPed);
+  const moonRock = new THREE.Mesh(new THREE.DodecahedronGeometry(0.14, 0), mat(0x4a4438));
+  moonRock.position.set(5.5, 1.2, 6.8);
+  moonRock.rotation.set(0.4, 0.8, 0.2);
+  scene.add(moonRock);
+  const moonCase = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.45, 0.5), new THREE.MeshStandardMaterial({ color: 0xc8d8e8, transparent: true, opacity: 0.18, roughness: 0.05 }));
+  moonCase.position.set(5.5, 1.25, 6.8);
+  scene.add(moonCase);
+  bounds.push({ minX: 5.1, maxX: 5.9, minZ: 6.4, maxZ: 7.2 });
+
   // hanging satellite mid-hall
   const sat = new THREE.Group();
   const satBody = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.9, 10), mat(0xb8bcc8));
@@ -275,6 +335,21 @@ export async function museumScene(game) {
   }
   pedestal(-4, 4.5, 0.4); pedestal(4, 4.5, -0.4); pedestal(0, -4.5, 0);
 
+  interactions.add({ pos: new THREE.Vector3(-5.5, 0, 6.5), radius: 2.2, label: 'The Wright Flyer', action: say([
+    { speaker: 'Mark', text: 'Kitty Hawk, 1903. Twelve seconds of flight and the entire twentieth century happened because of it.' },
+    { speaker: 'Christian', text: 'It looks like it is made of paper and hope.' },
+    { speaker: 'Mark', text: 'It basically is. Muslin, spruce, and two brothers who refused to lose.' },
+  ]) });
+  interactions.add({ pos: new THREE.Vector3(5.5, 0, 6.8), radius: 1.8, label: 'Touch the moon rock', action: say([
+    { speaker: 'Mark', text: 'That is an actual piece of the moon. Apollo brought it back. People have been touching it for fifty years.' },
+    { speaker: 'Christian', text: 'I am touching the moon. On Christmas Eve. In the same week I hung clothes at a swap.' },
+    { speaker: 'Mark', text: 'Range. You have range.' },
+  ]) });
+  interactions.add({ pos: new THREE.Vector3(3.5, 0, 1.5), radius: 2.4, label: 'Spirit of St. Louis', action: say([
+    { speaker: 'Mark', text: 'Lindbergh flew that — THAT exact plane — solo across the Atlantic. Thirty-three hours. No co-pilot, no bathroom, no backup plan.' },
+    { speaker: 'Christian', text: 'No bathroom?' },
+    { speaker: 'Mark', text: 'THAT is what you took from this story.' },
+  ]) });
   interactions.add({ pos: new THREE.Vector3(6, 0, -5), radius: 3.4, label: 'The rocket', action: say([
     { speaker: 'Mark', text: 'Every gram on a rocket fights for its life. Engineering as a contact sport. Beautiful.' },
     { speaker: 'Christian', text: 'You get this look on your face every time. Every single time.' },

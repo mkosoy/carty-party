@@ -28,7 +28,7 @@ export class FollowCam {
       inp.camDX = 0; inp.camDY = 0;
       // auto-align: if the player is walking and hasn't dragged for 2s, ease behind them
       const nowT = performance.now() / 1000;
-      const moving = inp.axes && (Math.abs(inp.axes().x) > 0.1 || Math.abs(inp.axes().z) > 0.1);
+      const moving = inp.axes && (Math.abs(inp.axes().x) > 0.1 || Math.abs(inp.axes().z) > 0.1) || window.__playerFrozen;
       if (moving && (!this.lastDragT || nowT - this.lastDragT > 0.9) && window.__playerFacing !== undefined) {
         let targetYaw = window.__playerFacing;
         let d = targetYaw - this.yaw;
@@ -288,6 +288,7 @@ export class PlayerController {
   }
   update(dt) {
     this.updateVisibility();
+    window.__playerFrozen = this.frozen;
     if (this.input.consumeJump && this.input.consumeJump()) this.jump();
     const gg = this.person.group;
     if (!this.grounded || this.vy > 0) {
@@ -471,7 +472,25 @@ export class Dialogue {
       };
       show();
       this.input.clear();
+      let walkAwayT = 0;
+      let lastT = performance.now() / 1000;
       const tick = () => {
+        // walk-away: pushing the stick hard for a beat fast-forwards the
+        // conversation to completion — dialogue progress still resolves so
+        // story flags always set, but you are never trapped in a chat
+        const nowT = performance.now() / 1000;
+        const dtT = Math.min(0.1, nowT - lastT);
+        lastT = nowT;
+        const jp = Math.hypot(this.input.joyX || 0, this.input.joyY || 0);
+        const kb = this.input.keys.has('KeyW') || this.input.keys.has('KeyA') || this.input.keys.has('KeyS') || this.input.keys.has('KeyD');
+        if (jp > 0.62 || kb) walkAwayT += dtT; else walkAwayT = 0;
+        if (walkAwayT > 0.38) {
+          this.box.classList.add('hidden');
+          this.active = false;
+          if (this.currentAudio) { this.currentAudio.pause(); }
+          resolve();
+          return;
+        }
         if (this.input.consumeEscape && this.input.consumeEscape()) {
           // ESC = skip the whole conversation — fast-forward to the last line
           i = lines.length - 1;

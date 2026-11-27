@@ -263,7 +263,8 @@ export class PlayerController {
     let tvx = 0, tvz = 0;
     if (moving) {
       const targetAngle = Math.atan2(x, z);
-      const sprint = (this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight')) ? 1.55 : 1;
+      const joyMag = Math.hypot(this.input.joyX || 0, this.input.joyY || 0);
+      const sprint = (this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight') || joyMag > 0.94) ? 1.55 : 1;
       tvx = Math.sin(targetAngle) * this.speed * len * sprint;
       tvz = Math.cos(targetAngle) * this.speed * len * sprint;
       // face movement direction with shortest-arc easing

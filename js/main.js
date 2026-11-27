@@ -108,6 +108,24 @@ const game = {
     window.__sceneName = factory.name;
     this.sceneApi = await factory(this);
     rebuildComposer();
+    // chapter title card: scene name fades in/out on entry
+    const titles = { airport: 'chapter 1 — dulles', drive: 'chapter 2 — the yo yogi run', house: "chapter 3 — olivia's", swap: 'chapter 4 — the baltimore swap', dc: 'chapter 5 — dc at night', dentist: "dr. fritz's office", miami: 'e11even miami', runclub: "kylie's run club" };
+    const sName = factory.name ? factory.name.replace('Scene', '') : '';
+    const titleText = titles[sName];
+    if (titleText && !window.__menuSkipCard) {
+      let card = document.getElementById('chapter-card');
+      if (!card) {
+        card = document.createElement('div');
+        card.id = 'chapter-card';
+        card.style.cssText = 'position:fixed;top:18%;left:0;right:0;text-align:center;z-index:28;pointer-events:none;font-family:Georgia;color:#e8b64c;font-size:clamp(20px,4vw,32px);font-style:italic;text-shadow:0 2px 14px rgba(0,0,0,.9);opacity:0;transition:opacity .9s';
+        document.body.appendChild(card);
+      }
+      card.textContent = titleText;
+      card.style.opacity = '0';
+      setTimeout(() => { card.style.opacity = '1'; }, 350);
+      clearTimeout(window.__cardT);
+      window.__cardT = setTimeout(() => { card.style.opacity = '0'; }, 3400);
+    }
     // controls hint overlay: visible at scene start, fades away
     let hint = document.getElementById('controls-hint');
     if (!hint) {

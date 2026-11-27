@@ -251,7 +251,7 @@ export async function dentistScene(game) {
       { speaker: 'Dr. Fritz', text: '…because if you\'re too slow, we bring in the OTHER Olivia. And nobody wants that confusion.' },
     ]);
     player.frozen = false;
-    showObjective('Sit in the dental chair (E) and clean every tooth!', 5000);
+    showObjective('Sit in the dental chair (E) and clean every tooth! Walk away anytime to leave.', 5000);
   }, 600);
 
   // ---------------- the teeth minigame (DOM canvas overlay) ----------------

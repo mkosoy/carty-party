@@ -738,7 +738,7 @@ export async function swapScene(game) {
       }
       state.met = true;
       guide.setTarget(6, 8);
-      showObjective('Hang the clothes on the marked rack — 4 pieces.', 5000);
+      showObjective('Hang the clothes on the marked rack — 4 pieces. Walk away anytime to bail.', 5000);
       hangInt.hidden = false;
       player.frozen = false;
     },

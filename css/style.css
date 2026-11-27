@@ -166,3 +166,20 @@ body.touch #touch-controls { display: block; }
   #start-button { font-size: 20px; padding: 12px 30px; }
   .mg-title { margin: 8px 0 4px; font-size: 12px; }
 }
+
+/* horizontal snap-scroll card rows — one row per section, no vertical sprawl */
+@media (max-width: 720px) {
+  #levels-row, #minigames-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px 8px 10px;
+    width: 100%;
+    scrollbar-width: none;
+  }
+  #levels-row::-webkit-scrollbar, #minigames-row::-webkit-scrollbar { display: none; }
+  .mg-btn { flex: 0 0 auto; scroll-snap-align: center; min-width: 92px; }
+  #levels-section, #minigames-section { width: 100%; }
+}

@@ -144,6 +144,22 @@ export function npcFace({ skin = '#e8c098', eyeColor = '#3a2a1a', mouthCurve = 0
     x.beginPath(); x.arc(ex, 109, 4.2, 0, Math.PI * 2); x.fill();
     x.fillStyle = 'rgba(255,255,255,0.8)';
     x.beginPath(); x.arc(ex - 2.5, 106, 2.2, 0, Math.PI * 2); x.fill();
+    // upper eyelid line + lashes — the detail that makes eyes read as eyes
+    x.strokeStyle = 'rgba(30,20,12,0.55)';
+    x.lineWidth = 2.2;
+    x.beginPath();
+    x.moveTo(ex - 17, 104);
+    x.quadraticCurveTo(ex, 98, ex + 17, 104);
+    x.stroke();
+    if (female) {
+      x.lineWidth = 1.6;
+      for (let li = 0; li < 4; li++) {
+        x.beginPath();
+        x.moveTo(ex + 8 + li * 3.5, 100 - li * 0.5);
+        x.lineTo(ex + 10 + li * 3.8, 96 - li * 0.8);
+        x.stroke();
+      }
+    }
     // brows
     x.strokeStyle = 'rgba(40,25,15,0.75)';
     x.lineWidth = female ? 3 : 5;
@@ -152,18 +168,39 @@ export function npcFace({ skin = '#e8c098', eyeColor = '#3a2a1a', mouthCurve = 0
     x.quadraticCurveTo(ex, female ? 82 : 86, ex + 14, 90);
     x.stroke();
   }
-  // nose shadow
-  x.fillStyle = 'rgba(0,0,0,0.10)';
-  x.beginPath(); x.ellipse(128, 138, 7, 12, 0, 0, Math.PI * 2); x.fill();
-  x.fillStyle = 'rgba(255,255,255,0.15)';
-  x.beginPath(); x.ellipse(128, 130, 4, 8, 0, 0, Math.PI * 2); x.fill();
-  // mouth
-  x.strokeStyle = female ? 'rgba(150,60,70,0.9)' : 'rgba(120,60,50,0.8)';
-  x.lineWidth = female ? 6 : 4;
+  // nose: bridge highlight, side shading, nostrils — reads as a nose at any distance
+  x.fillStyle = 'rgba(0,0,0,0.07)';
+  x.beginPath(); x.ellipse(120, 132, 4, 14, -0.15, 0, Math.PI * 2); x.fill();
+  x.beginPath(); x.ellipse(136, 132, 4, 14, 0.15, 0, Math.PI * 2); x.fill();
+  x.fillStyle = 'rgba(255,255,255,0.22)';
+  x.beginPath(); x.ellipse(128, 128, 3.5, 11, 0, 0, Math.PI * 2); x.fill();
+  x.fillStyle = 'rgba(0,0,0,0.16)';
+  x.beginPath(); x.ellipse(123, 143, 2.6, 1.8, 0.3, 0, Math.PI * 2); x.fill();
+  x.beginPath(); x.ellipse(133, 143, 2.6, 1.8, -0.3, 0, Math.PI * 2); x.fill();
+  x.fillStyle = 'rgba(0,0,0,0.08)';
+  x.beginPath(); x.ellipse(128, 147, 8, 3, 0, 0, Math.PI * 2); x.fill();
+  // mouth: filled lips with a center shadow line and corner creases
+  const lip = female ? 'rgba(170,70,85,0.85)' : 'rgba(150,85,70,0.55)';
+  x.fillStyle = lip;
   x.beginPath();
-  x.moveTo(108, 168);
-  x.quadraticCurveTo(128, 168 + 14 * mouthCurve, 148, 168);
+  x.moveTo(107, 168);
+  x.quadraticCurveTo(128, 164 + 10 * mouthCurve, 149, 168);
+  x.quadraticCurveTo(128, 178 + 10 * mouthCurve, 107, 168);
+  x.fill();
+  x.strokeStyle = 'rgba(60,20,20,0.55)';
+  x.lineWidth = 2.2;
+  x.beginPath();
+  x.moveTo(107, 168);
+  x.quadraticCurveTo(128, 171 + 9 * mouthCurve, 149, 168);
   x.stroke();
+  // smile corner creases
+  x.strokeStyle = 'rgba(0,0,0,0.10)';
+  x.lineWidth = 2;
+  x.beginPath(); x.moveTo(103, 164); x.quadraticCurveTo(106, 166, 107, 168); x.stroke();
+  x.beginPath(); x.moveTo(153, 164); x.quadraticCurveTo(150, 166, 149, 168); x.stroke();
+  // chin + jaw soft shading
+  x.fillStyle = 'rgba(0,0,0,0.06)';
+  x.beginPath(); x.ellipse(128, 190, 16, 8, 0, 0, Math.PI * 2); x.fill();
   // cheek blush for female
   if (female) {
     x.fillStyle = 'rgba(220,110,110,0.12)';

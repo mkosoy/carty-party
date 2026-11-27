@@ -509,8 +509,8 @@ export async function airportScene(game) {
   kCanv.width = 256; kCanv.height = 64;
   const kc = kCanv.getContext('2d');
   kc.fillStyle = '#241408'; kc.fillRect(0, 0, 256, 64);
-  kc.font = 'bold 34px Georgia'; kc.fillStyle = '#ffd98a'; kc.textAlign = 'center';
-  kc.fillText('☕ POTOMAC ROAST', 128, 44);
+  kc.font = 'bold 20px Georgia'; kc.fillStyle = '#ffd98a'; kc.textAlign = 'center';
+  kc.fillText('POTOMAC ROAST', 128, 42);
   const kTex = new THREE.CanvasTexture(kCanv);
   kTex.colorSpace = THREE.SRGBColorSpace;
   const ksign = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.6), new THREE.MeshBasicMaterial({ map: kTex }));
@@ -711,7 +711,7 @@ export async function airportScene(game) {
 
   // concourse carpet runners — dark blue walking lanes like real terminals
   for (const rz of [-4, 4]) {
-    const runner = new THREE.Mesh(new THREE.BoxGeometry(54, 0.03, 2.6), new THREE.MeshStandardMaterial({ color: 0x2a3a5c, roughness: 0.95 }));
+    const runner = new THREE.Mesh(new THREE.BoxGeometry(54, 0.03, 1.5), new THREE.MeshStandardMaterial({ color: 0x2a3a5c, roughness: 0.95 }));
     runner.position.set(0, 0.02, rz);
     runner.receiveShadow = true;
     scene.add(runner);

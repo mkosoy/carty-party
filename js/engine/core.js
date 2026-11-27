@@ -29,12 +29,12 @@ export class FollowCam {
       // auto-align: if the player is walking and hasn't dragged for 2s, ease behind them
       const nowT = performance.now() / 1000;
       const moving = inp.axes && (Math.abs(inp.axes().x) > 0.1 || Math.abs(inp.axes().z) > 0.1);
-      if (moving && (!this.lastDragT || nowT - this.lastDragT > 2.0) && window.__playerFacing !== undefined) {
+      if (moving && (!this.lastDragT || nowT - this.lastDragT > 0.9) && window.__playerFacing !== undefined) {
         let targetYaw = window.__playerFacing;
         let d = targetYaw - this.yaw;
         while (d > Math.PI) d -= Math.PI * 2;
         while (d < -Math.PI) d += Math.PI * 2;
-        this.yaw += d * Math.min(1, dt * 1.6);
+        this.yaw += d * Math.min(1, dt * 3.2);
       }
     }
     window.__camYaw = this.yaw;

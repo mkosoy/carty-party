@@ -35,7 +35,7 @@ export async function dcScene(game) {
   monu.rotation.y = Math.PI / 4;
   scene.add(monu);
   // monument spotlights
-  const monuGlow = new THREE.PointLight(0xfff0c8, 40, 40);
+  const monuGlow = new THREE.PointLight(0xfff0c8, 13, 34);
   monuGlow.position.set(-24, 4, -18);
   scene.add(monuGlow);
 

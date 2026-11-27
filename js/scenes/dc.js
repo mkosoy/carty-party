@@ -324,7 +324,9 @@ export async function dcScene(game) {
       // credits overlay
       const fin = document.createElement('div');
       fin.style.cssText = 'position:fixed;inset:0;background:rgba(8,10,20,.9);z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f5ead1;font-family:Georgia;text-align:center;gap:10px;padding:20px';
-      fin.innerHTML = '<div style="font-size:44px;color:#e8b64c">Carty Party</div><div style="font-size:22px;font-style:italic">A MoCo Holiday</div><div style="margin-top:24px;font-size:15px;opacity:.8;line-height:1.9">starring Christian, Stacy, Olivia, Olivia, Tre, Kylie ❤️, Mark & Jim<br>Yo Yogi’s closes at 9. The swap is forever.<br><br>made with love, in Montgomery County</div>';
+      const inv2 = inventory();
+      const collects = `<div style="margin-top:14px;font-size:13.5px;opacity:.75">collected on the way: 📷 ${inv2.cameras} vintage cameras · 🎵 ${inv2.records} vinyl records</div>`;
+      fin.innerHTML = '<div style="font-size:44px;color:#e8b64c">Carty Party</div><div style="font-size:22px;font-style:italic">A MoCo Holiday</div><div style="margin-top:24px;font-size:15px;opacity:.8;line-height:1.9">starring Christian, Stacy, Olivia, Olivia, Tre, Kylie ❤️, Mark & Jim<br>Yo Yogi’s closes at 9. The swap is forever.<br><br>made with love, in Montgomery County</div>' + collects;
       document.body.appendChild(fin);
     },
   });

@@ -282,6 +282,20 @@ export async function dcScene(game) {
 
   let phase = 'arrive';
 
+  // the full moon — Olivia's deadline, hanging over the monument all night
+  const fullMoon = new THREE.Mesh(new THREE.CircleGeometry(1.6, 24), new THREE.MeshBasicMaterial({ color: 0xf4eed8 }));
+  fullMoon.position.set(-18, 16, -30);
+  fullMoon.lookAt(0, 1, 5);
+  scene.add(fullMoon);
+  const moonHalo = new THREE.Mesh(new THREE.CircleGeometry(2.6, 24), new THREE.MeshBasicMaterial({ color: 0xd8d0b0, transparent: true, opacity: 0.22 }));
+  moonHalo.position.copy(fullMoon.position);
+  moonHalo.position.z -= 0.1;
+  moonHalo.lookAt(0, 1, 5);
+  scene.add(moonHalo);
+  const moonGlow = new THREE.PointLight(0xd8e0f0, 2.2, 60);
+  moonGlow.position.set(-16, 15, -26);
+  scene.add(moonGlow);
+
   interactions.add({
     pos: new THREE.Vector3(2.5, 0, 12), radius: 3, label: 'Mark & Kylie', once: true,
     // guide is set below

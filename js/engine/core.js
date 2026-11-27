@@ -34,7 +34,7 @@ export class FollowCam {
         let d = targetYaw - this.yaw;
         while (d > Math.PI) d -= Math.PI * 2;
         while (d < -Math.PI) d += Math.PI * 2;
-        this.yaw += d * Math.min(1, dt * 3.2);
+        this.yaw += d * Math.min(1, dt * 2.1);
       }
     }
     window.__camYaw = this.yaw;

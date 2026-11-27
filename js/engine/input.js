@@ -143,7 +143,22 @@ export class Input {
     if (len > 1) { x /= len; z /= len; }
     // camera-relative: input is in screen space, rotate by the orbit yaw so
     // "up" always walks away from the camera no matter how you've dragged it
-    const yaw = window.__camYaw || 0;
+    // yaw FROZEN while input is held: if the camera auto-rotates under a
+    // constant stick direction, your path must not curve. reference refreshes
+    // when input releases or the stick direction itself changes hard.
+    const liveYaw = window.__camYaw || 0;
+    if (len < 0.05) {
+      this._frozenYaw = undefined;
+      this._lastIx = undefined; this._lastIz = undefined;
+    } else if (this._frozenYaw === undefined) {
+      this._frozenYaw = liveYaw;
+      this._lastIx = x; this._lastIz = z;
+    } else {
+      const dMag = Math.hypot(x - (this._lastIx || 0), z - (this._lastIz || 0));
+      if (dMag > 1.1) { this._frozenYaw = liveYaw; }
+      this._lastIx = x; this._lastIz = z;
+    }
+    const yaw = this._frozenYaw !== undefined ? this._frozenYaw : liveYaw;
     if (yaw !== 0) {
       // forward (away from camera) is (sin(yaw), -cos(yaw)); right is (cos(yaw), sin(yaw))
       const sy = Math.sin(yaw), cy = Math.cos(yaw);

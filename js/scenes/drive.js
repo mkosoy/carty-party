@@ -166,6 +166,7 @@ export async function driveScene(game) {
       snowRoof.position.y = 3.3;
       sm.add(snowRoof);
       sm.position.set(side * (12 + Math.random() * 8), 0, z);
+      sm.rotation.y = -side * Math.PI / 2;
       scene.add(sm);
       decor.push(sm);
     } else {

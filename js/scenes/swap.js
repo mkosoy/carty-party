@@ -107,6 +107,225 @@ export async function swapScene(game) {
     bounds.push({ minX: tank.position.x - 1.3, maxX: tank.position.x + 1.3, minZ: -10.8, maxZ: -8.2 });
   }
 
+  // ---- REAL swap season branding + authentic details (swapseason.org) ----
+  // the actual logo banner over the entrance wall
+  const logoTex = new THREE.TextureLoader().load('assets/swapseason-logo.png');
+  logoTex.colorSpace = THREE.SRGBColorSpace;
+  const logoBanner = new THREE.Mesh(new THREE.PlaneGeometry(6, 2.2), new THREE.MeshBasicMaterial({ map: logoTex, transparent: true, side: THREE.DoubleSide }));
+  logoBanner.position.set(0, 4.4, -10.4);
+  scene.add(logoBanner);
+  // cream backing so the transparent logo pops against brick
+  const logoBack = new THREE.Mesh(new THREE.PlaneGeometry(6.4, 2.5), new THREE.MeshBasicMaterial({ color: 0x241d18 }));
+  logoBack.position.set(0, 4.4, -10.45);
+  scene.add(logoBack);
+
+  // "more taste less waste" tagline banner — their real tagline, cream on forest green
+  const tagC = document.createElement('canvas');
+  tagC.width = 1024; tagC.height = 128;
+  const tg = tagC.getContext('2d');
+  tg.fillStyle = '#1e3828';
+  tg.fillRect(0, 0, 1024, 128);
+  tg.fillStyle = '#f2ead8';
+  tg.font = 'italic bold 64px Georgia';
+  tg.textAlign = 'center';
+  tg.fillText('more taste, less waste', 512, 86);
+  const tagT = new THREE.CanvasTexture(tagC);
+  tagT.colorSpace = THREE.SRGBColorSpace;
+  const tagBanner = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 0.7), new THREE.MeshBasicMaterial({ map: tagT }));
+  tagBanner.position.set(-10, 3.9, -10.4);
+  scene.add(tagBanner);
+
+  // welcome/check-in table by the entrance: sign-in sheet, the 10-item-max rule — real swap mechanics
+  const checkin = new THREE.Group();
+  const ciTop = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.08, 0.9), mat(0x8a6a4a));
+  ciTop.position.y = 0.85;
+  checkin.add(ciTop);
+  for (const [lx, lz] of [[-1, -0.35], [1, -0.35], [-1, 0.35], [1, 0.35]]) {
+    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.85, 0.07), mat(0x5a4a3a));
+    leg.position.set(lx, 0.42, lz);
+    checkin.add(leg);
+  }
+  // welcome sign on the table
+  const welC = document.createElement('canvas');
+  welC.width = 256; welC.height = 340;
+  const wc2 = welC.getContext('2d');
+  wc2.fillStyle = '#f2ead8';
+  wc2.fillRect(0, 0, 256, 340);
+  wc2.fillStyle = '#1e3828';
+  wc2.font = 'bold 34px Georgia';
+  wc2.textAlign = 'center';
+  wc2.fillText('WELCOME!', 128, 52);
+  wc2.font = '22px Georgia';
+  wc2.fillText('swap season', 128, 90);
+  wc2.fillText('—', 128, 116);
+  wc2.fillText('10 items max', 128, 156);
+  wc2.fillText('clean + damage-free', 128, 190);
+  wc2.fillText('take what you love', 128, 224);
+  wc2.fillText('leave what you don\'t', 128, 258);
+  const welT = new THREE.CanvasTexture(welC);
+  welT.colorSpace = THREE.SRGBColorSpace;
+  const welSign = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 0.73), new THREE.MeshBasicMaterial({ map: welT, side: THREE.DoubleSide }));
+  welSign.position.set(0.5, 1.35, 0);
+  welSign.rotation.x = -0.15;
+  checkin.add(welSign);
+  // clipboard sign-in sheet
+  const clip = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.02, 0.4), mat(0xb88a5a));
+  clip.position.set(-0.5, 0.9, 0);
+  checkin.add(clip);
+  const sheet = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.32), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  sheet.rotation.x = -Math.PI / 2;
+  sheet.position.set(-0.5, 0.915, 0);
+  checkin.add(sheet);
+  checkin.position.set(-13, 0, 7.5);
+  checkin.rotation.y = 0.5;
+  scene.add(checkin);
+  bounds.push({ minX: -14.4, maxX: -11.6, minZ: 6.6, maxZ: 8.4 });
+
+  // THE CURATED RACK — their real premium section: gold-accented rack with tagged items
+  const curated = new THREE.Group();
+  const cBar = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 3.4, 8), mat(0xc8a040));
+  cBar.rotation.z = Math.PI / 2;
+  cBar.position.y = 1.7;
+  curated.add(cBar);
+  for (const lx of [-1.6, 1.6]) {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.7, 8), mat(0xc8a040));
+    leg.position.set(lx, 0.85, 0);
+    curated.add(leg);
+  }
+  const vintageColors = [0x8a2a3a, 0x2a4a6a, 0x6a5a2a, 0x4a2a5a, 0x2a5a4a, 0xaa6a3a];
+  for (let i = 0; i < 6; i++) {
+    const item = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.0 + Math.random() * 0.3, 0.08), mat(vintageColors[i]));
+    item.position.set(-1.4 + i * 0.56, 1.2, 0);
+    curated.add(item);
+    // little white price/name tag — real curated-rack detail (labeled with your name)
+    const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.09, 0.12), new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }));
+    tag.position.set(-1.4 + i * 0.56 + 0.12, 1.45, 0.06);
+    tag.rotation.z = 0.3;
+    curated.add(tag);
+  }
+  // curated rack sign
+  const curC = document.createElement('canvas');
+  curC.width = 512; curC.height = 128;
+  const cx2 = curC.getContext('2d');
+  cx2.fillStyle = '#1a1a1a';
+  cx2.fillRect(0, 0, 512, 128);
+  cx2.strokeStyle = '#c8a040';
+  cx2.lineWidth = 6;
+  cx2.strokeRect(4, 4, 504, 120);
+  cx2.fillStyle = '#e8c860';
+  cx2.font = 'bold 44px Georgia';
+  cx2.textAlign = 'center';
+  cx2.fillText('THE CURATED RACK', 256, 56);
+  cx2.font = 'italic 26px Georgia';
+  cx2.fillText('vintage + high-end — labeled pieces', 256, 98);
+  const curT = new THREE.CanvasTexture(curC);
+  curT.colorSpace = THREE.SRGBColorSpace;
+  const curSign = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 0.55), new THREE.MeshBasicMaterial({ map: curT, side: THREE.DoubleSide }));
+  curSign.position.y = 2.35;
+  curated.add(curSign);
+  curated.position.set(10.5, 0, -4);
+  curated.rotation.y = -0.5;
+  scene.add(curated);
+  bounds.push({ minX: 8.6, maxX: 12.4, minZ: -5.2, maxZ: -2.8 });
+
+  // MATCHA POP-UP — their real collab detail: little green drink cart
+  const matcha = new THREE.Group();
+  const cart = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.95, 0.8), mat(0xf2ead8));
+  cart.position.y = 0.48;
+  matcha.add(cart);
+  const cartTop = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.06, 0.9), mat(0x5a7a4a));
+  cartTop.position.y = 0.98;
+  matcha.add(cartTop);
+  const matC = document.createElement('canvas');
+  matC.width = 256; matC.height = 128;
+  const mx = matC.getContext('2d');
+  mx.fillStyle = '#5a7a4a';
+  mx.fillRect(0, 0, 256, 128);
+  mx.fillStyle = '#f2ead8';
+  mx.font = 'bold 42px Georgia';
+  mx.textAlign = 'center';
+  mx.fillText('MATCHA', 128, 58);
+  mx.font = '24px Georgia';
+  mx.fillText('pop-up', 128, 95);
+  const matT = new THREE.CanvasTexture(matC);
+  matT.colorSpace = THREE.SRGBColorSpace;
+  const matSign = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.4), new THREE.MeshBasicMaterial({ map: matT }));
+  matSign.position.set(0, 0.5, 0.41);
+  matcha.add(matSign);
+  // matcha cups on top — little green lattes
+  for (let ci2 = 0; ci2 < 4; ci2++) {
+    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.04, 0.12, 8), mat(0x9ac06a));
+    cup.position.set(-0.5 + ci2 * 0.33, 1.07, 0);
+    matcha.add(cup);
+  }
+  matcha.position.set(-5, 0, 7.8);
+  matcha.rotation.y = -0.3;
+  scene.add(matcha);
+  bounds.push({ minX: -6.2, maxX: -3.8, minZ: 7.0, maxZ: 8.6 });
+
+  // mirror corner — swaps always need somewhere to check the fit
+  const mirrorFrame = new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.1, 0.08), mat(0xc8a040));
+  mirrorFrame.position.set(15.8, 1.35, -1);
+  mirrorFrame.rotation.y = -Math.PI / 4;
+  scene.add(mirrorFrame);
+  const mirror = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.9), new THREE.MeshStandardMaterial({ color: 0xbfd4de, roughness: 0.05, metalness: 0.9 }));
+  mirror.position.set(15.76, 1.35, -0.96);
+  mirror.rotation.y = -Math.PI / 4;
+  scene.add(mirror);
+
+  // folding tables with stacked folded clothes — how real swaps handle the overflow
+  for (const [fx, fz, fr] of [[-8, 6.5, 0.2], [3, 6.8, -0.15]]) {
+    const ftable = new THREE.Group();
+    const ftop = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 1.0), mat(0xd8d0c0));
+    ftop.position.y = 0.78;
+    ftable.add(ftop);
+    for (const [lx, lz] of [[-1.1, -0.4], [1.1, -0.4], [-1.1, 0.4], [1.1, 0.4]]) {
+      const fleg = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.78, 0.05), mat(0x888888));
+      fleg.position.set(lx, 0.39, lz);
+      ftable.add(fleg);
+    }
+    // folded stacks
+    for (let si = 0; si < 5; si++) {
+      const foldPalette = [0xc0526a, 0x5a8ac0, 0xe8e0d0, 0x7ab06a, 0x9a6ac0, 0xd0d0d0];
+      const col = foldPalette[Math.floor(Math.random() * foldPalette.length)];
+      const stackH = 2 + Math.floor(Math.random() * 3);
+      for (let sj = 0; sj < stackH; sj++) {
+        const folded = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.05, 0.3), mat(col));
+        folded.position.set(-0.9 + si * 0.45, 0.84 + sj * 0.055, (Math.random() - 0.5) * 0.2);
+        folded.rotation.y = (Math.random() - 0.5) * 0.2;
+        ftable.add(folded);
+      }
+    }
+    ftable.position.set(fx, 0, fz);
+    ftable.rotation.y = fr;
+    scene.add(ftable);
+    bounds.push({ minX: fx - 1.4, maxX: fx + 1.4, minZ: fz - 0.7, maxZ: fz + 0.7 });
+  }
+
+  // section signs over the main racks — real swaps sort by type
+  function sectionSign(text, x, z) {
+    const sc = document.createElement('canvas');
+    sc.width = 256; sc.height = 96;
+    const sx = sc.getContext('2d');
+    sx.fillStyle = '#f2ead8';
+    sx.fillRect(0, 0, 256, 96);
+    sx.fillStyle = '#1e3828';
+    sx.font = 'bold 44px Georgia';
+    sx.textAlign = 'center';
+    sx.fillText(text, 128, 62);
+    const st = new THREE.CanvasTexture(sc);
+    st.colorSpace = THREE.SRGBColorSpace;
+    const sm = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.41), new THREE.MeshBasicMaterial({ map: st, side: THREE.DoubleSide }));
+    sm.position.set(x, 2.45, z);
+    scene.add(sm);
+  }
+  sectionSign('TOPS', -8, -4);
+  sectionSign('BOTTOMS', -1, -4);
+  sectionSign('DRESSES', 6, -4);
+  sectionSign('COATS', -8, 2);
+  sectionSign('VINTAGE', -1, 2);
+  sectionSign('ACCESSORIES', 6, 2);
+
   // clothing racks — the heart of the swap (swap.season reference look)
   const rackPositions = [
     [-8, -4], [-1, -4], [6, -4],

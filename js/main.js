@@ -104,6 +104,7 @@ const game = {
     try { localStorage.setItem('cp-checkpoint', factory.name.replace('Scene','')); } catch {}
     window.__sparkles = [];
     try { window.__radioStop?.(); } catch {}
+    document.querySelectorAll('.scene-dom-extra').forEach((el) => el.remove());
     window.__camYaw = 0;
     const mb = document.getElementById('menu-button');
     if (mb) mb.classList.remove('hidden');
@@ -155,7 +156,16 @@ const game = {
     const touch = 'ontouchstart' in window;
     let hintText = window.__sceneHint || (touch ? 'left thumb — move · right thumb — camera · tap ✦ to interact' : 'WASD move · shift sprint · space jump · E interact · drag camera');
     if (touch && window.__sceneHint) {
-      hintText = hintText.replace(/WASD — move · E — interact/, 'left thumb — move · tap ✦ — interact').replace(/WASD — move/, 'left thumb — move').replace(/E — interact/, '✦ — interact').replace(/drag — camera/, 'right thumb — camera');
+      hintText = hintText
+        .replace(/WASD — [^·]+/, 'left thumb — move')
+        .replace(/drag — camera/, 'right thumb — camera')
+        .replace(/E — interact/, 'tap ✦ — interact')
+        .replace(/E — radio/, 'tap ✦ — radio')
+        .replace(/H — honk/, 'tap ✦ — honk')
+        .replace(/F — throw snowball/, '❄ button — snowball')
+        .replace(/1-4 — pour drinks/, 'tap the drink buttons')
+        .replace(/1\/2\/3\/4 — dance moves/, 'tap the move buttons')
+        .replace(/[\u2190\u2192] steer/, 'left thumb — steer');
     }
     hint.textContent = hintText;
     window.__sceneHint = null;

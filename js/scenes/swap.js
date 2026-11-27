@@ -906,6 +906,7 @@ export async function swapScene(game) {
       // simple beat game: 6 beats, ring shrinks, press E in window
       const overlay = document.createElement('div');
       overlay.style.cssText = 'position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);z-index:30;pointer-events:none';
+      overlay.classList.add('scene-dom-extra');
       document.body.appendChild(overlay);
       let hits = 0;
       for (let beat = 0; beat < 6; beat++) {

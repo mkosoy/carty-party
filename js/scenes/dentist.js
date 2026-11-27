@@ -270,6 +270,7 @@ export async function dentistScene(game) {
       const warn = document.createElement('div');
       warn.style.cssText = 'color:#ff6a6a;font-family:Georgia,serif;font-size:17px;margin-top:6px;height:24px;font-style:italic;text-shadow:0 2px 6px #000;';
       overlay.appendChild(warn);
+      overlay.classList.add('scene-dom-extra');
       document.body.appendChild(overlay);
 
       const ctx = cv.getContext('2d');
@@ -410,6 +411,7 @@ export async function dentistScene(game) {
                 const bonus = cleaned % 5 === 0;
                 pop.textContent = bonus ? '⭐ bonus tooth!' : '✨ +1';
                 pop.style.cssText = `position:fixed;left:${tool.x - 20 + overlay.getBoundingClientRect().left}px;top:${tool.y + overlay.getBoundingClientRect().top - 10}px;z-index:80;color:${bonus ? '#ffd663' : '#a8e8ff'};font-family:Georgia,serif;font-size:${bonus ? 22 : 17}px;text-shadow:0 2px 6px #000;pointer-events:none;transition:all 1.1s ease-out;opacity:1`;
+                pop.classList.add('scene-dom-extra');
                 document.body.appendChild(pop);
                 requestAnimationFrame(() => {
                   pop.style.transform = 'translateY(-60px) scale(1.15)';
@@ -420,6 +422,7 @@ export async function dentistScene(game) {
                   const cheer = document.createElement('div');
                   cheer.textContent = ['nice technique!', 'dr. fritz approves', 'the other olivia could never', 'polished!'][Math.floor(Math.random() * 4)];
                   cheer.style.cssText = 'position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:80;color:#ffe9b8;font-family:Georgia,serif;font-size:20px;font-style:italic;text-shadow:0 2px 8px #000;pointer-events:none;transition:opacity 1.4s;opacity:1';
+                  cheer.classList.add('scene-dom-extra');
                   document.body.appendChild(cheer);
                   setTimeout(() => { cheer.style.opacity = '0'; }, 1400);
                   setTimeout(() => cheer.remove(), 2900);

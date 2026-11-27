@@ -173,6 +173,7 @@ export async function hopkinsScene(game) {
   });
   const hud = document.createElement('div');
   hud.style.cssText = 'position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:40;display:none;color:#fff;font:bold 16px Arial;text-shadow:0 2px 6px #000';
+  hud.classList.add('scene-dom-extra');
   document.body.appendChild(hud);
   function finish(won) {
     if (won) try { localStorage.setItem('cp-done-hopkins', '1'); } catch {}

@@ -382,6 +382,7 @@ export async function dcScene(game) {
       const inv2 = inventory();
       const collects = `<div style="margin-top:14px;font-size:13.5px;opacity:.75">collected on the way: 📷 ${inv2.cameras} vintage cameras · 🎵 ${inv2.records} vinyl records</div>`;
       fin.innerHTML = '<div style="font-size:44px;color:#e8b64c">Carty Party</div><div style="font-size:22px;font-style:italic">A MoCo Holiday</div><div style="margin-top:24px;font-size:15px;opacity:.8;line-height:1.9">starring Christian, Stacy, Olivia, Olivia, Tre, Kylie ❤️, Mark & Jim<br>Yo Yogi’s closes at 9. The swap is forever.<br><br>made with love, in Montgomery County</div>' + collects;
+      fin.classList.add('scene-dom-extra');
       document.body.appendChild(fin);
       const againBtn = document.createElement('button');
       againBtn.textContent = 'back to the menu';
@@ -575,15 +576,27 @@ export async function dcScene(game) {
   // snowball throwing — press F, lobbed arc, splat particles
   const snowballs = [];
   const splats = [];
+  const throwSnowball = () => {
+    if (player.frozen) return;
+    const sb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), mat(0xffffff));
+    const dir = player.group.rotation.y;
+    sb.position.copy(player.group.position).add(new THREE.Vector3(Math.sin(dir) * 0.5, 1.4, Math.cos(dir) * 0.5));
+    scene.add(sb);
+    snowballs.push({ m: sb, vx: Math.sin(dir) * 7, vy: 4.5, vz: Math.cos(dir) * 7 });
+  };
   window.addEventListener('keydown', (e) => {
-    if ((e.key === 'f' || e.key === 'F') && !player.frozen) {
-      const sb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), mat(0xffffff));
-      const dir = player.group.rotation.y;
-      sb.position.copy(player.group.position).add(new THREE.Vector3(Math.sin(dir) * 0.5, 1.4, Math.cos(dir) * 0.5));
-      scene.add(sb);
-      snowballs.push({ m: sb, vx: Math.sin(dir) * 7, vy: 4.5, vz: Math.cos(dir) * 7 });
-    }
+    if (e.key === 'f' || e.key === 'F') throwSnowball();
   });
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    const snowBtn = document.createElement('button');
+    snowBtn.textContent = '❄';
+    snowBtn.style.cssText = 'position:fixed;right:14px;bottom:150px;z-index:40;width:52px;height:52px;border-radius:50%;border:2px solid rgba(200,220,255,.55);background:rgba(20,30,50,.6);color:#fff;font-size:22px;touch-action:manipulation;backdrop-filter:blur(2px)';
+    snowBtn.className = 'scene-dom-extra';
+    snowBtn.classList.add('scene-dom-extra');
+    document.body.appendChild(snowBtn);
+    snowBtn.addEventListener('touchstart', (e) => { throwSnowball(); e.preventDefault(); }, { passive: false });
+    snowBtn.addEventListener('click', throwSnowball);
+  }
 
   return {
     update(dt) {

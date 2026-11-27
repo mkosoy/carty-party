@@ -464,6 +464,19 @@ export async function houseScene(game) {
     st.position.set(-6.2 + si * 0.4, 1.6, 5.82);
     ground.add(st);
   }
+  // dust motes drifting in the warm light — atmosphere layer
+  const moteGeo = new THREE.BufferGeometry();
+  const moteCount = 120;
+  const motePos = new Float32Array(moteCount * 3);
+  for (let mi = 0; mi < moteCount; mi++) {
+    motePos[mi * 3] = -7 + Math.random() * 14;
+    motePos[mi * 3 + 1] = 0.3 + Math.random() * 2.8;
+    motePos[mi * 3 + 2] = -5.5 + Math.random() * 11;
+  }
+  moteGeo.setAttribute('position', new THREE.BufferAttribute(motePos, 3));
+  const motes = new THREE.Points(moteGeo, new THREE.PointsMaterial({ color: 0xffe8c0, size: 0.02, transparent: true, opacity: 0.55 }));
+  ground.add(motes);
+  window.__motes = { points: motes, base: motePos.slice() };
   // designed lighting: warm pools under each fixture + cool moonlight spill from the window
   for (const [lx, lz, li] of [[-3, 1.5, 5], [3, -3, 4], [-5, 4, 3.5]]) {
     const pool = new THREE.PointLight(0xffd9a0, li, 6.5, 1.8);
@@ -1164,6 +1177,15 @@ export async function houseScene(game) {
 
   return {
     update(dt) {
+    if (window.__motes) {
+      const mp = window.__motes.points.geometry.attributes.position;
+      const t = performance.now() / 1000;
+      for (let mi = 0; mi < mp.count; mi++) {
+        mp.array[mi * 3] += Math.sin(t * 0.4 + mi) * 0.0004;
+        mp.array[mi * 3 + 1] += Math.cos(t * 0.3 + mi * 2) * 0.0003;
+      }
+      mp.needsUpdate = true;
+    }
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, floor: typeof floor !== "undefined" ? floor : null, self: this };
       player.update(dt);
       pickups.update(dt, christian.group.position);

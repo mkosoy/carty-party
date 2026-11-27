@@ -829,7 +829,7 @@ export async function driveScene(game) {
     for (const [side, glyph, val] of [['left', '\u25C0', -1], ['right', '\u25B6', 1]]) {
       const b = document.createElement('div');
       b.className = 'scene-dom-extra';
-      b.style.cssText = 'position:fixed;bottom:110px;' + side + ':14px;width:84px;height:84px;border-radius:50%;background:rgba(20,24,40,.45);border:2px solid rgba(255,255,255,.35);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;z-index:40;touch-action:none;user-select:none;-webkit-user-select:none;font-family:Arial,sans-serif';
+      b.style.cssText = 'position:fixed;bottom:218px;' + side + ':14px;width:84px;height:84px;border-radius:50%;background:rgba(20,24,40,.45);border:2px solid rgba(255,255,255,.35);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;z-index:40;touch-action:none;user-select:none;-webkit-user-select:none;font-family:Arial,sans-serif';
       b.textContent = glyph;
       const on = (e) => { btnSteer = val; b.style.background = 'rgba(255,214,99,.5)'; e.preventDefault(); };
       const off = () => { if (btnSteer === val) btnSteer = 0; b.style.background = 'rgba(20,24,40,.45)'; };

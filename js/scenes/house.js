@@ -1602,8 +1602,8 @@ export async function houseScene(game) {
   }
   const crystalSpots = [
     { x: -6.5, z: -3.5, hint: 'the kitchen' },      // behind kitchen clutter
-    { x: 6.8, z: 4.8, hint: 'the dining room' },     // under dining table
-    { x: -7.2, z: 5.8, hint: 'the living room' },    // behind the couch
+    { x: 6.2, z: 4.1, hint: 'the dining room' },     // beside the dining table
+    { x: -6.6, z: 4.9, hint: 'the living room' },    // beside the couch
     { x: 2.5, z: -6.5, hint: 'near the fireplace' }, // by the hearth
     { x: -2.0, z: 7.0, hint: 'the stairs' },         // near stair base
   ];
@@ -1654,7 +1654,7 @@ export async function houseScene(game) {
           if (c.taken) continue;
           c.mesh.rotation.y += dt * 2.2;
           c.mesh.position.y = 0.55 + Math.sin(tt * 2.4 + c.x) * 0.08;
-          if (Math.hypot(pp2.x - c.x, pp2.z - c.z) < 1.0) {
+          if (Math.hypot(pp2.x - c.x, pp2.z - c.z) < 1.85) {
             c.taken = true;
             scene.remove(c.mesh);
             crystalState.found++;

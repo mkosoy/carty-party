@@ -637,7 +637,7 @@ export async function driveScene(game) {
   let radioBanner = 0;
 
 
-  window.__sceneHint = '\u2190 \u2192 steer \u00b7 avoid the hazards \u00b7 grab turkeys for speed boost';
+  window.__sceneHint = '\u2190 \u2192 steer \u00b7 avoid the hazards \u00b7 grab turkeys for speed boost · E — radio · H — honk';
   // the mormon temple on 495 — the most recognizable moco drive landmark: white spires glowing
   const temple = new THREE.Group();
   const tbase = new THREE.Mesh(new THREE.BoxGeometry(4, 2.5, 3), new THREE.MeshStandardMaterial({ color: 0xe8e8f0, emissive: 0x8890a8, emissiveIntensity: 0.25 }));

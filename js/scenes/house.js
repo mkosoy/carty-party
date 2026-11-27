@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { positionalLoop } from '../engine/sfx.js';
 import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
-import { makePerson } from '../engine/character.js';
+import { makePerson, playerIdentity } from '../engine/character.js';
 import { woodFloor, carpet, paintedWall, concrete } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, choice, GuideMarker } from '../engine/core.js';
 
@@ -864,7 +864,7 @@ export async function houseScene(game) {
   box(basement, 2, 0.3, 2, 0x555560, 6, 0.1, 4); // stairs landing
 
   // characters
-  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, name: 'Christian', });
+  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, ...playerIdentity(faces) });
   scene.add(christian.group);
 
   const jim = makePerson({ photo: faces.jim, top: 0x2c3140, bottom: 0x3c3c44, hair: 0xb8b0a4, hairStyle: 'receding', skin: 0xd8a878, name: 'Jim', });

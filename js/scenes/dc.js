@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Pickups , npcFacePlayer } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { sfxSplat } from '../engine/sfx.js';
-import { makePerson } from '../engine/character.js';
+import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, GuideMarker } from '../engine/core.js';
 import { nightSky, skyDome, snowGround } from '../engine/textures.js';
 
@@ -250,7 +250,7 @@ export async function dcScene(game) {
   }
 
   // characters
-  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, name: 'Christian', });
+  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, ...playerIdentity(faces) });
   christian.group.position.set(0, 0, 16);
   scene.add(christian.group);
 

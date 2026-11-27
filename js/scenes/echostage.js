@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { makePerson } from '../engine/character.js';
+import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective } from '../engine/core.js';
 
 // ECHOSTAGE DC — the warehouse cathedral of dance music on Queens Chapel Rd.
@@ -161,7 +161,7 @@ export async function echostageScene(game) {
   }
 
   // ---- player: the bartender, behind the counter ----
-  const christian = makePerson({ photo: faces.christian, top: 0x181818, bottom: 0x22222a, hair: 0x2a1a12, skin: 0xd0a080, name: 'Christian' });
+  const christian = makePerson({ photo: faces.christian, top: 0x181818, bottom: 0x22222a, hair: 0x2a1a12, skin: 0xd0a080, ...playerIdentity(faces) });
   christian.group.position.set(4, 0, 6);
   christian.group.rotation.y = Math.PI;
   scene.add(christian.group);

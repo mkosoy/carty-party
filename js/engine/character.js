@@ -419,3 +419,16 @@ export function makePerson({
 export function cropPhotoSquare(url) {
   return Promise.resolve(url);
 }
+
+// who the player chose on the map screen — falls back to christian
+export function playerIdentity(faces) {
+  const cid = (typeof localStorage !== 'undefined' && localStorage.getItem('cp-character')) || 'christian';
+  const fem = ['olivia', 'stacy', 'kylie'].includes(cid);
+  return {
+    photo: faces[cid] || faces.christian,
+    name: cid[0].toUpperCase() + cid.slice(1),
+    outfit: fem ? 'dress' : undefined,
+    hairStyle: fem ? 'long' : 'short',
+    hair: fem ? 0x2e1e14 : 0x6a4a2e,
+  };
+}

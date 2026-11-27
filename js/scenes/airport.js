@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { npcFacePlayer, Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
-import { makePerson } from '../engine/character.js';
+import { makePerson, playerIdentity } from '../engine/character.js';
 import { concrete } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, phoneOverlay, choice, GuideMarker } from '../engine/core.js';
 

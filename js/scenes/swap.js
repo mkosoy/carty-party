@@ -3,7 +3,7 @@ import { positionalLoop } from '../engine/sfx.js';
 import { runDJMinigame } from '../engine/djbooth.js';
 import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
-import { makePerson } from '../engine/character.js';
+import { makePerson, playerIdentity } from '../engine/character.js';
 import { brickWall, concrete } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, choice, GuideMarker } from '../engine/core.js';
 
@@ -660,7 +660,7 @@ export async function swapScene(game) {
   scene.add(teal);
 
   // player + Stacy (filming a tiktok with her friend near the entrance)
-  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, name: 'Christian', });
+  const christian = makePerson({ photo: faces.christian, top: 0x5a6b42, bottom: 0x3a3a44, hair: 0x6a4a2e, hairStyle: 'short', jacket: true, skin: 0xe0b088, ...playerIdentity(faces) });
   christian.group.position.set(0, 0, 4);
   scene.add(christian.group);
 

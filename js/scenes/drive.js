@@ -146,7 +146,7 @@ export async function driveScene(game) {
       awning.position.set(0, 2.2, 2.1);
       sm.add(awning);
       // real moco storefront names on the sign band — instantly recognizable roadside texture
-      if (!window.__mocoStores) window.__mocoStores = ['RIO WASHINGTONIAN', 'KENTLANDS MARKET SQ', 'MONTGOMERY MALL', 'LAKEFOREST', 'COSTCO', 'CROWN FARM', 'PIKE & ROSE', 'GIANT FOOD', 'CLARKSBURG OUTLETS'];
+      if (!window.__mocoStores) window.__mocoStores = ['RIO WASHINGTONIAN', 'KENTLANDS MARKET SQ', 'WESTFIELD MONTGOMERY', 'LAKEFOREST', 'COSTCO', 'DOWNTOWN CROWN', 'PIKE & ROSE', 'GIANT FOOD', 'CLARKSBURG OUTLETS', 'ROCKVILLE TOWN SQ', 'BETHESDA ROW', 'CABIN JOHN VILLAGE', 'WOODMONT BAKERY', 'SPICE XING', 'OLDE TOWNE GAITHERSBURG', 'GAITHERSBURG STATION'];
       const store = window.__mocoStores[Math.floor(Math.random() * window.__mocoStores.length)];
       const bc = document.createElement('canvas');
       bc.width = 512; bc.height = 48;
@@ -424,6 +424,9 @@ export async function driveScene(game) {
   adBillboard({ grad: ['#ff7a4a', '#c04080'], fg: '#fff8ee', title: 'REUNION', sub: 'music festival meets wellness retreat', sub2: '@experiencereunion', size: 68 }, -12, -45, 0.4);
   adBillboard({ bg: '#0a0a14', fg: '#40e8ff', title: 'ECHOSTAGE', sub: 'dc — voted top club in the world', sub2: 'queens chapel rd NE', size: 66 }, 12, -88, -0.4);
   adBillboard({ bg: '#002d72', fg: '#ffffff', title: 'JOHNS HOPKINS', sub: 'university — baltimore est. 1876', sub2: 'go blue jays', size: 56, font: 'Georgia' }, -12, -132, 0.4);
+  adBillboard({ bg: '#14101e', fg: '#ffd2f0', title: 'THE FILLMORE', sub: 'silver spring — live music', sub2: 'georgia ave', size: 62 }, 12, -170, -0.4);
+  adBillboard({ grad: ['#1e3a5a', '#101c30'], fg: '#f0e8d0', title: 'STRATHMORE', sub: 'music center — north bethesda', sub2: 'rockville pike', size: 60, font: 'Georgia' }, -12, -205, 0.4);
+  adBillboard({ bg: '#2a1a0e', fg: '#ffe8b0', title: 'YO YOGI', sub: 'sushi — downtown crown, gaithersburg', sub2: 'exit 11 → rio blvd', size: 64 }, 12, -240, -0.4);
 
   // overpass in the distance
   const op = new THREE.Mesh(new THREE.BoxGeometry(22, 1, 3), mat(0x8a8f98));

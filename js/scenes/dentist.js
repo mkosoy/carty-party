@@ -219,15 +219,6 @@ export async function dentistScene(game) {
     tool.rotation.y = ti2 * 0.4;
     scene.add(tool);
   }
-  // framed diplomas on wall
-  for (let di = 0; di < 3; di++) {
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.66, 0.03), mat(0x6a4a2a));
-    frame.position.set(3.2 + di * 0.8, 1.9, -4.82);
-    scene.add(frame);
-    const paper = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.55), new THREE.MeshBasicMaterial({ color: 0xf4eedd }));
-    paper.position.set(3.2 + di * 0.8, 1.9, -4.79);
-    scene.add(paper);
-  }
   // wall clock
   const clockFace = new THREE.Mesh(new THREE.CircleGeometry(0.22, 16), new THREE.MeshBasicMaterial({ color: 0xffffff }));
   clockFace.position.set(-0.5, 2.4, -4.82);

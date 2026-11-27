@@ -14,7 +14,7 @@ export async function echostageScene(game) {
   scene.background = new THREE.Color(0x060509);
   scene.fog = new THREE.Fog(0x0a0812, 14, 42);
   scene.add(new THREE.AmbientLight(0x453f5e, 2.0));
-  const keyL = new THREE.DirectionalLight(0x8090c0, 0.5);
+  const keyL = new THREE.DirectionalLight(0x8090c0, 0.85);
   keyL.position.set(-6, 10, 4);
   scene.add(keyL);
 
@@ -347,7 +347,11 @@ export async function echostageScene(game) {
         beams[i].rotation.x = Math.cos(t * 0.5 + i) * 0.3;
         beamMats[i].opacity = 0.03 + Math.abs(Math.sin(t * 2.6 + i)) * 0.03;
       }
-      // LED wall waveform
+      // LED wall waveform — throttled to ~15fps: full canvas re-upload every
+      // frame melts phones, and the waveform reads identically at 15fps
+      this._ledAcc = (this._ledAcc || 0) + dt;
+      if (this._ledAcc < 0.066) { /* skip redraw this frame */ } else {
+      this._ledAcc = 0;
       ledX.fillStyle = '#05060e';
       ledX.fillRect(0, 0, 256, 128);
       for (let x = 0; x < 256; x += 4) {
@@ -357,6 +361,7 @@ export async function echostageScene(game) {
         ledX.fillRect(x, 128 - h, 3, h);
       }
       ledT.needsUpdate = true;
+      }
       // ---- shift logic ----
       if (state.active) {
         // walking away from the bar ends your shift early

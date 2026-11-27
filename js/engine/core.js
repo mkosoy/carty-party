@@ -498,7 +498,7 @@ export function phoneText(sender, text, ms = 5200) {
   if (!box) {
     box = document.createElement('div');
     box.id = 'phone-text-toast';
-    box.style.cssText = 'position:fixed;top:54px;left:50%;transform:translate(-50%,-80px);background:rgba(20,24,34,0.94);border:1px solid rgba(255,255,255,0.25);border-radius:14px;padding:8px 14px;max-width:300px;z-index:60;transition:transform 0.35s ease;color:#fff;font-family:inherit;box-shadow:0 4px 18px rgba(0,0,0,0.5);cursor:pointer;';
+    box.style.cssText = 'position:fixed;top:104px;left:50%;transform:translate(-50%,-80px);background:rgba(20,24,34,0.94);border:1px solid rgba(255,255,255,0.25);border-radius:14px;padding:8px 14px;max-width:250px;z-index:60;transition:transform 0.35s ease;color:#fff;font-family:inherit;box-shadow:0 4px 18px rgba(0,0,0,0.5);cursor:pointer;';
     document.body.appendChild(box);
     box.addEventListener('click', () => { box.style.transform = 'translate(-50%,-80px)'; });
   }

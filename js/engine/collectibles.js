@@ -20,7 +20,8 @@ export function makeChatter(scene, people, emojis, interval = 4) {
     t.colorSpace = THREE.SRGBColorSpace;
     const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false }));
     spr.scale.set(0.5, 0.5, 1);
-    const grp = p.group || p;
+    const grp = p.group || p.tr || p;
+    if (!grp || !grp.position) return;
     spr.position.set(grp.position.x, 2.1, grp.position.z);
     spr.userData.life = 0;
     spr.userData.baseY = 2.1;

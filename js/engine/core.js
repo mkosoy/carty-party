@@ -674,6 +674,31 @@ export function choice(options) {
       }
     };
     window.addEventListener('keydown', keyHandler);
+    // walk-away cancel: pushing the stick hard dismisses the menu entirely —
+    // resolves -1 so no option was picked; callers treat -1 as "walked off".
+    // without this the menu lingered forever and soft-locked quest chains.
+    let walkT = 0;
+    let lastT = performance.now() / 1000;
+    const cancelTick = () => {
+      if (box.classList.contains('hidden')) return; // already resolved
+      const inp = window.__gameInput;
+      if (!inp) { requestAnimationFrame(cancelTick); return; }
+      const nowT = performance.now() / 1000;
+      const dtT = Math.min(0.1, nowT - lastT);
+      lastT = nowT;
+      const jp = Math.hypot(inp.joyX || 0, inp.joyY || 0);
+      const kb = inp.keys.has('KeyW') || inp.keys.has('KeyA') || inp.keys.has('KeyS') || inp.keys.has('KeyD');
+      if (jp > 0.62 || kb) walkT += dtT; else walkT = 0;
+      if (walkT > 0.38) {
+        window.removeEventListener('keydown', keyHandler);
+        box.classList.add('hidden');
+        box.innerHTML = '';
+        resolve(-1);
+        return;
+      }
+      requestAnimationFrame(cancelTick);
+    };
+    requestAnimationFrame(cancelTick);
   });
 }
 

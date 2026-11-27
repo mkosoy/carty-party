@@ -57,6 +57,7 @@ window.addEventListener('resize', () => {
 });
 
 const input = new Input();
+window.__gameInput = input;
 const music = new Music();
 window.__music = music;
 

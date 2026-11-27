@@ -958,6 +958,11 @@ export async function swapScene(game) {
         const opts = [...poses].sort(() => Math.random() - 0.5);
         showObjective(`Instructor calls: ${target.toUpperCase()}`, 2600);
         const idx = await choice(opts);
+        if (idx === -1) {
+          await dialogue.play([{ speaker: 'Instructor', text: 'Leaving mid-breath… bold. Namaste anyway.' }]);
+          player.frozen = false;
+          return;
+        }
         if (opts[idx] === target) {
           score++;
           await dialogue.play([{ speaker: 'Instructor', text: ['Beautiful.', 'Yes — breathe into it.', 'The rack of cardigans is at peace.'][score - 1] || 'Beautiful.' }]);

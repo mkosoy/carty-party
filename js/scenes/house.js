@@ -1387,7 +1387,7 @@ export async function houseScene(game) {
         if (c === 0) {
           showFloor('ground');
           christian.group.position.set(6, 0, 2.4);
-        } else {
+        } else if (c === 1) {
           showFloor('basement');
           christian.group.position.set(6, 0, 2.4);
         }
@@ -1452,8 +1452,9 @@ export async function houseScene(game) {
 
   // --- Olivia 2 + photo minigame ---
   interactions.add({
-    pos: new THREE.Vector3(-5, 0, 3.8), radius: 2.2, label: 'The other Olivia?', floor: 'upper', once: true,
+    pos: new THREE.Vector3(-5, 0, 3.8), radius: 2.2, label: 'The other Olivia?', floor: 'upper',
     action: async () => {
+      if (items.photoDone) return;
       player.frozen = true;
       await dialogue.play([
         { speaker: 'Olivia??', text: 'Who are you?' },
@@ -1472,6 +1473,11 @@ export async function houseScene(game) {
         const wrongs = wrongPoses.sort(() => Math.random() - 0.5).slice(0, 2);
         const opts = [...wrongs, right].sort(() => Math.random() - 0.5);
         const idx = await choice(opts.map((o) => '📸 ' + o));
+        if (idx === -1) {
+          // walked away — not a wrong pose, just back out cleanly
+          await dialogue.play([{ speaker: 'Olivia #2', text: 'Wait — come back! We almost had it.' }]);
+          break;
+        }
         if (opts[idx] === right) {
           correct = true;
           await dialogue.play([

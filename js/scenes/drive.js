@@ -1115,7 +1115,7 @@ export async function driveScene(game) {
             } else if (c === 1) {
               const { yogiScene } = await import('./yogi.js');
               game.switchScene(yogiScene);
-            } else {
+            } else if (c === 2) {
               const { houseScene } = await import('./house.js');
               game.switchScene(houseScene);
             }

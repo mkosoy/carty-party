@@ -292,8 +292,8 @@ export async function museumScene(game) {
         pl.rotation.y = fl.heading + Math.PI;
         pl.position.x = Math.max(-16, Math.min(16, pl.position.x));
         pl.position.z = Math.max(-9.5, Math.min(9.5, pl.position.z));
-        camera.position.lerp(new THREE.Vector3(pl.position.x - Math.sin(fl.heading) * 3.4, pl.position.y + 1.6, pl.position.z - Math.cos(fl.heading) * 3.4), 0.12);
-        camera.lookAt(pl.position.x, pl.position.y, pl.position.z);
+        camera.position.lerp(new THREE.Vector3(pl.position.x - Math.sin(fl.heading) * 4.2, pl.position.y + 2.3, pl.position.z - Math.cos(fl.heading) * 4.2), 0.1);
+        camera.lookAt(pl.position.x + Math.sin(fl.heading) * 2.5, pl.position.y - 0.3, pl.position.z + Math.cos(fl.heading) * 2.5);
         for (const r of fl.rings) {
           if (!r.userData.hit && pl.position.distanceTo(r.position) < 0.95) {
             r.userData.hit = true;

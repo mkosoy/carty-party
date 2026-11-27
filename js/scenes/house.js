@@ -94,6 +94,96 @@ export async function houseScene(game) {
   box(ground, 0.28, 0.65, 1.1, couchMat, -5.25, 0.5, 3.5);
   box(ground, 0.28, 0.65, 1.1, couchMat, -2.75, 0.5, 3.5);
   box(ground, 1.15, 0.14, 0.95, 0x8a6a4a, -4.55, 0.62, 3.5);  // cushions
+
+  // --- lived-in detail pass: the small stuff that makes a house a home ---
+  // throw pillows on the couch — accent colors, slightly rotated
+  for (const [px, pc, pr] of [[-5.15, 0xc04848, 0.2], [-4.1, 0xd0a030, -0.15], [-4.6, 0x3a6a8a, 0.4]]) {
+    const pil = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.34, 0.12), mat(pc));
+    pil.position.set(px, 0.82, 3.62);
+    pil.rotation.z = pr;
+    pil.rotation.x = -0.15;
+    ground.add(pil);
+  }
+  // throw blanket draped over the couch arm
+  const blanket = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.05, 0.7), mat(0x9a4a5a));
+  blanket.position.set(-5.45, 0.78, 2.6);
+  blanket.rotation.z = 0.1;
+  ground.add(blanket);
+  // coffee table clutter: mugs + a book + remote
+  const mug1 = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.04, 0.09, 10), mat(0xc04848));
+  mug1.position.set(-2.0, 0.58, 1.45);
+  ground.add(mug1);
+  const mug2 = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.04, 0.09, 10), mat(0x3a6a8a));
+  mug2.position.set(-1.75, 0.58, 1.7);
+  ground.add(mug2);
+  const book = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.04, 0.32), mat(0x2a4a2a));
+  book.position.set(-2.45, 0.57, 1.75);
+  book.rotation.y = 0.4;
+  ground.add(book);
+  const remote = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.02, 0.16), mat(0x1a1a1a));
+  remote.position.set(-1.7, 0.57, 1.45);
+  remote.rotation.y = -0.3;
+  ground.add(remote);
+  // coat rack by the door with hanging winter coats
+  const rackPole = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.8, 8), mat(0x5a4a3a));
+  rackPole.position.set(-7.3, 0.9, 4.6);
+  ground.add(rackPole);
+  const rackBase = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.05, 10), mat(0x5a4a3a));
+  rackBase.position.set(-7.3, 0.03, 4.6);
+  ground.add(rackBase);
+  for (const [ca, cc] of [[0.3, 0x8a2a2a], [2.4, 0x2a4a6a], [4.4, 0x3a3a3a]]) {
+    const coatM = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.55, 0.12), mat(cc));
+    coatM.position.set(-7.3 + Math.cos(ca) * 0.16, 1.42, 4.6 + Math.sin(ca) * 0.16);
+    coatM.rotation.y = ca;
+    ground.add(coatM);
+  }
+  // shoes kicked off by the door
+  for (const [sx, sz, sr] of [[-6.8, 5.2, 0.3], [-6.55, 5.25, -0.2], [-6.9, 4.9, 1.2]]) {
+    const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.07, 0.26), mat(0x4a3524));
+    shoe.position.set(sx, 0.04, sz);
+    shoe.rotation.y = sr;
+    ground.add(shoe);
+  }
+  // potted plant in the corner — big leafy fiddle leaf
+  const pot2 = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.14, 0.26, 10), mat(0xa05030));
+  pot2.position.set(7.2, 0.13, 4.8);
+  ground.add(pot2);
+  for (let lf = 0; lf < 5; lf++) {
+    const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 6), mat(0x2a6a3a));
+    const la = lf * 1.3;
+    leaf.position.set(7.2 + Math.cos(la) * 0.12, 0.5 + lf * 0.14, 4.8 + Math.sin(la) * 0.12);
+    leaf.scale.set(1, 1.5, 0.6);
+    leaf.rotation.y = la;
+    ground.add(leaf);
+  }
+  // wall clock in the living room
+  const hClockFace = new THREE.Mesh(new THREE.CircleGeometry(0.18, 16), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  hClockFace.position.set(-2.5, 2.3, -5.86);
+  ground.add(hClockFace);
+  const hClockRim = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.02, 8, 20), mat(0x4a3524));
+  hClockRim.position.copy(hClockFace.position);
+  ground.add(hClockRim);
+  // kitchen counter clutter: kettle + fruit bowl + cutting board
+  const kettle = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 8), mat(0xb8bec6, 0.4));
+  kettle.position.set(7.35, 1.06, -2.2);
+  kettle.scale.y = 0.9;
+  ground.add(kettle);
+  const kettleSpout = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.03, 0.12, 6), mat(0xb8bec6, 0.4));
+  kettleSpout.position.set(7.28, 1.1, -2.2);
+  kettleSpout.rotation.z = 0.9;
+  ground.add(kettleSpout);
+  const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.09, 0.08, 12), mat(0xd8cfc0));
+  bowl.position.set(7.35, 1.0, -3.3);
+  ground.add(bowl);
+  for (const [fx2, fc] of [[-0.04, 0xe88020], [0.04, 0xc03838], [0, 0xd0c030]]) {
+    const fruit = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 8), mat(fc));
+    fruit.position.set(7.35 + fx2, 1.08, -3.3 + fx2 * 0.5);
+    ground.add(fruit);
+  }
+  const cutBoard = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.015, 0.34), mat(0xb88a5a));
+  cutBoard.position.set(7.35, 0.98, -1.5);
+  cutBoard.rotation.y = 0.2;
+  ground.add(cutBoard);
   box(ground, 1.15, 0.14, 0.95, 0x8a6a4a, -3.35, 0.62, 3.5);
   // area rug
   const rug = new THREE.Mesh(new THREE.CylinderGeometry(1.7, 1.7, 0.03, 24), mat(0x8a4a42));

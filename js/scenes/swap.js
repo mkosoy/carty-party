@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { positionalLoop } from '../engine/sfx.js';
 import { runDJMinigame } from '../engine/djbooth.js';
-import { Pickups } from '../engine/core.js';
+import { Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { brickWall, concrete } from '../engine/textures.js';
@@ -1034,6 +1034,8 @@ export async function swapScene(game) {
   scene.add(rack);
   bounds.push({ minX: 0.9, maxX: 4.1, minZ: -3.6, maxZ: -0.4 });
 
+  setTimeout(() => phoneText('Stacy ❤️', 'ten items max!! don&#39;t embarrass me at my own event'), 6000);
+  setTimeout(() => phoneText('Mom', 'be nice to everyone. swapping is a gift economy'), 12500);
   return {
     update(dt) {
     if (!this._posLoops) {

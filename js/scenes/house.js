@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { positionalLoop } from '../engine/sfx.js';
-import { Pickups } from '../engine/core.js';
+import { Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { woodFloor, carpet, paintedWall, concrete } from '../engine/textures.js';
@@ -1271,6 +1271,8 @@ export async function houseScene(game) {
     scene.add(drawing);
   }
 
+  setTimeout(() => phoneText('Olivia', 'make yourself at home! wine&#39;s in the kitchen, obviously'), 6000);
+  setTimeout(() => phoneText('Olivia (the other one)', 'whoever is playing music in the basement turn it UP'), 12500);
   return {
     update(dt) {
     if (window.__motes) {

@@ -281,6 +281,26 @@ export async function shoppingScene(game) {
 
   const interactions = new Interactions(scene);
   interactions.add({
+    pos: new THREE.Vector3(1, 0, -9), radius: 2.2, label: 'The Apple store',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'The Apple store at christmas. The line moves like geology. Somewhere in there a man is buying his third iPad by accident.' },
+        { speaker: 'Kylie', text: 'Do NOT let me go in there. I will buy a watch I cannot afford. Seriously, physically restrain me.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-10, 0, -9), radius: 2.2, label: 'Nordstrom windows',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'The Nordstrom holiday window display. Someone designed this in June. Imagine being the person who draws reindeer in June.' },
+        { speaker: 'Kylie', text: 'That cashmere in the window?? no. focus. LIST. The list is law.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(16, 0, 3), radius: 2.0, label: 'Lush wall of soap',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'You can smell Lush from forty feet away. It is less a store and more a scented bomb shelter.' }]);
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(-13, 0, -6), radius: 2.6, label: 'Start the shopping run',
     action: async () => {
       if (st.done || st.active) return;

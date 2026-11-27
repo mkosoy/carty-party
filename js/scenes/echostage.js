@@ -332,6 +332,25 @@ export async function echostageScene(game) {
 
   const interactions = new Interactions(scene);
   interactions.add({
+    pos: new THREE.Vector3(-15, 0, 0), radius: 2.2, label: 'The second bar',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'Sixty feet of bar and there is still a wait. The economy of thirst in here is unmatched.' },
+        { speaker: 'Mark', text: 'pro tip: the far end of the bar. nobody walks that far. it is always open. you are welcome.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(0, 0, 8), radius: 2.6, label: 'The mezzanine',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'VIP mezzanines on three sides. Up there you watch the crowd like weather. Down here you ARE the weather.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(8, 0, -8), radius: 2.2, label: 'Speaker stack',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'The d&b stacks. Tiësto personally recommended this system. Tiesto. Personally. I feel that in my skeleton.' }]);
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(12.9, 0, 0), radius: 2.6, label: 'Start your shift',
     once: false,
     action: async () => {

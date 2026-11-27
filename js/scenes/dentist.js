@@ -557,6 +557,26 @@ export async function dentistScene(game) {
   scene.add(bcM);
 
   interactions.add({
+    pos: new THREE.Vector3(-6.5, 0, -6.5), radius: 2.0, label: 'The x-ray',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'Is that my skull? That is weirdly my skull. My skull has a skeleton inside it. I do not love knowing that.' },
+        { speaker: 'Dr. Fritz', text: 'Beautiful pano. Look at those roots. You could hang a hammock between those molars.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(6.5, 0, -6.5), radius: 2.0, label: 'Braces colors',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'The color wall. Every kid in Montgomery County has stood here paralyzed by this exact decision.' },
+        { speaker: 'Dr. Fritz', text: 'Holiday colors are popular this week. The green and red combo. Very festive. Very committed.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(2.5, 0, -7), radius: 1.8, label: 'The diploma wall',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'Three diplomas, one seal each. This man is more certified than a parachute.' }]);
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(-4.5, 0, -3), radius: 2.0, label: 'Read the diplomas',
     action: async () => {
       player.frozen = true;

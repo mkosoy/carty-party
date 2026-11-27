@@ -7,19 +7,19 @@ export function runDJMinigame(records = 0) {
     const overlay = document.createElement('div');
     overlay.style.cssText = 'position:fixed;inset:0;z-index:60;background:linear-gradient(160deg,#12081e 0%,#1e0a2e 55%,#0a1226 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:Georgia,serif;';
     overlay.innerHTML = `
-      <div style="color:#ffe9b8;font-size:26px;text-shadow:0 0 18px #c050ff;margin-bottom:2px">🎧 the swap DJ booth</div>
+      <div style="color:#ffe9b8;font-size:26px;text-shadow:0 0 18px #c050ff;margin-bottom:2px">the swap DJ booth</div>
       <div style="color:#b090d0;font-size:14px;font-style:italic;margin-bottom:4px">a crowd-pleaser is already loaded — just hit <b style="color:#ffe9b8">▶ play loop</b></div><div style="color:#b090d0;font-size:13px;font-style:italic;margin-bottom:14px">or make it yours: tap grid cells to add/remove sounds, tap pads to preview</div>
       <div id="dj-pads" style="display:grid;grid-template-columns:repeat(8,1fr);gap:7px;margin-bottom:14px"></div>
       <div id="dj-grid" style="display:grid;grid-template-columns:repeat(16,1fr);gap:4px;margin-bottom:14px"></div>
       <div style="display:flex;gap:12px;align-items:center">
         <button id="dj-play" style="background:#c050ff;border:none;color:#fff;font-size:18px;padding:10px 26px;border-radius:24px;cursor:pointer;font-family:Georgia,serif">▶ play loop</button>
         <button id="dj-clear" style="background:#3a2a50;border:none;color:#c0a0e0;font-size:14px;padding:8px 18px;border-radius:20px;cursor:pointer;font-family:Georgia,serif">clear</button>
-        <button id="dj-perform" style="background:#e0308a;border:none;color:#fff;font-size:15px;padding:10px 20px;border-radius:24px;cursor:pointer;font-family:Georgia,serif">🎤 perform for the crowd</button>
-        <button id="dj-publish" style="background:#ff7720;border:none;color:#fff;font-size:15px;padding:10px 20px;border-radius:24px;cursor:pointer;font-family:Georgia,serif">☁ publish to soundcloud</button>
+        <button id="dj-perform" style="background:#e0308a;border:none;color:#fff;font-size:15px;padding:10px 20px;border-radius:24px;cursor:pointer;font-family:Georgia,serif">perform for the crowd</button>
+        <button id="dj-publish" style="background:#ff7720;border:none;color:#fff;font-size:15px;padding:10px 20px;border-radius:24px;cursor:pointer;font-family:Georgia,serif">publish to soundcloud</button>
       </div>
       <div id="dj-status" style="color:#90e0c0;font-size:14px;margin-top:12px;height:22px;font-style:italic"></div>
       <div id="dj-banks" style="color:#b090d0;font-size:13px;margin-top:4px"></div>
-      <button id="dj-exit" style="position:absolute;top:18px;right:24px;background:none;border:1px solid rgba(255,233,184,.4);color:#ffe9b8;font-size:15px;padding:6px 16px;border-radius:16px;cursor:pointer;font-family:Georgia,serif">done ✓</button>
+      <button id="dj-exit" style="position:absolute;top:14px;left:14px;background:rgba(224,48,138,.85);border:none;color:#fff;font-size:17px;font-weight:bold;padding:10px 20px;border-radius:22px;cursor:pointer;font-family:Georgia,serif;z-index:5">✕ close the booth</button>
     `;
     document.body.appendChild(overlay);
 

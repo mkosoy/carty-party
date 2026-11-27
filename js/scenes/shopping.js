@@ -191,6 +191,7 @@ export async function shoppingScene(game) {
       const gift = GIFTS.find((g) => g.id === item.id);
       if (gift && !st.got.has(item.id)) {
         st.got.add(item.id);
+        sfxChime();
         showObjective(`✅ ${gift.label} — ${st.got.size}/6`, 2000);
         if (st.got.size === 6) finish(true);
       } else {

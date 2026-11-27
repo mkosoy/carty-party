@@ -446,6 +446,24 @@ export async function driveScene(game) {
 
 
   window.__sceneHint = '\u2190 \u2192 steer \u00b7 avoid the hazards \u00b7 grab turkeys for speed boost';
+  // the mormon temple on 495 — the most recognizable moco drive landmark: white spires glowing
+  const temple = new THREE.Group();
+  const tbase = new THREE.Mesh(new THREE.BoxGeometry(4, 2.5, 3), new THREE.MeshStandardMaterial({ color: 0xe8e8f0, emissive: 0x8890a8, emissiveIntensity: 0.25 }));
+  tbase.position.y = 1.25;
+  temple.add(tbase);
+  for (const [sx, h] of [[-1.4, 3.2], [0, 4.6], [1.4, 3.2]]) {
+    const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.42, h, 6), new THREE.MeshStandardMaterial({ color: 0xf0f0f8, emissive: 0x99a0b8, emissiveIntensity: 0.3 }));
+    spire.position.set(sx, 2.5 + h / 2, 0);
+    temple.add(spire);
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.32, 1.1, 6), new THREE.MeshStandardMaterial({ color: 0xc8a040, emissive: 0xc8a040, emissiveIntensity: 0.5 }));
+    tip.position.set(sx, 2.5 + h + 0.55, 0);
+    temple.add(tip);
+  }
+  temple.position.set(14, 0, -190);
+  temple.scale.set(1.6, 1.6, 1.6);
+  scene.add(temple);
+  decor.push(temple);
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

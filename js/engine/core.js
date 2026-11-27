@@ -30,7 +30,12 @@ export class FollowCam {
       const nowT = performance.now() / 1000;
       const moving = inp.axes && (Math.abs(inp.axes().x) > 0.1 || Math.abs(inp.axes().z) > 0.1) || window.__playerFrozen;
       if (moving && (!this.lastDragT || nowT - this.lastDragT > 0.9) && window.__playerFacing !== undefined) {
-        let targetYaw = window.__playerFacing;
+        // correct alignment target is pi - facing, NOT facing: facing uses
+        // atan2(x,z) where forward-away-from-camera = pi, while camera yaw 0
+        // already means "behind looking forward". aligning to raw facing puts
+        // the camera exactly 180deg wrong — in FRONT of the player. (strafe
+        // tests can't detect this: at +/-90deg both targets coincide.)
+        let targetYaw = Math.PI - window.__playerFacing;
         let d = targetYaw - this.yaw;
         while (d > Math.PI) d -= Math.PI * 2;
         while (d < -Math.PI) d += Math.PI * 2;
@@ -90,6 +95,7 @@ export class FollowCam {
     this.camera.position.copy(this.pos);
     // publish horizontal camera distance — the player fade reads this
     window.__camDistXZ = Math.hypot(this.camera.position.x - target.x, this.camera.position.z - target.z);
+    window.__camPos = { x: this.camera.position.x, z: this.camera.position.z };
     if (this.room) {
       this.camera.position.y = Math.min(this.camera.position.y, this.room.maxY);
     }

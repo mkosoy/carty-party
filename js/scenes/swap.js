@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { positionalLoop } from '../engine/sfx.js';
 import { runDJMinigame } from '../engine/djbooth.js';
 import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
@@ -1025,6 +1026,16 @@ export async function swapScene(game) {
 
   return {
     update(dt) {
+    if (!this._posLoops) {
+      this._posLoops = [];
+      try {
+        this._posLoops.push(positionalLoop({ type: 'noise', freq: 2400, x: -5, z: 7.8, maxDist: 5, gain: 0.06, rate: 1.5 }));
+        this._posLoops.push(positionalLoop({ type: 'sawtooth', freq: 55, x: 14, z: 4.2, maxDist: 11, gain: 0.12 }));
+      } catch {}
+    }
+    if (this._posLoops && typeof christian !== 'undefined') {
+      for (const pl of this._posLoops) pl.update(christian.group.position.x, christian.group.position.z);
+    }
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       player.update(dt);
       pickups.update(dt, christian.group.position);

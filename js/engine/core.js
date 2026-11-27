@@ -50,9 +50,9 @@ export class FollowCam {
         const ad = Math.abs(d);
         const engageAt = inputActive ? 0.5 : 1.2;
         if (ad > engageAt) this._recentering = true;
-        if (ad < 0.12) this._recentering = false;
+        if (ad < 0.06) this._recentering = false;
         if (this._recentering) {
-          this.yaw += d * Math.min(1, dt * (2.6 + Math.min(2.4, ad * 1.7)));
+          this.yaw += d * Math.min(1, dt * (3.0 + Math.min(3.2, ad * 2.1)));
         }
       }
     }
@@ -75,7 +75,7 @@ export class FollowCam {
         const cx = Math.max(this.room.minX + m, Math.min(this.room.maxX - m, desired.x));
         const cz = Math.max(this.room.minZ + m, Math.min(this.room.maxZ - m, desired.z));
         if (cx === desired.x && cz === desired.z) break;
-        desired = target.clone().add(rot.clone().multiplyScalar(1 - (shrink + 1) * 0.11));
+        desired = target.clone().add(rot.clone().multiplyScalar(Math.max(0.45, 1 - (shrink + 1) * 0.11)));
         // constant over-shoulder floor, NOT a rising one: a floor that grows
         // with shrink ends up HIGHER than the unshrunk camera in small rooms
         // (house: normal height 2.6, forced floor hit 3.35) — that is the
@@ -305,8 +305,8 @@ export class PlayerController {
     // hysteresis so it doesn't flicker at the threshold
     const d = window.__camDistXZ;
     if (d === undefined) return;
-    if (this.person.group.visible && d < 1.25) this.person.group.visible = false;
-    else if (!this.person.group.visible && d > 1.7) this.person.group.visible = true;
+    if (this.person.group.visible && d < 1.0) this.person.group.visible = false;
+    else if (!this.person.group.visible && d > 2.0) this.person.group.visible = true;
   }
   update(dt) {
     this.updateVisibility();

@@ -1177,7 +1177,7 @@ export async function houseScene(game) {
   }
 
   const followCam = new FollowCam(camera);
-  followCam.offset.set(0, 2.6, 4.2);
+  followCam.offset.set(0, 2.3, 3.2);
   followCam.setRoom(-7.9, 7.9, -5.9, 5.9);
   const player = new PlayerController(christian, input, boundsByFloor.ground);
   const interactions = new Interactions(scene);

@@ -345,6 +345,15 @@ export async function dcScene(game) {
       againBtn.style.cssText = 'margin-top:26px;background:#e8b64c;color:#1a1408;border:none;border-radius:22px;padding:10px 26px;font-family:Georgia;font-size:16px;cursor:pointer';
       againBtn.onclick = () => window.location.reload();
       fin.appendChild(againBtn);
+      const exploreBtn = document.createElement('button');
+      exploreBtn.textContent = '🗺 keep exploring — the world is open';
+      exploreBtn.style.cssText = 'margin-top:10px;background:transparent;color:#e8b64c;border:1.5px solid #e8b64c;border-radius:22px;padding:10px 26px;font-family:Georgia;font-size:16px;cursor:pointer';
+      exploreBtn.onclick = () => {
+        fin.remove();
+        player.frozen = false;
+        if (window.__showMap) window.__showMap();
+      };
+      fin.appendChild(exploreBtn);
     },
   });
   centerInt.hidden = true;

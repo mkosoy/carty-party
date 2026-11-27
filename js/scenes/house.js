@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Pickups } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson } from '../engine/character.js';
-import { woodFloor, carpet, paintedWall } from '../engine/textures.js';
+import { woodFloor, carpet, paintedWall, concrete } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, choice, GuideMarker } from '../engine/core.js';
 
 // Scene 3 — Olivia's townhouse. Three floors (basement / ground / upstairs)
@@ -34,11 +34,14 @@ export async function houseScene(game) {
     for (const [w, h, d, x, z] of [
       [16, 3.4, 0.3, 0, -6], [16, 3.4, 0.3, 0, 6], [0.3, 3.4, 12, -8, 0], [0.3, 3.4, 12, 8, 0],
     ]) {
-      const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ map: paintedWall(typeof wallColor === 'number' ? '#' + wallColor.toString(16).padStart(6, '0') : wallColor, 3, 1.2), roughness: 0.85 }));
+      const isBareConcrete = wallColor === 0x4a4a52;
+      const wallTex = isBareConcrete ? concrete('#55555e', 3, 1.2) : paintedWall(typeof wallColor === 'number' ? '#' + wallColor.toString(16).padStart(6, '0') : wallColor, 3, 1.2);
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ map: wallTex, roughness: 0.85 }));
       wall.position.set(x, h / 2, z);
       g.add(wall);
       // wainscot: cream panel strip along the bottom of each interior wall face + chair rail cap —
       // the single biggest "real house" wall upgrade
+      if (isBareConcrete) continue;
       const horizontal = w > d; // wall runs along x
       const len = horizontal ? w : d;
       const inward = horizontal ? (z < 0 ? 1 : -1) : (x < 0 ? 1 : -1);

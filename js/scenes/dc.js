@@ -428,6 +428,21 @@ export async function dcScene(game) {
     },
   });
 
+  // snow-capped pines scattered around the park edges — softens the empty foreground
+  for (const [px, pz, ps] of [[-11, 16, 1.2], [11.5, 15, 1.0], [-13, 4, 0.9], [13.5, 3, 1.1], [-9, 19, 0.8], [9, 18.5, 1.3]]) {
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12 * ps, 0.16 * ps, 0.8 * ps, 7), mat(0x4a3220));
+    trunk.position.set(px, 0.4 * ps, pz);
+    scene.add(trunk);
+    for (let ti = 0; ti < 3; ti++) {
+      const cone = new THREE.Mesh(new THREE.ConeGeometry((1.1 - ti * 0.28) * ps, 1.0 * ps, 8), mat(0x1e4a2e));
+      cone.position.set(px, (0.9 + ti * 0.62) * ps, pz);
+      scene.add(cone);
+      const snowCap = new THREE.Mesh(new THREE.ConeGeometry((1.1 - ti * 0.28) * ps * 0.62, 0.4 * ps, 8), mat(0xeef2f8));
+      snowCap.position.set(px, (0.9 + ti * 0.62) * ps + 0.32 * ps, pz);
+      scene.add(snowCap);
+    }
+  }
+
   window.__sceneHint = 'WASD — explore · E — interact · F — throw snowball · drag — camera';
 
   // snowball throwing — press F, lobbed arc, splat particles

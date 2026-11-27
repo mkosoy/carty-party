@@ -113,7 +113,7 @@ export async function houseScene(game) {
   // framed pictures on the wall
   for (const [fx, fy, fc] of [[-1.5, 1.9, 0xc0a060], [-0.5, 2.0, 0x6080a0], [0.6, 1.85, 0x7a9a5a]]) {
     box(ground, 0.5, 0.65, 0.05, 0x4a3524, fx, fy, -5.82);
-    box(ground, 0.4, 0.55, 0.06, fc, fx, fy, -5.83);
+    box(ground, 0.4, 0.55, 0.02, fc, fx, fy, -5.78);
   }
   // window with snowy night outside
   box(ground, 1.6, 1.4, 0.1, 0x3a4a66, 5.5, 1.8, -5.85);

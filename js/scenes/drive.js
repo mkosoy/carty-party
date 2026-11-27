@@ -287,8 +287,22 @@ export async function driveScene(game) {
   roadSign('Quince Orchard|NEXT EXIT', 5.5, -125);
   roadSign('Montgomery Village|Ave', 5.5, -195);
   roadSign('Wootton Pkwy', -5.5, -145);
+  roadSign('NIH Walter Reed|NEXT RIGHT', 5.5, -30);
+  roadSign('Strathmore', -5.5, -78);
   roadSign('Yo Yogi Sushi|NEXT RIGHT', 5.5, -160);
   roadSign('Baltimore 28|Washington 22', -5.5, -230);
+  // NIH / walter reed campus — bethesda stretch, low brick campus behind a fence line
+  for (let ci = 0; ci < 5; ci++) {
+    const campus = new THREE.Mesh(new THREE.BoxGeometry(7, 2.6 + (ci % 2), 5), mat(0x8a5a48));
+    campus.position.set(20 + (ci % 2) * 7, (2.6 + (ci % 2)) / 2, -30 - ci * 8);
+    scene.add(campus);
+    decor.push(campus);
+    const campSnow = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.15, 5.2), mat(0xf4f8ff));
+    campSnow.position.set(20 + (ci % 2) * 7, 2.75 + (ci % 2), -30 - ci * 8);
+    scene.add(campSnow);
+    decor.push(campSnow);
+  }
+
   // rio washingtonian center lakefront — frozen lake + boardwalk + waterfront silhouette, right side
   const lake = new THREE.Mesh(new THREE.PlaneGeometry(30, 46), new THREE.MeshStandardMaterial({ color: 0x9ab8cc, roughness: 0.15, metalness: 0.5 }));
   lake.rotation.x = -Math.PI / 2;

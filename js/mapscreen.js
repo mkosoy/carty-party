@@ -31,7 +31,7 @@ export function initMapScreen() {
   el.innerHTML = `
     <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:2vh 3vw">
       <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px">
-        <div style="color:#d4af69;font:bold 22px Georgia;letter-spacing:2px">THE MOCo HOLIDAY MAP</div>
+        <div style="color:#d4af69;font:bold clamp(14px,4.6vw,22px) Georgia;letter-spacing:2px;white-space:nowrap">THE MOCo HOLIDAY MAP</div>
         <div id="map-close" style="color:#fff;opacity:.75;cursor:pointer;font-size:14px;text-decoration:underline">close ✕</div>
       </div>
       <div id="map-cast" style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;justify-content:center"></div>
@@ -52,7 +52,7 @@ export function initMapScreen() {
   let chosen = localStorage.getItem('cp-character') || 'christian';
   for (const c of CAST) {
     const chip = document.createElement('div');
-    chip.style.cssText = 'cursor:pointer;padding:4px 12px;border-radius:20px;font-size:13px;color:#dde;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06)';
+    chip.style.cssText = 'cursor:pointer;padding:4px 10px;border-radius:20px;font-size:12px;color:#dde;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06)';
     chip.innerHTML = `<img src="assets/portraits/${c.id}.png" style="width:20px;height:20px;border-radius:50%;vertical-align:-5px;margin-right:5px" onerror="this.style.display='none'">${c.name}`;
     chip.addEventListener('click', () => {
       chosen = c.id;

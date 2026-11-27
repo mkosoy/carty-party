@@ -47,8 +47,9 @@ export function makePerson({
   outfit = null,        // 'shirt' | 'hoodie' | 'tee' | 'sweater' | 'jacket' — auto-varied when null
   name = null,
 } = {}) {
+  const isFeminine = hairStyle === 'long' || hairStyle === 'bun';
   if (!outfit) {
-    const pool = jacket ? ['jacket'] : ['shirt', 'hoodie', 'tee', 'sweater', 'shirt', 'hoodie', 'sweater'];
+    const pool = jacket ? ['jacket'] : (isFeminine ? ['dress', 'shirt', 'sweater', 'dress', 'hoodie'] : ['shirt', 'hoodie', 'tee', 'sweater', 'shirt', 'hoodie', 'sweater']);
     const seed = (typeof top === 'number' ? top : 0) * 31 + (typeof bottom === 'number' ? bottom : 0) * 7 + (typeof hair === 'number' ? hair : 0);
     outfit = pool[Math.abs(seed) % pool.length];
   }
@@ -75,6 +76,20 @@ export function makePerson({
   hem.position.y = 0.845 * u;
   hem.scale.z = 0.74;
   g.add(hem);
+  if (outfit === 'dress') {
+    // fit-and-flare: bodice is the torso, skirt flares from the waist
+    const skirt = new THREE.Mesh(new THREE.CylinderGeometry(0.16 * u, 0.27 * u, 0.42 * u, 14), mat(top));
+    skirt.position.y = 0.68 * u;
+    skirt.scale.z = 0.78;
+    g.add(skirt);
+    // waistband accent
+    const waist = new THREE.Mesh(new THREE.TorusGeometry(0.15 * u, 0.014 * u, 6, 14), mat(new THREE.Color(top).multiplyScalar(0.7).getHex()));
+    waist.position.y = 0.88 * u;
+    waist.rotation.x = Math.PI / 2;
+    waist.scale.z = 0.78;
+    g.add(waist);
+  }
+
   // collar rim
   if (collar && outfit === 'shirt') {
     const col = new THREE.Mesh(new THREE.TorusGeometry(0.075 * u, 0.02 * u, 8, 14), mat(new THREE.Color(top).multiplyScalar(0.78).getHex()));
@@ -94,7 +109,7 @@ export function makePerson({
     }
   }
   // outfit-specific construction — shirts get plackets, hoodies get hoods + kangaroo pockets, etc.
-  if (outfit === 'shirt' || outfit === 'jacket') {
+  if (outfit === 'shirt' || outfit === 'jacket' || outfit === 'dress') {
     const placket = new THREE.Mesh(new THREE.BoxGeometry(0.028 * u, 0.5 * u, 0.012 * u), mat(new THREE.Color(top).multiplyScalar(0.88).getHex()));
     placket.position.set(0, 1.13 * u, 0.121 * u);
     g.add(placket);

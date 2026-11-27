@@ -182,7 +182,16 @@ body.touch #touch-controls { display: block; }
   }
   #levels-row::-webkit-scrollbar, #minigames-row::-webkit-scrollbar { display: none; }
   .mg-btn { flex: 0 0 auto; scroll-snap-align: center; min-width: 92px; }
-  #levels-section, #minigames-section { width: 100%; }
+  #levels-section, #minigames-section { width: 100%; position: relative; }
+  /* fade the right edge of scroll rows — signals there's more to swipe to */
+  #levels-section::after, #minigames-section::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 46px;
+    background: linear-gradient(to right, rgba(10,13,30,0), rgba(10,13,30,.85));
+    pointer-events: none;
+  }
 }
 
 #joystick-ghost { position: absolute; left: 26px; bottom: 96px; width: 84px; height: 84px; border-radius: 50%; border: 2px solid rgba(255,255,255,.28); background: rgba(255,255,255,.05); pointer-events: none; }

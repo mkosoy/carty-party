@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { sfxChime } from '../engine/sfx.js';
+import { sfxChime, positionalLoop } from '../engine/sfx.js';
 import { makePerson } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
@@ -344,6 +344,11 @@ export async function shoppingScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: kylie, self: this };
       player.update(dt);
+      if (!this._murmur) {
+        this._murmur = null;
+        try { this._murmur = positionalLoop({ type: 'noise', freq: 320, x: 0, z: 0, maxDist: 26, gain: 0.05, rate: 4 }); } catch {}
+      }
+      if (this._murmur) this._murmur.update(player.person.group.position.x, player.person.group.position.z);
       chatter.update(dt);
       pickupsC.update(dt, kylie.group.position);
       followCam.update(dt, kylie.group.position);

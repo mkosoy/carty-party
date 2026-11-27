@@ -1,3 +1,4 @@
+import { positionalLoop } from '../engine/sfx.js';
 import * as THREE from 'three';
 import { npcFacePlayer, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
@@ -962,6 +963,11 @@ export async function airportScene(game) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       elapsed += dt;
       player.update(dt);
+      if (!this._murmur) {
+        this._murmur = null;
+        try { this._murmur = positionalLoop({ type: 'noise', freq: 320, x: 0, z: -4, maxDist: 26, gain: 0.05, rate: 4 }); } catch {}
+      }
+      if (this._murmur) this._murmur.update(player.person.group.position.x, player.person.group.position.z);
       chatter.update(dt);
       pickups.update(dt, christian.group.position);
       guide.update(dt, christian.group.position);

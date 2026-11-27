@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { phoneText, FollowCam, PlayerController, Interactions, showObjective , Pickups } from '../engine/core.js';
+import { phoneText, FollowCam, PlayerController, Interactions, showObjective, setObjective, Pickups } from '../engine/core.js';
 
 // E11EVEN Miami — the reward. Olivia dances in the neon heart of the club:
 // laser grids, LED walls, smoke, a crowd moving with the beat, confetti
@@ -496,6 +496,24 @@ interactions.add({
   window.addEventListener('keydown', dmKeys);
 
   window.__sceneHint = 'WASD — dance floor · 1/2/3/4 — dance moves · drag — camera';
+
+  // touch dance-move buttons — keyboard 1-4 is dead on phones
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    const moves = [['wave', 0], ['sway', 1], ['pump', 2], ['spin', 3]];
+    moves.forEach(([label, n], i) => {
+      const b = document.createElement('div');
+      b.className = 'scene-dom-extra';
+      b.style.cssText = 'position:fixed;bottom:180px;right:' + (14 + i * 62) + 'px;width:56px;height:40px;border-radius:12px;background:rgba(224,48,138,.55);border:1.5px solid rgba(255,255,255,.35);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;z-index:40;touch-action:none;user-select:none;font-family:Arial,sans-serif';
+      b.textContent = label;
+      b.addEventListener('touchstart', (e) => {
+        window.__danceMove = n; window.__danceMoveT = performance.now();
+        b.style.background = 'rgba(255,214,99,.7)';
+        setTimeout(() => { b.style.background = 'rgba(224,48,138,.55)'; }, 350);
+        e.preventDefault();
+      }, { passive: false });
+      document.body.appendChild(b);
+    });
+  }
   setTimeout(() => phoneText('Stacy ❤️', 'come home. the flight is two hours. you can still make the monument. come home'), 19000);
   // aerial hoop performer — the cirque signature E11EVEN is famous for.
   // a ring hung from the ceiling slowly rotating, with a posed silhouette inside
@@ -537,6 +555,7 @@ interactions.add({
   }
   let burstT = 6;
 
+  setObjective('E11EVEN Miami — hit the dance floor, dance moves on the buttons.');
   return {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: olivia, self: this };

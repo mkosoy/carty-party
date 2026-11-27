@@ -402,7 +402,7 @@ export async function dcScene(game) {
   });
   centerInt.hidden = true;
 
-  showObjective('DC at night — Mark and Kylie are waiting by the tree.', 6000);
+  setObjective('DC at night — Mark and Kylie are waiting by the tree.');
 
 
   // collectibles: vintage cameras for Stacy + vinyl records

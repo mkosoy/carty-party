@@ -409,7 +409,7 @@ export async function museumScene(game) {
     scene.add(dart);
     fl.plane = dart;
     for (const r of fl.rings) { r.visible = true; r.userData.hit = false; r.material.emissiveIntensity = 0.7; }
-    showObjective('FLY! steer left/right · hold W for lift · thread the rings!', 3500);
+    setObjective('FLY! steer with the joystick · hold forward for lift · thread the rings!');
   }});
 
   const pickups = new Pickups(scene);
@@ -420,7 +420,7 @@ export async function museumScene(game) {
   const chatter = makeChatter(scene, visitors, ['✈️','🚀','🌕','🤔','📸']);
   setTimeout(() => phoneText('Mark', 'do NOT touch the x-15. actually you can&#39;t reach it. but don&#39;t think about it'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · explore the hall';
-  setObjective('Air & Space — wander the great hall, find the flight simulator.');
+  setObjective('Air & Space — wander the great hall, try the paper airplane station.');
 
   setTimeout(() => phoneText('Olivia', 'tell mark if he cries at the moon rock again I am telling everyone at the swap'), 11000);
   return {

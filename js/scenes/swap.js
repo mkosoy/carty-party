@@ -780,6 +780,7 @@ export async function swapScene(game) {
       dropRack.add(item);
       hungItems.push(item);
       if (state.hung >= 4) {
+        try { localStorage.setItem('cp-done-swap', '1'); } catch {}
         await dialogue.play([
           { speaker: 'Christian', text: 'That’s everything — even Tre’s blanket-cardigan. May it find a loving home.' },
           { speaker: 'Stacy', text: 'You’re the best. Okay — enjoy the party! DJ’s actually good tonight.' },

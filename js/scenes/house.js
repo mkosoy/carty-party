@@ -1092,6 +1092,36 @@ export async function houseScene(game) {
 
   // --- Olivia (real one) ---
   interactions.add({
+    pos: new THREE.Vector3(-6.2, 0, -2.6), radius: 1.7, label: 'The black bedding', floor: 'upper',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'All black everything. One Olivia is going through her midnight phase. Honestly? Commitment to a bit is respectable.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-6.2, 0, 2.6), radius: 1.7, label: 'The pink bedding', floor: 'upper',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Pink, ruffled, immaculate. The other Olivia is the exact opposite of downstairs black-bedding Olivia. They really are two different people. Probably.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(1, 0, 0), radius: 2.0, label: 'The upstairs hallway', floor: 'upper',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Two bedrooms, one hallway, zero answers about the Olivia situation so far.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(-5.5, 0, -3.4), radius: 2.2, label: 'Olivia', floor: 'upper', once: true,
     action: async () => {
       player.frozen = true;

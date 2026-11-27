@@ -552,6 +552,16 @@ export async function houseScene(game) {
   const mantelGarland = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.1, 0.1), mat(0x1e5a2e));
   mantelGarland.position.set(-6.0, 1.82, 5.82);
   ground.add(mantelGarland);
+  // dining chairs — four wooden chairs tucked around the table
+  for (const [cx, cz, cry] of [[2.2, -3.0, 0], [3.8, -3.0, Math.PI], [3.0, -2.3, Math.PI / 2], [3.0, -3.7, -Math.PI / 2]]) {
+    const seat = box(ground, 0.42, 0.06, 0.42, 0x6a4a2a, cx, 0.46, cz);
+    const chairBack = box(ground, 0.42, 0.55, 0.06, 0x6a4a2a, cx, 0.78, cz + (cry === 0 ? -0.19 : cry === Math.PI ? 0.19 : 0));
+    for (const [lx, lz] of [[-0.17, -0.17], [0.17, -0.17], [-0.17, 0.17], [0.17, 0.17]]) {
+      box(ground, 0.05, 0.46, 0.05, 0x5a3a20, cx + lx, 0.23, cz + lz);
+    }
+    boundsByFloor.ground.push({ minX: cx - 0.25, maxX: cx + 0.25, minZ: cz - 0.25, maxZ: cz + 0.25 });
+  }
+
   // dining table centerpiece: candle trio + small wreath ring
   const wreathRing = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.05, 8, 16), mat(0x1e5a2e));
   wreathRing.rotation.x = Math.PI / 2;

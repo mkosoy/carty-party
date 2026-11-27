@@ -25,13 +25,16 @@ export function runDJMinigame(records = 0) {
 
     // ---- audio engine ----
     const AC = new (window.AudioContext || window.webkitAudioContext)();
+    const master = AC.createGain();
+    master.gain.value = 0.5;
+    master.connect(AC.destination);
     function kick(t) {
       const o = AC.createOscillator(), g = AC.createGain();
       o.frequency.setValueAtTime(140, t);
       o.frequency.exponentialRampToValueAtTime(40, t + 0.12);
       g.gain.setValueAtTime(0.9, t);
       g.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
-      o.connect(g).connect(AC.destination);
+      o.connect(g).connect(master);
       o.start(t); o.stop(t + 0.26);
     }
     function noiseBurst(t, dur, hp, vol) {
@@ -47,7 +50,7 @@ export function runDJMinigame(records = 0) {
       const g = AC.createGain();
       g.gain.setValueAtTime(vol, t);
       g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      src.connect(f).connect(g).connect(AC.destination);
+      src.connect(f).connect(g).connect(master);
       src.start(t);
     }
     function tone(t, freq, dur, type = 'square', vol = 0.3, slide = 0) {
@@ -57,7 +60,7 @@ export function runDJMinigame(records = 0) {
       if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq + slide), t + dur);
       g.gain.setValueAtTime(vol, t);
       g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      o.connect(g).connect(AC.destination);
+      o.connect(g).connect(master);
       o.start(t); o.stop(t + dur + 0.02);
     }
     // sound bank: base 8 + unlockable extras
@@ -181,6 +184,7 @@ export function runDJMinigame(records = 0) {
         step = 0;
         tick();
         timer = setInterval(tick, stepDur * 1000);
+        if (window.__djLoop) window.__djLoop.timer = timer;
       }
     });
     overlay.querySelector('#dj-clear').addEventListener('click', () => {
@@ -213,6 +217,8 @@ export function runDJMinigame(records = 0) {
       }
       if (!playing) playBtn.click();
       performing = true;
+      window.__djLoop = { timer, AC };
+      master.gain.value = 0.16;
       status.textContent = '🎤 performing! the floor is yours — close the booth and walk away whenever, the music keeps spinning.';
       setTimeout(() => {
         overlay.remove();
@@ -223,6 +229,10 @@ export function runDJMinigame(records = 0) {
       if (!performing) {
         if (timer) clearInterval(timer);
         AC.close().catch(() => {});
+        window.__djLoop = null;
+      } else if (window.__djLoop) {
+        window.__djLoop.timer = timer;
+        window.__djLoop.AC = AC;
       }
       // when performing the loop keeps playing after you leave the decks —
       // the audio context and timer stay alive on purpose

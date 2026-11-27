@@ -115,6 +115,11 @@ const game = {
   scene: null,
   sceneApi: null,
   async switchScene(factory) {
+    // kill any live DJ booth loop — it must never bleed into other scenes
+    if (window.__djLoop) {
+      try { if (window.__djLoop.timer) clearInterval(window.__djLoop.timer); window.__djLoop.AC.close().catch(() => {}); } catch {}
+      window.__djLoop = null;
+    }
     // fade out before tearing down, fade back in after the first frames render
     let veil = document.getElementById('scene-veil');
     if (!veil) {

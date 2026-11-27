@@ -97,7 +97,7 @@ export function makePerson({
   function makeLeg(side) {
     const pivot = new THREE.Group();
     pivot.position.set(side * 0.095 * u, 0.82 * u, 0);
-    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.06 * u, 0.68 * u, 6, 16), mat(bottom));
+    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.074 * u, 0.66 * u, 6, 16), mat(bottom));
     leg.position.y = -0.4 * u;
     pivot.add(leg);
     // boot: shaft + toe box

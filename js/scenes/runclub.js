@@ -176,12 +176,12 @@ export async function runclubScene(game) {
   const spectators = [];
   for (const cfg of specCfg) {
     const spec = makePerson({ top: cfg.top, bottom: cfg.bottom, hair: cfg.hair, skin: cfg.skin });
-    spec.group.position.set(cfg.x, 0.55 + cfg.r * 0.5, -13.2 - cfg.r * 0.9);
     spec.group.rotation.y = 0;
-    // seated pose: legs forward
-    if (spec.legL) { spec.legL.rotation.x = -Math.PI / 2.2; spec.legR.rotation.x = -Math.PI / 2.2; }
     spec.group.scale.setScalar(0.9);
+    spec.group.position.set(cfg.x, 0, -13.2 - cfg.r * 0.9 + 0.3);
+    spec.sit(0.45 + cfg.r * 0.5);
     scene.add(spec.group);
+    spec.group.userData.sy = spec.group.position.y;
     spectators.push(spec);
   }
   // water station near the finish — folding table, cups, cooler
@@ -397,7 +397,7 @@ export async function runclubScene(game) {
       // spectators sway and bounce a little as they watch
       for (let si = 0; si < spectators.length; si++) {
         const sp = spectators[si];
-        sp.group.position.y = 0.55 + specCfg[si].r * 0.5 + Math.sin(performance.now() * 0.002 + si * 1.7) * 0.03;
+        sp.group.position.y = sp.group.userData.sy + Math.sin(performance.now() * 0.002 + si * 1.7) * 0.02;
       }
       t += dt;
 

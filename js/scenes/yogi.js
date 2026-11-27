@@ -337,6 +337,25 @@ export async function yogiScene(game) {
   });
 
   interactions.add({
+    pos: new THREE.Vector3(-5, 0, -4), radius: 2.0, label: 'The conveyor belt',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'The belt never stops. Plates orbit the room like little sushi satellites. Somewhere a salmon nigiri has done forty laps.' },
+        { speaker: 'Olivia', text: 'Rule one of belt sushi: if you hesitate, it is gone. Rule two: the good stuff always passes when you are mid-chew.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(5, 0, -5), radius: 2.0, label: 'The wave print',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'The great wave. Every sushi place has one. It is basically a license to serve fish.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(0, 0, 3), radius: 2.2, label: 'The lanterns',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'Red lanterns, warm light, the whole room glows like the inside of a paper lamp. Downtown Crown does not deserve a place this cozy.' }]);
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(0, 0, -8), radius: 2.4, label: 'The sacred sign',
     action: async () => {
       player.frozen = true;

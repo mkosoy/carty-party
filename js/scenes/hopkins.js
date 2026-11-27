@@ -245,6 +245,26 @@ export async function hopkinsScene(game) {
   scene.add(wbM);
 
   interactions.add({
+    pos: new THREE.Vector3(-7, 0, -5), radius: 2.0, label: 'The fume hood',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'The fume hood. For science too dangerous for open air. What are you people cooking in here?' },
+        { speaker: 'Stacy', text: 'Sulfur dioxide reactions, mostly. It smells like a volcano\'s armpit. That is how you know it is working.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(5, 0, -7), radius: 2.0, label: 'Periodic table',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'The periodic table. Element 92 flavors of nope arranged in a grid. Stacy knows them by heart. By HEART.' },
+        { speaker: 'Stacy', text: 'Tell me the atomic number of molybdenum. ...Exactly. Sit down.' }]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-2, 0, -7), radius: 2.0, label: 'The whiteboard',
+    action: async () => {
+      await dialogue.play([{ speaker: 'Christian', text: 'Field data due Friday. In red. Underlined. The most terrifying sentence in environmental science.' }]);
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(0, 0, 5), radius: 2.6, label: 'Start the field study',
     action: async () => {
       if (st.active || st.done) return;

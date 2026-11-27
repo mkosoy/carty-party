@@ -25,7 +25,16 @@ export async function swapScene(game) {
   const mat = (c) => new THREE.MeshLambertMaterial({ color: c });
   const bounds = [];
 
-  // big open brewery floor: brick walls, industrial windows, string lights
+    // designed lighting: warm edison pools down the rack aisles, cool fill from the harbor windows
+  for (const [lx2, lz2] of [[-8, -4], [0, -4], [8, -4], [-4, 4], [4, 4]]) {
+    const edison = new THREE.PointLight(0xffc887, 2.4, 8, 1.8);
+    edison.position.set(lx2, 3.6, lz2);
+    scene.add(edison);
+  }
+  const harborFill = new THREE.DirectionalLight(0x7088b8, 0.3);
+  harborFill.position.set(0, 4, -14);
+  scene.add(harborFill);
+// big open brewery floor: brick walls, industrial windows, string lights
   const floor = new THREE.Mesh(new THREE.BoxGeometry(34, 0.2, 24), new THREE.MeshStandardMaterial({ map: concrete('#6e6a66', 5, 3.5), roughness: 0.9 }));
   floor.receiveShadow = true;
   scene.add(floor);

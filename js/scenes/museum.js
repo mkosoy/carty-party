@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, Pickups } from '../engine/core.js';
-import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
+import { inventory, makeCameraMesh, makeRecordMesh, makeChatter } from '../engine/collectibles.js';
 import { sfxChime } from '../engine/sfx.js';
 
 // Smithsonian Air & Space — Mark's home turf. The great hall: suspended
@@ -278,6 +278,7 @@ export async function museumScene(game) {
   pickups.add(makeCameraMesh(), -16, -8, 'camera-museum-1', () => { invC.cameras++; sfxChime(); showObjective('📷 vintage camera for Stacy — left behind the display case!', 2500); });
   pickups.add(makeRecordMesh(), 15, 8, 'record-museum-1', () => { invC.records++; sfxChime(); showObjective('🎵 vinyl record — someone hid it by the vitrines!', 2500); });
 
+  const chatter = makeChatter(scene, visitors, ['✈️','🚀','🌕','🤔','📸']);
   window.__sceneHint = 'WASD — move · E — interact · explore the hall';
   showObjective('Air & Space — wander the great hall. Mark knows every bolt here.', 6000);
 
@@ -285,6 +286,7 @@ export async function museumScene(game) {
     update(dt) {
       window.__sceneHooks = { interactions, player, christian: hero, self: this };
       player.update(dt);
+      chatter.update(dt);
       if (!fl.active) followCam.update(dt, hero.group.position);
       pickups.update(dt, hero.group.position);
       const nearI = interactions.nearest(hero.group.position);

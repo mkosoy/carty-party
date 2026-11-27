@@ -595,6 +595,42 @@ export async function driveScene(game) {
   scene.add(temple);
   decor.push(temple);
 
+  // oncoming traffic: a parallel carriageway to the left with headlights streaming past
+  const onRoad = new THREE.Mesh(new THREE.BoxGeometry(9, 0.08, 400), new THREE.MeshStandardMaterial({ color: 0x2c2e32, roughness: 0.95 }));
+  onRoad.position.set(-13.5, 0.01, -100);
+  scene.add(onRoad);
+  const traffic = [];
+  function makeTrafficCar() {
+    const tc = new THREE.Group();
+    const tcol = [0x4a5a6a, 0x6a4a4a, 0x3a3a3e, 0x7a7a82, 0x2a4a3a][Math.floor(Math.random() * 5)];
+    const tb = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.55, 4), mat(tcol));
+    tb.position.y = 0.55;
+    tc.add(tb);
+    const tcab = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.45, 2), mat(0x2c3140));
+    tcab.position.set(0, 1, 0.2);
+    tc.add(tcab);
+    // headlights: bright glows facing the camera
+    for (const hx of [-0.6, 0.6]) {
+      const hl = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.14, 0.06), new THREE.MeshBasicMaterial({ color: 0xfff5d0 }));
+      hl.position.set(hx, 0.55, 2.02);
+      tc.add(hl);
+    }
+    for (const tx of [-0.6, 0.6]) {
+      const tl = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.12, 0.06), new THREE.MeshBasicMaterial({ color: 0xff2828 }));
+      tl.position.set(tx, 0.55, -2.02);
+      tc.add(tl);
+    }
+    const lane = [-16.5, -13.5, -10.5][Math.floor(Math.random() * 3)];
+    tc.position.set(lane, 0, -270 - Math.random() * 30);
+    scene.add(tc);
+    traffic.push(tc);
+    return tc;
+  }
+  for (let i = 0; i < 5; i++) {
+    const t = makeTrafficCar();
+    t.position.z = -40 - i * 55 - Math.random() * 20;
+  }
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
@@ -619,6 +655,13 @@ export async function driveScene(game) {
         for (const dc of decor) {
           dc.position.z += dt * 10;
           if (dc.position.z > 10) dc.position.z -= 290;
+        }
+        for (const tc of traffic) {
+          tc.position.z += dt * 19;
+          if (tc.position.z > 14) {
+            tc.position.z = -270 - Math.random() * 40;
+            tc.position.x = [-16.5, -13.5, -10.5][Math.floor(Math.random() * 3)];
+          }
         }
         if (input.consumeInteract()) {
           stationIdx = (stationIdx + 1) % stations.length;
@@ -695,6 +738,14 @@ export async function driveScene(game) {
         for (const dc of decor) {
           dc.position.z += dz;
           if (dc.position.z > 10) dc.position.z -= 290;
+        }
+        // oncoming traffic streams toward camera faster than the world scroll
+        for (const tc of traffic) {
+          tc.position.z += dz * 1.9;
+          if (tc.position.z > 14) {
+            tc.position.z = -270 - Math.random() * 40;
+            tc.position.x = [-16.5, -13.5, -10.5][Math.floor(Math.random() * 3)];
+          }
         }
         for (let i = obstacles.length - 1; i >= 0; i--) {
           const o = obstacles[i];

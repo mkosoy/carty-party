@@ -316,6 +316,136 @@ export async function driveScene(game) {
   ];
   let stationIdx = 1;
 
+  // ---- radio audio: each station sounds like itself ----
+  const radioAC = () => {
+    if (!window.__ac) window.__ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (window.__ac.state === 'suspended') window.__ac.resume().catch(() => {});
+    return window.__ac;
+  };
+  let radioNodes = null;
+  function stopRadio() {
+    if (!radioNodes) return;
+    for (const n of radioNodes.all) { try { n.stop ? n.stop() : n.disconnect(); } catch {} }
+    for (const iv of radioNodes.ivs) clearInterval(iv);
+    radioNodes = null;
+  }
+  window.__radioStop = stopRadio;
+  function noiseBufAC(AC, secs = 1.5) {
+    const buf = AC.createBuffer(1, AC.sampleRate * secs, AC.sampleRate);
+    const dd = buf.getChannelData(0);
+    for (let i = 0; i < dd.length; i++) dd[i] = Math.random() * 2 - 1;
+    return buf;
+  }
+  function startRadio(idx) {
+    stopRadio();
+    const AC = radioAC();
+    const master = AC.createGain();
+    master.gain.value = 0;
+    master.connect(AC.destination);
+    master.gain.linearRampToValueAtTime(0.09, AC.currentTime + 0.8);
+    const all = [master];
+    const nodes = { all, ivs: [] };
+    const N2 = (semi, base = 220) => base * Math.pow(2, semi / 12);
+
+    if (idx === 0) {
+      // WAMU NPR: speech-cadence murmur — bandpassed noise gated in bursts
+      const src = AC.createBufferSource();
+      src.buffer = noiseBufAC(AC, 2); src.loop = true;
+      const bp = AC.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 300; bp.Q.value = 2.5;
+      const gate = AC.createGain(); gate.gain.value = 0;
+      src.connect(bp); bp.connect(gate); gate.connect(master);
+      src.start();
+      all.push(src, bp, gate);
+      nodes.ivs.push(setInterval(() => {
+        const t = AC.currentTime;
+        // speech-like bursts: talk for a bit, pause
+        const talking = Math.random() > 0.25;
+        gate.gain.setTargetAtTime(talking ? 0.5 + Math.random() * 0.3 : 0.02, t, 0.09);
+      }, 420));
+    } else if (idx === 4) {
+      // DC101 christmas: sleigh bells — bright metallic noise bursts in a swinging pattern
+      nodes.ivs.push(setInterval(() => {
+        const t = AC.currentTime;
+        for (let k = 0; k < 2; k++) {
+          const src = AC.createBufferSource();
+          src.buffer = noiseBufAC(AC, 0.06);
+          const hp = AC.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 6000;
+          const g = AC.createGain();
+          g.gain.setValueAtTime(0.5, t + k * 0.09);
+          g.gain.exponentialRampToValueAtTime(0.001, t + k * 0.09 + 0.14);
+          src.connect(hp); hp.connect(g); g.connect(master);
+          src.start(t + k * 0.09);
+        }
+      }, 460));
+      // underneath: soft pad of a familiar progression
+      nodes.ivs.push(setInterval(() => {
+        const t = AC.currentTime;
+        [0, 4, 7].forEach((s) => {
+          const o = AC.createOscillator();
+          o.type = 'sine'; o.frequency.value = N2(s, 330);
+          const g = AC.createGain();
+          g.gain.setValueAtTime(0.05, t);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
+          o.connect(g); g.connect(master);
+          o.start(t); o.stop(t + 1.9);
+        });
+      }, 1900));
+    } else if (idx === 1) {
+      // The Drive classic rock: chugging power-chord riff
+      const riff = [0, 0, 3, 0, 5, 3, 0, -2];
+      let ri = 0;
+      nodes.ivs.push(setInterval(() => {
+        const t = AC.currentTime;
+        const semi = riff[ri % riff.length]; ri++;
+        for (const det of [0, 7]) {
+          const o = AC.createOscillator();
+          o.type = 'sawtooth'; o.frequency.value = N2(semi + det - 12, 220);
+          const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1200;
+          const g = AC.createGain();
+          g.gain.setValueAtTime(0.14, t);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+          o.connect(f); f.connect(g); g.connect(master);
+          o.start(t); o.stop(t + 0.26);
+        }
+      }, 240));
+    } else if (idx === 2) {
+      // Hot 99.5 pop: bright arpeggio loop
+      const arp = [0, 4, 7, 12, 7, 4];
+      let ai = 0;
+      nodes.ivs.push(setInterval(() => {
+        const t = AC.currentTime;
+        const o = AC.createOscillator();
+        o.type = 'square'; o.frequency.value = N2(arp[ai % arp.length], 440);
+        ai++;
+        const g = AC.createGain();
+        g.gain.setValueAtTime(0.05, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+        o.connect(g); g.connect(master);
+        o.start(t); o.stop(t + 0.22);
+      }, 190));
+    } else {
+      // WMZQ country: alternating twangy bass two-step
+      const line = [0, 7, 0, 7, 3, 7, 5, 7];
+      let ci = 0;
+      nodes.ivs.push(setInterval(() => {
+        const t = AC.currentTime;
+        const o = AC.createOscillator();
+        o.type = 'triangle'; o.frequency.value = N2(line[ci % line.length] - 12, 220);
+        ci++;
+        const g = AC.createGain();
+        g.gain.setValueAtTime(0.16, t);
+        // twang: fast pitch drop at the start
+        o.frequency.setValueAtTime(N2(line[(ci - 1) % line.length] - 12, 220) * 1.06, t);
+        o.frequency.exponentialRampToValueAtTime(N2(line[(ci - 1) % line.length] - 12, 220), t + 0.07);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+        o.connect(g); g.connect(master);
+        o.start(t); o.stop(t + 0.32);
+      }, 270));
+    }
+    radioNodes = nodes;
+  }
+
+
   // ---- phases ----
   let phase = 'intro';
 
@@ -438,6 +568,7 @@ export async function driveScene(game) {
       { speaker: 'Christian', text: 'Let’s see what’s on the radio…' },
     ]);
     showObjective('Cruise down the parkway — tap E to flip radio stations.', 6000);
+    setTimeout(() => { try { startRadio(stationIdx); } catch {} }, 1200); // auto-start the radio
     phase = 'cruise';
   }
 
@@ -493,6 +624,7 @@ export async function driveScene(game) {
           stationIdx = (stationIdx + 1) % stations.length;
           const st = stations[stationIdx];
           showObjective(`📻 ${st.freq} — ${st.name}`, 3200);
+          try { startRadio(stationIdx); } catch {}
         }
         if (cruiseTimer > 4.5 && !this._uberStarted) {
           this._uberStarted = true;

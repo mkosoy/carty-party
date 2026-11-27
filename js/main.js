@@ -86,6 +86,7 @@ const game = {
   sceneApi: null,
   async switchScene(factory) {
     window.__sparkles = [];
+    try { window.__radioStop?.(); } catch {}
     window.__camYaw = 0;
     const mb = document.getElementById('menu-button');
     if (mb) mb.classList.remove('hidden');

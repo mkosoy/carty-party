@@ -409,6 +409,11 @@ export class Dialogue {
     this.speakerEl = document.getElementById('dialogue-speaker');
     this.textEl = document.getElementById('dialogue-text');
     this.active = false;
+    const skipEl = document.getElementById('dialogue-skip');
+    if (skipEl) skipEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.input.escapeQueued = true;
+    });
   }
   play(lines) {
     return new Promise((resolve) => {
@@ -439,6 +444,11 @@ export class Dialogue {
       show();
       this.input.clear();
       const tick = () => {
+        if (this.input.consumeEscape && this.input.consumeEscape()) {
+          // ESC = skip the whole conversation — fast-forward to the last line
+          i = lines.length - 1;
+          show();
+        }
         if (this.input.consumeAdvance()) {
           i++;
           if (i >= lines.length) {

@@ -16,6 +16,7 @@ export class Input {
         this.advanceQueued = true;
       }
       if (e.code === 'Space') this.jumpQueued = true;
+      if (e.code === 'Escape') this.escapeQueued = true;
     });
     window.addEventListener('keyup', (e) => this.keys.delete(e.code));
 
@@ -157,6 +158,11 @@ export class Input {
     const v = this.jumpQueued;
     this.jumpQueued = false;
     return v;
+  }
+  consumeEscape() {
+    const q = this.escapeQueued;
+    this.escapeQueued = false;
+    return q;
   }
   consumeInteract() {
     const v = this.interactQueued;

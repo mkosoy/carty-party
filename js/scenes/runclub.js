@@ -393,7 +393,6 @@ export async function runclubScene(game) {
   window.addEventListener('beforeunload', cleanupH);
 
   let t = 0;
-  setTimeout(() => phoneText('Kylie', 'we are doing a FUN pace today. fun means I decide what fun means. keep up'), 6000);
   return {
     update(dt) {
       window.__sceneHooks = { christian: kylie, self: this };

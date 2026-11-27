@@ -338,7 +338,6 @@ export async function shoppingScene(game) {
   setTimeout(() => phoneText('Stacy ❤️', 'if you don&#39;t find the record player I will actually cry'), 6000);
   window.__sceneHint = 'WASD — move · E — interact · grab the listed gifts, dodge the decoys';
 
-  setTimeout(() => phoneText('Kylie', 'if you see a nanoleaf panel that is MINE. dibs. I am literally in the store'), 7000);
   setTimeout(() => phoneText('Stacy ❤️', 'you are christmas shopping?? on the 23rd?? christian. the mall on the 23rd is a war zone'), 16000);
   return {
     update(dt) {

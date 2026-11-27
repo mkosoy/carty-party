@@ -496,7 +496,6 @@ interactions.add({
   window.addEventListener('keydown', dmKeys);
 
   window.__sceneHint = 'WASD — dance floor · 1/2/3/4 — dance moves · drag — camera';
-  setTimeout(() => phoneText('Kylie', 'YOU ARE IN MIAMI?? it is christmas eve?? the swap is IN BALTIMORE??'), 8000);
   setTimeout(() => phoneText('Stacy ❤️', 'come home. the flight is two hours. you can still make the monument. come home'), 19000);
   // aerial hoop performer — the cirque signature E11EVEN is famous for.
   // a ring hung from the ceiling slowly rotating, with a posed silhouette inside
@@ -524,19 +523,19 @@ interactions.add({
 
   // confetti drops — E11EVEN blasts confetti over the crowd at peak moments.
   // a rolling burst every ~14s from above the dance floor
-  const confettiColors = [0xff40c0, 0x40c0ff, 0xffe040, 0x60ff80, 0xff8040];
-  const confetti = [];
-  const confettiGeo = new THREE.PlaneGeometry(0.09, 0.06);
-  function confettiBurst() {
+  const burstColors = [0xff40c0, 0x40c0ff, 0xffe040, 0x60ff80, 0xff8040];
+  const burstPieces = [];
+  const burstGeo = new THREE.PlaneGeometry(0.09, 0.06);
+  function burstDrop() {
     for (let i = 0; i < 40; i++) {
-      const cm = new THREE.Mesh(confettiGeo, new THREE.MeshBasicMaterial({ color: confettiColors[i % confettiColors.length], side: THREE.DoubleSide }));
+      const cm = new THREE.Mesh(burstGeo, new THREE.MeshBasicMaterial({ color: burstColors[i % burstColors.length], side: THREE.DoubleSide }));
       cm.position.set((Math.random() - 0.5) * 8, 6.2 + Math.random(), -4 + (Math.random() - 0.5) * 6);
       cm.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
       scene.add(cm);
-      confetti.push({ m: cm, vy: -(0.5 + Math.random() * 0.6), vx: (Math.random() - 0.5) * 0.5, vz: (Math.random() - 0.5) * 0.5, spin: 2 + Math.random() * 4, life: 9 });
+      burstPieces.push({ m: cm, vy: -(0.5 + Math.random() * 0.6), vx: (Math.random() - 0.5) * 0.5, vz: (Math.random() - 0.5) * 0.5, spin: 2 + Math.random() * 4, life: 9 });
     }
   }
-  let confettiT = 6;
+  let burstT = 6;
 
   return {
     update(dt) {
@@ -548,10 +547,10 @@ interactions.add({
       hoop2.rotation.y -= dt * 0.28;
       hoop2.rotation.z = Math.sin(t * 0.42 + 2) * 0.08;
       // confetti lifecycle: flutter down, fade out at the floor, then the next drop
-      confettiT -= dt;
-      if (confettiT <= 0) { confettiBurst(); confettiT = 14; }
-      for (let i = confetti.length - 1; i >= 0; i--) {
-        const c = confetti[i];
+      burstT -= dt;
+      if (burstT <= 0) { burstDrop(); burstT = 14; }
+      for (let i = burstPieces.length - 1; i >= 0; i--) {
+        const c = burstPieces[i];
         c.life -= dt;
         c.m.position.y += c.vy * dt;
         c.m.position.x += c.vx * dt + Math.sin(t * 3 + i) * dt * 0.35;
@@ -560,7 +559,7 @@ interactions.add({
         c.m.rotation.z += c.spin * 0.7 * dt;
         if (c.m.position.y < 0.03 || c.life <= 0) {
           scene.remove(c.m);
-          confetti.splice(i, 1);
+          burstPieces.splice(i, 1);
         }
       }
 

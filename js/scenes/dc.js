@@ -365,6 +365,30 @@ export async function dcScene(game) {
 
   // hot cocoa at the stall — pure holiday
   interactions.add({
+    pos: new THREE.Vector3(-22, 0, -16), radius: 4, label: 'Gaze at the monument',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Five hundred feet of marble lit up against the snow. This city does know how to do a skyline.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-5.5, 0, 12.5), radius: 2.4, label: 'Check the snowman',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Respectable carrot work. Whoever built this has built snowmen before.' },
+      ]);
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(9.5, 0, 11), radius: 2.6, label: 'Watch the skaters',
+    action: async () => {
+      await dialogue.play([
+        { speaker: 'Christian', text: 'Some of these people are genuinely good. I will not be one of them.' },
+      ]);
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(-12, 0, 8), radius: 2.4, label: 'Hot cocoa',
     action: async () => {
       player.frozen = true;

@@ -142,7 +142,16 @@ export function initMapScreen() {
       pin.title = p.sub;
       pin.addEventListener('click', () => {
         hide();
-        if (window.__startGame) window.__startGame(p.id);
+        // travel card — feels like a journey, not a teleport
+        const card = document.createElement('div');
+        card.style.cssText = 'position:fixed;inset:0;z-index:95;background:#060810;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Georgia,serif;opacity:0;transition:opacity .45s';
+        card.innerHTML = `<div style="font-size:44px;margin-bottom:12px">${p.emoji}</div><div style="color:#d4af69;font-size:22px;letter-spacing:1.5px">${p.name}</div><div style="color:#778;font-style:italic;font-size:14px;margin-top:6px">${p.sub}</div><div style="color:#556;font-size:12px;margin-top:18px;letter-spacing:2px">traveling…</div>`;
+        document.body.appendChild(card);
+        requestAnimationFrame(() => card.style.opacity = '1');
+        setTimeout(() => {
+          if (window.__startGame) window.__startGame(p.id);
+          setTimeout(() => { card.style.opacity = '0'; setTimeout(() => card.remove(), 500); }, 700);
+        }, 1100);
       });
       pinsEl.appendChild(pin);
     }

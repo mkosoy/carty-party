@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Pickups , npcFacePlayer, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { sfxSplat, positionalLoop } from '../engine/sfx.js';
+import { makeChatter } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, setObjective, GuideMarker } from '../engine/core.js';
 import { nightSky, skyDome, snowGround } from '../engine/textures.js';
@@ -238,6 +239,7 @@ export async function dcScene(game) {
   const skater = makePerson({ top: 0xd07ac0, bottom: 0x2c2c34, skin: 0xe8c098, hair: 0x2a1a12, hairStyle: 'bun' });
   skater.group.position.set(3, 0.12, 6);
   scene.add(skater.group);
+  const chatter = makeChatter(scene, [...spectators, skater], ['⛸','❄','🎄','🧣','📸']);
 
   // festive wreath garlands on the rink rails
   for (let i = 0; i < 8; i++) {
@@ -647,6 +649,7 @@ export async function dcScene(game) {
         christian.group.rotation.x = 0;
       }
       player.update(dt);
+      if (typeof chatter !== 'undefined') chatter.update(dt);
       // ambient cold wind off the potomac
       if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 480, x: 0, z: 0, maxDist: 40, gain: 0.05, rate: 3 }); } catch {} }
       if (this._amb) this._amb.update(player.person.group.position.x, player.person.group.position.z);

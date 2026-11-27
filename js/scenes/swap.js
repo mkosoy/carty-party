@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { positionalLoop } from '../engine/sfx.js';
 import { runDJMinigame } from '../engine/djbooth.js';
 import { Pickups, phoneText } from '../engine/core.js';
-import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
+import { makeChatter, inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { brickWall, concrete } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, setObjective, choice, GuideMarker } from '../engine/core.js';
@@ -552,6 +552,7 @@ export async function swapScene(game) {
     scene.add(n.group);
     npcs.push({ p: n, t: Math.random() * 10 });
   }
+  const chatter = makeChatter(scene, npcs.map(o => o.p), ['🧥','👗','🎶','🧦','🛍']);
 
 
   // ---- Baltimore richness pass ----
@@ -1153,6 +1154,7 @@ export async function swapScene(game) {
     }
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };
       player.update(dt);
+      if (typeof chatter !== 'undefined') chatter.update(dt);
       pickups.update(dt, christian.group.position);
       guide.update(dt, christian.group.position);
       followCam.update(dt, christian.group.position);

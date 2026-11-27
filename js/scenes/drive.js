@@ -904,6 +904,7 @@ export async function driveScene(game) {
         car.position.x += (carLaneX - car.position.x) * Math.min(1, dt * 13);
         car.rotation.z = -steerX * 0.12;
         car.rotation.y = -steerX * 0.2;
+        window.__debugCarX = car.position.x;
         if (input.consumeInteract()) {
           stationIdx = (stationIdx + 1) % stations.length;
           const st = stations[stationIdx];

@@ -299,6 +299,9 @@ export function makePerson({
       // ease posture back to neutral so the walk lean doesn't stick
       torso.rotation.x *= 0.85;
       torso.rotation.y *= 0.85;
+      // subtle head life: slow look-around sway + tiny tilt
+      headGroup.rotation.y = Math.sin(t * 0.45) * 0.16;
+      headGroup.rotation.z = Math.sin(t * 0.7 + 1.3) * 0.03;
     },
     sit(seatTop) {
       legL.rotation.x = -Math.PI / 2;

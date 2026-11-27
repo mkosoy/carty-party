@@ -232,7 +232,12 @@ function tick() {
   // sprint FOV kick: widens while shift-sprinting, eases back — speed you can feel
   const sprinting = input.keys.has('ShiftLeft') || input.keys.has('ShiftRight') || window.__mobileSprint;
   const inDialogue = dialogue.active;
-  const fovGoal = inDialogue ? 50 : (sprinting ? 66 : 58);
+  // portrait phones need a wider base FOV: at 58° vertical, the horizontal
+  // FOV on a tall phone is only ~29°, so the character fills half the screen
+  // at normal follow distance. 72° keeps the world visible on mobile.
+  const portrait = camera.aspect < 0.75;
+  const base = portrait ? 72 : 58;
+  const fovGoal = inDialogue ? base - 8 : (sprinting ? base + 8 : base);
   fovTarget += (fovGoal - fovTarget) * Math.min(1, dt * 5);
   if (Math.abs(camera.fov - fovTarget) > 0.05) {
     camera.fov += (fovTarget - camera.fov) * Math.min(1, dt * 6);

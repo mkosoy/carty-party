@@ -148,7 +148,7 @@ export async function miamiScene(game) {
     n.group.position.set(rx, 0, rz);
     n.group.rotation.y = Math.atan2(rx - 0, rz - (-4.5)) + Math.PI + (Math.random() - 0.5) * 0.4;
     scene.add(n.group);
-    crowd.push({ p: n, phase: Math.random() * 6.28, rate: 1.6 + Math.random() * 1.2 });
+    crowd.push({ p: n, phase: Math.random() * 6.28, rate: 1.6 + Math.random() * 1.2, armsUp: Math.random() < 0.45, sway: Math.random() < 0.3 });
   }
 
   // confetti particles floating down constantly
@@ -487,6 +487,17 @@ export async function miamiScene(game) {
         c.p.group.position.y = Math.abs(Math.sin(t * c.rate * 2 + c.phase)) * 0.12;
         c.p.group.rotation.y += Math.sin(t * c.rate + c.phase) * dt * 0.8;
         c.p.animateWalk(dt, 1.2);
+        // dance variety: ravers pump arms overhead, swayers lean side to side
+        if (c.armsUp) {
+          const pump = Math.sin(t * c.rate * 2.4 + c.phase) * 0.35;
+          c.p.armL.rotation.x = -2.6 + pump;
+          c.p.armR.rotation.x = -2.6 - pump;
+          c.p.armL.rotation.z = 0.5;
+          c.p.armR.rotation.z = -0.5;
+        } else if (c.sway) {
+          c.p.armL.rotation.x = -1.4 + Math.sin(t * c.rate + c.phase) * 0.4;
+          c.p.armR.rotation.x = -1.4 - Math.sin(t * c.rate + c.phase) * 0.4;
+        }
       }
 
 

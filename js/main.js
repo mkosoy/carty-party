@@ -115,7 +115,7 @@ const game = {
     this.sceneApi = await factory(this);
     rebuildComposer();
     // chapter title card: scene name fades in/out on entry
-    const titles = { airport: 'chapter 1 — dulles', drive: 'chapter 2 — the yo yogi run', house: "chapter 3 — olivia's", swap: 'chapter 4 — the baltimore swap', dc: 'chapter 5 — dc at night', dentist: "dr. fritz's office", miami: 'e11even miami', runclub: "kylie's run club", echostage: 'echostage — bar shift', shopping: "kylie's shopping run", museum: 'air & space museum', hopkins: 'hopkins field lab' };
+    const titles = { airport: 'chapter 1 — dulles', drive: 'chapter 2 — the yo yogi run', house: "chapter 3 — olivia's", swap: 'chapter 4 — the baltimore swap', dc: 'chapter 5 — dc at night', dentist: "dr. fritz's office", miami: 'e11even miami', runclub: "kylie's run club", echostage: 'echostage — bar shift', shopping: "kylie's shopping run", museum: 'air & space museum', hopkins: 'hopkins field lab', yogi: 'yo yogi — closes at 9' };
     const sName = factory.name ? factory.name.replace('Scene', '') : '';
     const titleText = titles[sName];
     if (titleText && !window.__menuSkipCard) {
@@ -214,6 +214,7 @@ async function startGame(sceneName) {
     shopping: (await import('./scenes/shopping.js')).shoppingScene,
     museum: (await import('./scenes/museum.js')).museumScene,
     hopkins: (await import('./scenes/hopkins.js')).hopkinsScene,
+    yogi: (await import('./scenes/yogi.js')).yogiScene,
   };
   music.play(sceneName || 'airport');
   loop();

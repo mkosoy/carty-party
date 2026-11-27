@@ -26,8 +26,8 @@ function makeNameTag(name) {
   ctx.fillText(name, 128, 33);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
-  sp.scale.set(0.85, 0.21, 1);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, sizeAttenuation: false }));
+  sp.scale.set(0.16, 0.04, 1);
   sp.renderOrder = 5;
   return sp;
 }

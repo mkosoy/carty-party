@@ -191,6 +191,7 @@ export async function museumScene(game) {
   const hero = makePerson({ photo: faces.mark, top: 0x3a4a5c, bottom: 0x2c2c34, hair: 0x2a1c10, hairStyle: 'short', skin: 0xd8a880, ...playerIdentity(faces) });
   hero.group.position.set(0, 0, 4.5);
   hero.group.rotation.y = Math.PI;
+  hero.group.rotation.y = Math.PI;
   scene.add(hero.group);
   const player = new PlayerController(hero, input, bounds);
   const followCam = new FollowCam(camera);

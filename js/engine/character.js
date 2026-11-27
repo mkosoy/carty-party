@@ -55,6 +55,26 @@ export function makePerson({
   }
   if (jacket) outfit = 'jacket';
   const g = new THREE.Group();
+  // blob shadow — keeps characters grounded when real shadow maps are off (mobile low-power)
+  if (!makePerson._blobTex) {
+    const bc = document.createElement('canvas');
+    bc.width = 64; bc.height = 64;
+    const bx = bc.getContext('2d');
+    const bg = bx.createRadialGradient(32, 32, 4, 32, 32, 30);
+    bg.addColorStop(0, 'rgba(0,0,0,0.42)');
+    bg.addColorStop(1, 'rgba(0,0,0,0)');
+    bx.fillStyle = bg;
+    bx.fillRect(0, 0, 64, 64);
+    makePerson._blobTex = new THREE.CanvasTexture(bc);
+  }
+  const blob = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.62, 0.62),
+    new THREE.MeshBasicMaterial({ map: makePerson._blobTex, transparent: true, depthWrite: false })
+  );
+  blob.rotation.x = -Math.PI / 2;
+  blob.position.y = 0.015;
+  blob.renderOrder = 1;
+  g.add(blob);
   const weave = fabricWeave(2, 2);
   const mat = (c, rough = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0, map: weave, bumpMap: weave, bumpScale: 0.15 });
   const smoothMat = (c, rough = 0.7) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0.0 });

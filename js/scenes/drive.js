@@ -109,6 +109,33 @@ export async function driveScene(game) {
       barn.position.set(side * (18 + Math.random() * 10), 0, z);
       scene.add(barn);
       decor.push(barn);
+    } else if (Math.random() < 0.06) {
+      // parked MCPS school bus — pure moco suburbia
+      const bus = new THREE.Group();
+      const busBody = new THREE.Mesh(new THREE.BoxGeometry(6.5, 2.2, 2.2), mat(0xd8a020));
+      busBody.position.y = 1.4;
+      bus.add(busBody);
+      const busNose = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.4, 2.1), mat(0xd8a020));
+      busNose.position.set(3.6, 1.0, 0);
+      bus.add(busNose);
+      const winStrip = new THREE.Mesh(new THREE.BoxGeometry(6.2, 0.6, 2.25), mat(0x2a3440));
+      winStrip.position.y = 1.9;
+      bus.add(winStrip);
+      const busSnow = new THREE.Mesh(new THREE.BoxGeometry(6.6, 0.12, 2.3), mat(0xf4f8ff));
+      busSnow.position.y = 2.56;
+      bus.add(busSnow);
+      for (const wx of [-2.2, 2.2]) {
+        for (const wz of [-1.1, 1.1]) {
+          const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.25, 10), mat(0x1a1a1a));
+          wheel.rotation.x = Math.PI / 2;
+          wheel.position.set(wx, 0.42, wz);
+          bus.add(wheel);
+        }
+      }
+      bus.rotation.y = side * 0.15;
+      bus.position.set(side * (11 + Math.random() * 5), 0, z);
+      scene.add(bus);
+      decor.push(bus);
     } else if (Math.random() < 0.5) {
       // strip mall — rockville pike energy: brick box, colorful awning, sign band
       const sm = new THREE.Group();

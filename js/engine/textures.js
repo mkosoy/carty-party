@@ -71,6 +71,15 @@ export function brickWall(base = '#7a4436', rx = 3, ry = 2) {
         x.fillStyle = 'rgba(0,0,0,0.15)';
         x.fillRect(x0 + 2, y0 + 2, bw - 4, bh - 4);
       }
+      // occasional whitewashed/brick-tone outliers — aged warehouse character
+      if (Math.random() < 0.07) {
+        x.fillStyle = 'rgba(232,222,208,0.55)';
+        x.fillRect(x0 + 2, y0 + 2, bw - 4, bh - 4);
+      }
+      if (Math.random() < 0.05) {
+        x.fillStyle = 'rgba(30,20,16,0.35)';
+        x.fillRect(x0 + 2, y0 + 2, bw - 4, bh - 4);
+      }
     }
   }
   noise(x, 256, 256, 0.06);

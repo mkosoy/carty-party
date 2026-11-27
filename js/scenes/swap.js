@@ -607,6 +607,26 @@ export async function swapScene(game) {
     },
   });
 
+  // central round clothing rack — fills the middle like a real swap meet
+  const rack = new THREE.Group();
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.05, 8, 24), mat(0x8a8f96));
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = 1.6;
+  rack.add(ring);
+  const rpole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.6, 8), mat(0x8a8f96));
+  rpole.position.y = 0.8;
+  rack.add(rpole);
+  const clothColors = [0xc04a5a, 0x4a6ac0, 0x50a060, 0xc0a040, 0x8a5ac0, 0x40a0a0, 0xd07030, 0x707070];
+  for (let i = 0; i < 10; i++) {
+    const ang = (i / 10) * Math.PI * 2;
+    const cl = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.9, 0.06), mat(clothColors[i % clothColors.length]));
+    cl.position.set(Math.cos(ang) * 1.55, 1.1, Math.sin(ang) * 1.55);
+    cl.rotation.y = -ang;
+    rack.add(cl);
+  }
+  rack.position.set(2.5, 0, -2);
+  scene.add(rack);
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

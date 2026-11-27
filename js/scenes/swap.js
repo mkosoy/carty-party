@@ -1212,6 +1212,7 @@ export async function swapScene(game) {
       }
       const prompt = document.getElementById('interact-prompt');
       if (best && !player.frozen && !state.dancing) {
+        prompt.textContent = 'E — ' + (best.label || 'interact');
         prompt.classList.remove('hidden');
         if (input.consumeInteract()) {
           if (best.once) best.done = true;

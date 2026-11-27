@@ -1013,6 +1013,7 @@ export async function airportScene(game) {
       const near = interactions.nearest(christian.group.position);
       const prompt = document.getElementById('interact-prompt');
       if (near && !near.hidden && !player.frozen) {
+        prompt.textContent = 'E — ' + (near.label || 'interact');
         prompt.classList.remove('hidden');
         prompt.textContent = 'E';
         if (input.consumeInteract()) {

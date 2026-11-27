@@ -12,6 +12,7 @@ import { airportScene } from './scenes/airport.js';
 import { Music } from './engine/music.js';
 import { initTitle } from './title.js';
 import { initMapScreen } from './mapscreen.js';
+import './engine/sfx.js';
 
 const container = document.getElementById('game-container');
 

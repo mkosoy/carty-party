@@ -229,3 +229,19 @@ export function positionalLoop({ freq = 200, type = 'noise', x = 0, z = 0, maxDi
     stop() { try { src.stop(); } catch {} try { g.disconnect(); } catch {} }
   };
 }
+
+export function sfxBuzz() {
+  const AC = ac();
+  const t = AC.currentTime;
+  for (const dt of [0, 0.14]) {
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = 'sine';
+    o.frequency.value = 175;
+    g.gain.setValueAtTime(0.0001, t + dt);
+    g.gain.exponentialRampToValueAtTime(0.3, t + dt + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dt + 0.1);
+    o.connect(g); g.connect(AC.destination);
+    o.start(t + dt); o.stop(t + dt + 0.12);
+  }
+}
+if (typeof window !== 'undefined') window.__sfxBuzz = sfxBuzz;

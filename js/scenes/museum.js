@@ -226,6 +226,9 @@ export async function museumScene(game) {
   ]) });
   interactions.add({ pos: new THREE.Vector3(0, 0, -8), radius: 3.2, label: 'Look up', action: say([
     { speaker: 'Christian', text: 'A whole ceiling of flying machines. This is Mark\u2019s cathedral.' },
+    { speaker: 'Mark', text: 'When I was nine my dad brought me here and I cried at the X-15. Actually cried. In public.' },
+    { speaker: 'Christian', text: 'You are tearing up right now.' },
+    { speaker: 'Mark', text: 'It is a VERY fast plane, Christian.' },
   ]) });
 
   // ---- paper airplane station minigame ----

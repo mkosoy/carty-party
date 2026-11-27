@@ -297,6 +297,9 @@ export async function yogiScene(game) {
   ]) });
   interactions.add({ pos: new THREE.Vector3(2, 0, 5), radius: 2.2, label: 'The window seats', action: say([
     { speaker: 'Christian', text: 'Half of MoCo\u2019s big decisions got made over conveyor sushi. Also at least three breakups per winter.' },
+    { speaker: 'Kayla', text: 'Four. There were four breakups this winter. I count. It is the only joy I get.' },
+    { speaker: 'Christian', text: 'The belt keeps turning either way. There is a lesson in that.' },
+    { speaker: 'Kayla', text: 'The lesson is tip your server. We close at 9.' },
   ]) });
 
   const pickups = new Pickups(scene);

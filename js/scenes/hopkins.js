@@ -213,6 +213,7 @@ export async function hopkinsScene(game) {
   ]) });
   interactions.add({ pos: new THREE.Vector3(-16, 0, 0), radius: 2.4, label: 'Specimen jars', action: say([
     { speaker: 'Christian', text: 'Every jar is a little time capsule. Science is just very organized hoarding.' },
+    { speaker: 'Stacy', text: 'Organized hoarding with peer review. That one is a crayfish from the Patapsco. He is doing great, thank you for asking.' },
   ]) });
   interactions.add({ pos: new THREE.Vector3(-8, 0, -4), radius: 2.2, label: 'Bench glassware', action: say([
     { speaker: 'Stacy', text: 'Do not touch the green one. Actually do not touch any of them. Science in progress.' },

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { sfxCrash, sfxHorn, sfxGobble, sfxBoost } from '../engine/sfx.js';
 import { showObjective, choice } from '../engine/core.js';
-import { asphalt, winterSky, skyDome } from '../engine/textures.js';
+import { asphalt, winterSky, skyDome, snowGround } from '../engine/textures.js';
 
 // Scene 2 — the drive. Part A: cruise with radio stations. Part B: the Yo
 // Yogi run — a lane-dodging timer game dodging dentists, environmental
@@ -35,7 +35,7 @@ export async function driveScene(game) {
   }
   // snow ground both sides
   for (const sx of [-1, 1]) {
-    const g = new THREE.Mesh(new THREE.BoxGeometry(60, 0.1, 400), mat(0xeef2f7));
+    const g = new THREE.Mesh(new THREE.BoxGeometry(60, 0.1, 400), new THREE.MeshStandardMaterial({ map: snowGround(6, 30), roughness: 0.95 }));
     g.position.set(sx * 37, -0.02, -100);
     scene.add(g);
   }

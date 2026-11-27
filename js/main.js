@@ -164,8 +164,16 @@ function loop() {
   };
   requestAnimationFrame(frame);
 }
+let fovTarget = 58;
 function tick() {
   const dt = Math.min(clock.getDelta(), 0.05);
+  // sprint FOV kick: widens while shift-sprinting, eases back — speed you can feel
+  const sprinting = input.keys.has('ShiftLeft') || input.keys.has('ShiftRight') || window.__mobileSprint;
+  fovTarget += ((sprinting ? 66 : 58) - fovTarget) * Math.min(1, dt * 5);
+  if (Math.abs(camera.fov - fovTarget) > 0.05) {
+    camera.fov += (fovTarget - camera.fov) * Math.min(1, dt * 6);
+    camera.updateProjectionMatrix();
+  }
   // animate interaction sparkles: bob + pulse
   if (window.__sparkles) {
     const tt = performance.now() / 1000;

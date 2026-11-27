@@ -616,10 +616,10 @@ export async function swapScene(game) {
   const rpole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.6, 8), mat(0x8a8f96));
   rpole.position.y = 0.8;
   rack.add(rpole);
-  const clothColors = [0xc04a5a, 0x4a6ac0, 0x50a060, 0xc0a040, 0x8a5ac0, 0x40a0a0, 0xd07030, 0x707070];
+  const rackClothColors = [0xc04a5a, 0x4a6ac0, 0x50a060, 0xc0a040, 0x8a5ac0, 0x40a0a0, 0xd07030, 0x707070];
   for (let i = 0; i < 10; i++) {
     const ang = (i / 10) * Math.PI * 2;
-    const cl = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.9, 0.06), mat(clothColors[i % clothColors.length]));
+    const cl = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.9, 0.06), mat(rackClothColors[i % rackClothColors.length]));
     cl.position.set(Math.cos(ang) * 1.55, 1.1, Math.sin(ang) * 1.55);
     cl.rotation.y = -ang;
     rack.add(cl);

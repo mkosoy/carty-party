@@ -1138,6 +1138,41 @@ export async function houseScene(game) {
     },
   });
   interactions.add({
+    pos: new THREE.Vector3(-7, 0, -5.5), radius: 1.8, label: 'The lacquer screen', floor: 'ground',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'This screen is genuinely beautiful. Black lacquer, gold paint. Where does one even—' },
+        { speaker: 'Olivia', text: 'Estate sale. The woman running it said it was "a lot." I said I KNOW. That is the POINT.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(1, 0, 5), radius: 1.9, label: 'The gilt mirror', floor: 'ground',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'This mirror is enormous. You can see the whole room in it.' },
+        { speaker: 'Olivia', text: 'Mirrors multiply the light. And the people. Sometimes I look in it and count wrong.' },
+        { speaker: 'Christian', text: '…what was that last part?' },
+        { speaker: 'Olivia', text: 'Nothing! Wine\'s in the kitchen.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
+    pos: new THREE.Vector3(-2.5, 0, 1.5), radius: 1.6, label: 'The trunk', floor: 'ground',
+    action: async () => {
+      player.frozen = true;
+      await dialogue.play([
+        { speaker: 'Christian', text: 'What\'s in the trunk?' },
+        { speaker: 'Olivia', text: 'Blankets. And things that are not blankets. Mostly blankets.' },
+      ]);
+      player.frozen = false;
+    },
+  });
+  interactions.add({
     pos: new THREE.Vector3(-6.5, 0, -4.5), radius: 2, label: 'Admire the tree', floor: 'ground',
     action: async () => {
       await dialogue.play([

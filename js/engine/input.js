@@ -75,6 +75,7 @@ export class Input {
       joyId = t.identifier;
       cx = t.clientX; cy = t.clientY;
       base.style.display = 'block';
+      const gh = document.getElementById('joystick-ghost'); if (gh) gh.classList.add('dim');
       base.style.left = (cx - 55) + 'px';
       base.style.top = (cy - 55) + 'px';
       base.style.bottom = 'auto';
@@ -101,6 +102,7 @@ export class Input {
         this.joyX = 0; this.joyY = 0;
         stick.style.transform = 'translate(-50%,-50%)';
         base.style.display = 'none';
+        const gh2 = document.getElementById('joystick-ghost'); if (gh2) gh2.classList.remove('dim');
       }
     };
     zone.addEventListener('touchend', joyEnd);

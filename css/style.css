@@ -183,3 +183,8 @@ body.touch #touch-controls { display: block; }
   .mg-btn { flex: 0 0 auto; scroll-snap-align: center; min-width: 92px; }
   #levels-section, #minigames-section { width: 100%; }
 }
+
+#joystick-ghost { position: absolute; left: 26px; bottom: 96px; width: 84px; height: 84px; border-radius: 50%; border: 2px solid rgba(255,255,255,.28); background: rgba(255,255,255,.05); pointer-events: none; }
+#joystick-ghost-nub { position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.22); transform: translate(-50%,-50%); }
+#joystick-ghost span { position: absolute; left: 50%; top: 100%; transform: translateX(-50%); margin-top: 4px; font-size: 10px; color: rgba(255,255,255,.45); letter-spacing: 1px; font-family: Arial, sans-serif; }
+#joystick-ghost.dim { opacity: .25; }

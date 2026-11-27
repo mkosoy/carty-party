@@ -85,11 +85,15 @@
       </div>
     </div>
     <p class="title-sub">Dulles → MoCo → Yo Yogi → the swap → DC<br>
-    <span class="title-small">WASD / joystick to move · E to interact · 🗺 the world map travels everywhere · best with sound on</span></p>
+    <span class="title-small" id="controls-line">WASD / joystick to move · E to interact · 🗺 the world map travels everywhere · best with sound on</span></p>
   </div>
 </div>
 
 <script>
+if (('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
+  const cl = document.getElementById('controls-line');
+  if (cl) cl.textContent = 'left thumb to move · tap \u2726 to interact · \ud83d\uddfa\uFE0E the world map travels everywhere · best with sound on';
+}
 // completion checkmarks on minigame buttons
 for (const btn of document.querySelectorAll('.mg-btn[data-scene]')) {
   try {

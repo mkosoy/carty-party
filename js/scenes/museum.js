@@ -18,7 +18,7 @@ export async function museumScene(game) {
   const mat = (c) => new THREE.MeshLambertMaterial({ color: c });
 
   // great hall: marble floor, tall walls, skylight strips
-  const floor = new THREE.Mesh(new THREE.BoxGeometry(36, 0.2, 22), new THREE.MeshStandardMaterial({ color: 0xb0a89a, roughness: 0.3, metalness: 0.15 }));
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(36, 0.2, 22), new THREE.MeshStandardMaterial({ color: 0x8a8478, roughness: 0.45, metalness: 0.15 }));
   floor.receiveShadow = true;
   scene.add(floor);
   for (const [w, h, d, x, z] of [
@@ -137,7 +137,7 @@ export async function museumScene(game) {
 
   // player — default mark if christian unchosen? respect the picker
   const hero = makePerson({ photo: faces.mark, top: 0x3a4a5c, bottom: 0x2c2c34, hair: 0x2a1c10, hairStyle: 'short', skin: 0xd8a880, ...playerIdentity(faces) });
-  hero.group.position.set(0, 0, 8);
+  hero.group.position.set(0, 0, 4.5);
   hero.group.rotation.y = Math.PI;
   scene.add(hero.group);
   const player = new PlayerController(hero, input, bounds);

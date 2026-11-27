@@ -135,7 +135,7 @@ export async function hopkinsScene(game) {
 
   // player — stacy by default here
   const hero = makePerson({ photo: faces.stacy, outfit: 'dress', top: 0xf0f0f0, bottom: 0x2c2c34, hair: 0x2e1e14, hairStyle: 'long', skin: 0xe8c098, ...playerIdentity(faces) });
-  hero.group.position.set(0, 0, 8);
+  hero.group.position.set(0, 0, 4.5);
   hero.group.rotation.y = Math.PI;
   scene.add(hero.group);
   const player = new PlayerController(hero, input, bounds);

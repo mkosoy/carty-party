@@ -5,7 +5,7 @@ import { sfxSplat, positionalLoop } from '../engine/sfx.js';
 import { makeChatter } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { FollowCam, PlayerController, Interactions, showObjective, setObjective, GuideMarker } from '../engine/core.js';
-import { nightSky, skyDome, snowGround } from '../engine/textures.js';
+import { nightSky, skyDome, snowGround, snowSprite } from '../engine/textures.js';
 
 // Scene 5 — DC at night. Washington Monument, the big Christmas tree,
 // snow everywhere, and the ice-skating finale with Mark, Kylie and Olivia.
@@ -118,7 +118,7 @@ export async function dcScene(game) {
     snowPos[i * 3 + 2] = (Math.random() - 0.5) * 70;
   }
   snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
-  const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.14 }));
+  const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.16, map: snowSprite(), transparent: true, opacity: 0.9, depthWrite: false }));
   scene.add(snow);
 
 

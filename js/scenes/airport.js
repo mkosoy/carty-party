@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { npcFacePlayer, Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
-import { concrete } from '../engine/textures.js';
+import { concrete, snowSprite } from '../engine/textures.js';
 import { FollowCam, PlayerController, Interactions, showObjective, setObjective, phoneOverlay, choice, GuideMarker } from '../engine/core.js';
 import { makeChatter } from '../engine/collectibles.js';
 
@@ -437,7 +437,7 @@ export async function airportScene(game) {
     snowPos[i * 3 + 2] = -14 - Math.random() * 25;
   }
   snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
-  const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.12 }));
+  const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.14, map: snowSprite(), transparent: true, opacity: 0.9, depthWrite: false }));
   scene.add(snow);
 
   // warmth pass: soft warm pools of light down the concourse

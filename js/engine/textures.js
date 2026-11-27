@@ -285,6 +285,22 @@ export function skinNoise(rx = 1, ry = 1) {
 }
 
 // winter day sky — pale steel-blue gradient up to horizon haze, soft clouds
+let _snowSprite = null;
+export function snowSprite() {
+  if (_snowSprite) return _snowSprite;
+  const c = document.createElement('canvas');
+  c.width = c.height = 32;
+  const g = c.getContext('2d');
+  const grad = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.45, 'rgba(255,255,255,0.85)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 32, 32);
+  _snowSprite = new THREE.CanvasTexture(c);
+  return _snowSprite;
+}
+
 export function winterSky() {
   const [c, x] = canvas(512, 256);
   const g = x.createLinearGradient(0, 0, 0, 256);

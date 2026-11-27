@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { sfxCrash, sfxHorn, sfxGobble, sfxBoost } from '../engine/sfx.js';
 import { showObjective, setObjective, choice } from '../engine/core.js';
-import { asphalt, winterSky, skyDome, snowGround } from '../engine/textures.js';
+import { asphalt, winterSky, skyDome, snowGround, snowSprite } from '../engine/textures.js';
 
 // Scene 2 — the drive. Part A: cruise with radio stations. Part B: the Yo
 // Yogi run — a lane-dodging timer game dodging dentists, environmental
@@ -820,7 +820,7 @@ export async function driveScene(game) {
     snowPos[i * 3 + 2] = -Math.random() * 60 + 8;
   }
   snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
-  const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.15 }));
+  const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.17, map: snowSprite(), transparent: true, opacity: 0.9, depthWrite: false }));
   scene.add(snow);
 
   // big touch steering buttons — mobile-standard explicit controls (joystick still works too)

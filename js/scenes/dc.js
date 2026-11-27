@@ -301,6 +301,29 @@ export async function dcScene(game) {
     },
   });
 
+  // crystal delivery payoff — if you found all 5 in columbia, the full moon moment happens
+  if (localStorage.getItem('cp-crystals')) {
+    interactions.add({
+      pos: new THREE.Vector3(-4, 0, 5), radius: 2.4, label: 'Give Olivia the crystals', once: true,
+      action: async () => {
+        player.frozen = true;
+        await dialogue.play([
+          { speaker: 'Christian', text: 'Before anything — these are yours. All five. The house was… thorough.' },
+          { speaker: 'Olivia', text: 'YOU FOUND THEM. Okay. Okay!! The full moon is TONIGHT and you actually came through —' },
+          { speaker: 'Olivia', text: 'Wait. Did anything weird happen while you were looking? Did you run into… anyone?' },
+          { speaker: 'Christian', text: 'You mean the other one? Yeah. She says she never loses anything.' },
+          { speaker: 'Olivia', text: '…she would say that. Anyway. Under a full moon, crystals charged, owe you one. Big one.' },
+        ]);
+        if (window.__sfxBuzz) window.__sfxBuzz();
+        // moonlight flare — the crystals catch the moon
+        const moonFlare = new THREE.PointLight(0x9060ff, 6, 14);
+        moonFlare.position.set(-4, 2, 5);
+        scene.add(moonFlare);
+        setTimeout(() => { moonFlare.intensity = 0; }, 2600);
+        player.frozen = false;
+      },
+    });
+  }
   // ice-skating finale: free skating on the rink, faster and slidey, Olivia joins
   let oliviaSaidHi = false;
   const rinkInt = interactions.add({

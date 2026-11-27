@@ -436,6 +436,34 @@ export async function houseScene(game) {
     box(parent, 0.5, 0.12, 0.4, 0xf0ece0, x, 0.5, z - 0.6);
     box(parent, 1.1, 0.7, 0.1, 0x6a4a2a, x, 0.5, z - 1.0);
   }
+  // upstairs hallway runner rug
+  const uprug = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.02, 20), mat(0x5a4a6a));
+  uprug.scale.set(1.6, 1, 0.9);
+  uprug.position.set(0, 0.02, 0.5);
+  upper.add(uprug);
+  // bedroom rug beside the bed
+  const bedrug = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 0.02, 20), mat(0x8a5a5a));
+  bedrug.position.set(-5.0, 0.02, -2.6);
+  upper.add(bedrug);
+  // nightstand lamp + book beside the bed
+  box(upper, 0.5, 0.5, 0.5, 0x5a3a24, -7.2, 0.25, -3.4);
+  const nlampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.25, 8), mat(0x4a3a2a));
+  nlampBase.position.set(-7.2, 0.62, -3.4);
+  upper.add(nlampBase);
+  const nlampShade = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.18, 8), mat(0xf0e0c0));
+  nlampShade.position.set(-7.2, 0.82, -3.4);
+  upper.add(nlampShade);
+  const nlampGlow = new THREE.PointLight(0xffe0b0, 1.2, 3);
+  nlampGlow.position.set(-7.2, 0.9, -3.4);
+  upper.add(nlampGlow);
+  // laundry basket with clothes
+  box(upper, 0.55, 0.4, 0.45, 0xd8d0c0, -2.5, 0.2, -4.6);
+  for (let li = 0; li < 3; li++) {
+    const cloth = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), mat([0xc04848, 0x4060a0, 0xf0e8d8][li]));
+    cloth.scale.set(1, 0.6, 1);
+    cloth.position.set(-2.65 + li * 0.15, 0.42, -4.6);
+    upper.add(cloth);
+  }
   bed(upper, -6.2, -4.2, 0x222226);
   bed(upper, -6.2, 4.2, 0xd07a92);
   // nightstands with warm glowing lamps beside each bed

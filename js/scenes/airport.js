@@ -92,9 +92,35 @@ export async function airportScene(game) {
   const kioskBody = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.7, 0.24), mat(0x2a3444));
   kioskBody.position.y = 0.85;
   infoKiosk.add(kioskBody);
-  const kioskScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.74, 1.1), new THREE.MeshBasicMaterial({ color: 0x1a3a5c }));
+  const depC = document.createElement('canvas');
+  depC.width = 256; depC.height = 384;
+  const dep = depC.getContext('2d');
+  dep.fillStyle = '#10203a';
+  dep.fillRect(0, 0, 256, 384);
+  dep.fillStyle = '#ffd663';
+  dep.font = 'bold 22px Arial';
+  dep.textAlign = 'center';
+  dep.fillText('DEPARTURES', 128, 34);
+  dep.font = '15px Arial';
+  dep.textAlign = 'left';
+  const rows = [['BA 218', 'LONDON', 'ON TIME'], ['UA 804', 'DENVER', 'BOARDING'], ['AA 1219', 'MIAMI', 'ON TIME'], ['DL 2241', 'ATLANTA', 'DELAYED'], ['UA 352', 'CHICAGO', 'ON TIME'], ['WN 882', 'ORLANDO', 'BOARDING'], ['BA 292', 'LONDON', 'ON TIME'], ['UA 1441', 'HOUSTON', 'ON TIME']];
+  rows.forEach((r, i) => {
+    const y = 66 + i * 38;
+    dep.fillStyle = '#e8ecf2';
+    dep.fillText(r[0], 14, y);
+    dep.fillText(r[1], 84, y);
+    dep.fillStyle = r[2] === 'DELAYED' ? '#ff7a6a' : (r[2] === 'BOARDING' ? '#7ae88a' : '#9ab8d8');
+    dep.fillText(r[2], 160, y);
+  });
+  const depT = new THREE.CanvasTexture(depC);
+  depT.colorSpace = THREE.SRGBColorSpace;
+  const kioskScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.74, 1.1), new THREE.MeshBasicMaterial({ map: depT }));
   kioskScreen.position.set(0, 1.0, 0.13);
   infoKiosk.add(kioskScreen);
+  const kioskScreen2 = kioskScreen.clone();
+  kioskScreen2.rotation.y = Math.PI;
+  kioskScreen2.position.z = -0.13;
+  infoKiosk.add(kioskScreen2);
   infoKiosk.position.set(0, 0, -1.5);
   scene.add(infoKiosk);
 

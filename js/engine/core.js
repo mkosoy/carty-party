@@ -183,7 +183,7 @@ export class GuideMarker {
     // screen-edge objective arrow: gold chevron pinned to the screen rim pointing
     // toward the target whenever it's offscreen — works through walls, unlike the 3D beacon
     const el = document.createElement('div');
-    el.style.cssText = 'position:fixed;z-index:55;pointer-events:none;display:none;font-size:26px;color:#ffd663;text-shadow:0 0 8px rgba(255,214,99,.9),0 2px 4px #000;transition:opacity .2s;font-family:Arial,sans-serif';
+    el.style.cssText = 'position:fixed;z-index:55;pointer-events:none;display:none;font-size:36px;color:#ffd663;text-shadow:0 0 8px rgba(255,214,99,.9),0 2px 4px #000;transition:opacity .2s;font-family:Arial,sans-serif';
     el.textContent = '\u27A4';
     document.body.appendChild(el);
     this.edgeEl = el;
@@ -570,12 +570,26 @@ export class Dialogue {
   }
 }
 
+let __persistentObjective = '';
+export function setObjective(text) {
+  __persistentObjective = text;
+  showObjective(text, 0);
+}
 export function showObjective(text, ms = 5000) {
   const el = document.getElementById('objective-banner');
   el.textContent = text;
   el.classList.remove('hidden');
   clearTimeout(el._t);
-  if (ms) el._t = setTimeout(() => el.classList.add('hidden'), ms);
+  if (ms) el._t = setTimeout(() => {
+    // restore the persistent objective instead of going blank — players should
+    // always be able to see what they're supposed to be doing
+    if (__persistentObjective) {
+      el.textContent = __persistentObjective;
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
+  }, ms);
 }
 
 export function phoneOverlay(caller, show) {

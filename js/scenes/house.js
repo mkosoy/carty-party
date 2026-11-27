@@ -4,7 +4,7 @@ import { Pickups, phoneText } from '../engine/core.js';
 import { inventory, makeCameraMesh, makeRecordMesh } from '../engine/collectibles.js';
 import { makePerson, playerIdentity } from '../engine/character.js';
 import { woodFloor, carpet, paintedWall, concrete } from '../engine/textures.js';
-import { FollowCam, PlayerController, Interactions, showObjective, choice, GuideMarker } from '../engine/core.js';
+import { FollowCam, PlayerController, Interactions, showObjective, setObjective, choice, GuideMarker } from '../engine/core.js';
 
 // Scene 3 — Olivia's townhouse. Three floors (basement / ground / upstairs)
 // connected by stairs that fade-teleport. Jim downstairs, Olivia in her
@@ -1221,7 +1221,7 @@ export async function houseScene(game) {
         { speaker: 'Jim', text: 'You’ll see. Go on up.' },
       ]);
       guide.setTarget(6, 4);
-      showObjective('Upstairs — the stair landing is in the corner.', 4500);
+      setObjective('Upstairs — take the stairs in the corner.');
       player.frozen = false;
     },
   });
@@ -1445,7 +1445,7 @@ export async function houseScene(game) {
       ]);
       items.main = true;
       guide.setTarget(-5, 3.8);
-      showObjective('Pile collected ✓ — now the room across the hall.', 4500);
+      setObjective('Pile collected ✓ — now the room across the hall.');
       player.frozen = false;
     },
   });
@@ -1481,7 +1481,7 @@ export async function houseScene(game) {
           ]);
           items.photoDone = true;
           guide.setTarget(6, 4);
-          showObjective('To the basement — take the stairs.', 4500);
+          setObjective('One more item — it\'s in the basement. Take the stairs down.');
         } else {
           await dialogue.play([
             { speaker: 'Olivia #2', text: 'You’re wrong. That’s — that’s horrible. Take it again.' },
@@ -1506,10 +1506,11 @@ export async function houseScene(game) {
       ]);
       items.treItem = true;
       guide.setTarget(-6.5, 5.4);
-      showObjective('All items collected ✓ — back to the car. Baltimore awaits.', 5000);
+      setObjective('All items collected ✓ — leave through the front door for Baltimore.');
       player.frozen = false;
       // enable exit
       exitInt.hidden = false;
+      setTimeout(() => window.__triggerCrystalCall(), 6000);
     },
   });
 
@@ -1622,12 +1623,13 @@ export async function houseScene(game) {
     crystalMeshes.forEach((c) => { c.mesh.visible = true; });
     showObjective('🔮 find 5 crystals around the house — Olivia needs them tonight', 6000);
   };
-  // Olivia's call fires 35s into the scene (or instantly if you already finished the photo game)
-  setTimeout(() => {
+  // Olivia's crystal call fires only after the main quest is done (Tre's item) —
+  // before that it hijacked the story thread and confused everyone
+  window.__triggerCrystalCall = () => {
     if (crystalState.started) return;
     phoneText("Olivia", "omg hey — I&#39;m heading out but I lost my crystals around the house?? there&#39;s 5 of them. can you grab them and bring them to DC tonight — I NEED them for the full moon 🌕");
     setTimeout(() => { window.__startCrystalHunt(); }, 4500);
-  }, 34000);
+  };
 
   return {
     update(dt) {

@@ -428,6 +428,19 @@ export async function dcScene(game) {
     },
   });
 
+  // snowball throwing — press F, lobbed arc, splat particles
+  const snowballs = [];
+  const splats = [];
+  window.addEventListener('keydown', (e) => {
+    if ((e.key === 'f' || e.key === 'F') && !player.frozen) {
+      const sb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), mat(0xffffff));
+      const dir = player.group.rotation.y;
+      sb.position.copy(player.group.position).add(new THREE.Vector3(Math.sin(dir) * 0.5, 1.4, Math.cos(dir) * 0.5));
+      scene.add(sb);
+      snowballs.push({ m: sb, vx: Math.sin(dir) * 7, vy: 4.5, vz: Math.cos(dir) * 7 });
+    }
+  });
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, self: this };

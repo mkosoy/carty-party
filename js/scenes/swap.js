@@ -626,6 +626,7 @@ export async function swapScene(game) {
   }
   rack.position.set(2.5, 0, -2);
   scene.add(rack);
+  bounds.push({ minX: 0.9, maxX: 4.1, minZ: -3.6, maxZ: -0.4 });
 
   return {
     update(dt) {

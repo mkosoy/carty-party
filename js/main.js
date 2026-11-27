@@ -48,6 +48,7 @@ function rebuildComposer() {
 window.addEventListener('resize', () => composer.setSize(window.innerWidth, window.innerHeight));
 
 const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 400);
+window.__gameCamera = camera;
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;

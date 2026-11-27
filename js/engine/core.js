@@ -180,6 +180,14 @@ export class GuideMarker {
       this.arrows.push(arrow);
     }
     this.trailT = 0;
+    // screen-edge objective arrow: gold chevron pinned to the screen rim pointing
+    // toward the target whenever it's offscreen — works through walls, unlike the 3D beacon
+    const el = document.createElement('div');
+    el.style.cssText = 'position:fixed;z-index:55;pointer-events:none;display:none;font-size:26px;color:#ffd663;text-shadow:0 0 8px rgba(255,214,99,.9),0 2px 4px #000;transition:opacity .2s;font-family:Arial,sans-serif';
+    el.textContent = '\u27A4';
+    document.body.appendChild(el);
+    this.edgeEl = el;
+    this._pv = new THREE.Vector3();
   }
   setTarget(x, z) {
     this.group.position.set(x, 0, z);
@@ -195,6 +203,7 @@ export class GuideMarker {
     this.trailT = (this.trailT || 0) + dt;
     if (!this.group.visible) {
       for (const a of (this.arrows || [])) a.visible = false;
+      if (this.edgeEl) this.edgeEl.style.display = 'none';
       return;
     }
     const t = performance.now() / 1000;
@@ -226,6 +235,31 @@ export class GuideMarker {
       } else {
         for (const a of this.arrows) a.visible = false;
       }
+      // screen-edge arrow when target is offscreen
+      const cam = window.__gameCamera;
+      if (cam && this.target && d > 2.5) {
+        this._pv.set(this.target.x, 1.2, this.target.z).project(cam);
+        const nx = this._pv.x, ny = this._pv.y, nz = this._pv.z;
+        const onscreen = nz < 1 && Math.abs(nx) < 0.82 && Math.abs(ny) < 0.8;
+        if (onscreen) {
+          this.edgeEl.style.display = 'none';
+        } else {
+          let ang = Math.atan2(-ny, nx);
+          if (nz > 1) ang += Math.PI; // target behind camera — flip
+          const cx2 = window.innerWidth / 2, cy2 = window.innerHeight / 2;
+          const rx = cx2 - 44, ry = cy2 - 70;
+          const ex = cx2 + Math.cos(ang) * rx;
+          const ey = cy2 + Math.sin(ang) * ry;
+          this.edgeEl.style.display = 'block';
+          this.edgeEl.style.left = (ex - 13) + 'px';
+          this.edgeEl.style.top = (ey - 13) + 'px';
+          this.edgeEl.style.transform = 'rotate(' + (-ang) + 'rad)';
+        }
+      } else if (this.edgeEl) {
+        this.edgeEl.style.display = 'none';
+      }
+    } else if (this.edgeEl) {
+      this.edgeEl.style.display = 'none';
     }
   }
 }

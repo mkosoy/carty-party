@@ -90,6 +90,49 @@ export function initMapScreen() {
     // snow speckle
     x.fillStyle = 'rgba(255,255,255,0.05)';
     for (let i = 0; i < 500; i++) x.fillRect(Math.random() * W, Math.random() * H, 2, 2);
+    // warm population-center glows — towns read as lived-in lights from above
+    const towns = [
+      [-77.20, 39.14, 0.045, 'gaithersburg'], [-77.15, 39.08, 0.05, 'rockville'],
+      [-77.10, 38.98, 0.035, 'bethesda'], [-76.86, 39.20, 0.04, 'columbia'],
+      [-76.61, 39.29, 0.065, 'baltimore'], [-77.02, 38.89, 0.06, 'dc'],
+    ];
+    for (const [tg, tt2, tr2] of towns) {
+      const [tx2, ty2] = xy(tg, tt2, W, H);
+      const glow = x.createRadialGradient(tx2, ty2, 0, tx2, ty2, W * tr2);
+      glow.addColorStop(0, 'rgba(255,190,110,0.28)');
+      glow.addColorStop(0.6, 'rgba(255,170,90,0.10)');
+      glow.addColorStop(1, 'rgba(255,170,90,0)');
+      x.fillStyle = glow;
+      x.beginPath(); x.arc(tx2, ty2, W * tr2, 0, 6.29); x.fill();
+      // scattered house-light specks inside the glow
+      x.fillStyle = 'rgba(255,210,140,0.5)';
+      for (let li2 = 0; li2 < 26; li2++) {
+        const la = Math.random() * 6.28, lr = Math.random() * W * tr2 * 0.7;
+        x.fillRect(tx2 + Math.cos(la) * lr, ty2 + Math.sin(la) * lr * 0.8, 2.2, 2.2);
+      }
+    }
+    // christmas-light sparkle along the highways — red/green/gold dots
+    const sparklePts = [[-77.13, 39.03], [-77.16, 39.10], [-76.90, 39.05], [-76.72, 39.25], [-77.04, 38.92]];
+    for (const [sp2, st2] of sparklePts) {
+      const [sx3, sy3] = xy(sp2, st2, W, H);
+      for (const [off, col] of [[0, '#ff4040'], [6, '#40ff60'], [12, '#ffd040']]) {
+        x.fillStyle = col;
+        x.beginPath(); x.arc(sx3 + off, sy3 + (off % 4), 2.6, 0, 6.29); x.fill();
+      }
+    }
+    // stars overhead — winter clear night
+    x.fillStyle = 'rgba(255,255,255,0.5)';
+    for (let st3 = 0; st3 < 90; st3++) {
+      const sxx = Math.random() * W, syy = Math.random() * H * 0.5;
+      x.fillRect(sxx, syy, 1.4, 1.4);
+    }
+    // forest-dark clusters in the rural west — the ag reserve
+    x.fillStyle = 'rgba(20,40,28,0.5)';
+    for (let fc = 0; fc < 30; fc++) {
+      const fx3 = W * (0.02 + Math.random() * 0.25), fy3 = H * (0.05 + Math.random() * 0.5);
+      x.beginPath(); x.arc(fx3, fy3, 8 + Math.random() * 14, 0, 6.29); x.fill();
+    }
+
     // potomac river — the western/southern border curve
     x.strokeStyle = 'rgba(90,140,200,0.55)';
     x.lineWidth = W * 0.012;

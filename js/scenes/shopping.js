@@ -147,8 +147,8 @@ export async function shoppingScene(game) {
 
   // ---- the player: Kylie, list in hand ----
   const kylie = makePerson({ photo: faces.kylie, outfit: 'dress', top: 0x9a3050, bottom: 0x2c2c34, hair: 0x3a2416, hairStyle: 'long', skin: 0xe8c098, name: 'Kylie' });
-  kylie.group.position.set(-8, 0, -1);
-  kylie.group.rotation.y = Math.PI * 0.75;
+  kylie.group.position.set(-4.5, 0, -1);
+  kylie.group.rotation.y = Math.PI * 0.9;
   scene.add(kylie.group);
   const player = new PlayerController(kylie, input, bounds);
   const followCam = new FollowCam(camera);

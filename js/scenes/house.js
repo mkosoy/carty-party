@@ -1520,6 +1520,29 @@ export async function houseScene(game) {
             const left = 5 - crystalState.found;
             showObjective(left > 0 ? '🔮 crystal ' + crystalState.found + ' of 5 — ' + left + ' still hidden' : '🔮 all 5 crystals! bring them to Olivia in DC tonight 🌕', 4000);
             if (window.__sfxBuzz) window.__sfxBuzz();
+            // encounter beats while hunting — you run into the household
+            if (!crystalState._enc) crystalState._enc = {};
+            if (crystalState.found === 1 && !crystalState._enc.jim) {
+              crystalState._enc.jim = true;
+              dialogue.play([
+                { speaker: 'Jim', text: 'A crystal? Oh that tracks. She has them in every room. The moon ones are the good ones, or so I am told. Frequently.' },
+                { speaker: 'Christian', text: 'You just... live with this.' },
+                { speaker: 'Jim', text: 'You learn to appreciate the full moon evenings. Very quiet house.' },
+              ]);
+            } else if (crystalState.found === 2 && !crystalState._enc.tre) {
+              crystalState._enc.tre = true;
+              dialogue.play([
+                { speaker: 'Tre', text: '*sniffs the crystal in your hand, deeply unimpressed*' },
+                { speaker: 'Christian', text: 'Not food, buddy. Magic rock. Allegedly.' },
+              ]);
+            } else if (crystalState.found === 3 && !crystalState._enc.o2) {
+              crystalState._enc.o2 = true;
+              dialogue.play([
+                { speaker: 'Olivia?', text: 'Oh — you are doing the crystal thing. For her. Cute.' },
+                { speaker: 'Christian', text: 'You are... the other one. Do YOU lose crystals too?' },
+                { speaker: 'Olivia?', text: 'I never lose anything. That is one of the differences.' },
+              ]);
+            }
             if (left === 0) {
               crystalState.active = false;
               localStorage.setItem('cp-crystals', '1');

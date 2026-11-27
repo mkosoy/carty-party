@@ -1090,10 +1090,13 @@ export async function driveScene(game) {
               { speaker: 'Passenger', text: 'All right… but here — free roll of sushi. You earned it, bronco.' },
               { speaker: 'Christian', text: 'Okay. NOW to Olivia’s. Baltimore after that.' },
             ]);
-            const c = await choice(['🦃 Run it back — retry the Yo Yogi run', "Continue to Olivia's"]);
+            const c = await choice(['🦃 Run it back — retry the Yo Yogi run', '🍣 Go inside Yo Yogi first', "Continue to Olivia's"]);
             if (c === 0) {
               const { driveScene } = await import('./drive.js');
               game.switchScene(driveScene);
+            } else if (c === 1) {
+              const { yogiScene } = await import('./yogi.js');
+              game.switchScene(yogiScene);
             } else {
               const { houseScene } = await import('./house.js');
               game.switchScene(houseScene);

@@ -757,6 +757,14 @@ export async function houseScene(game) {
   pickups.add(makeCameraMesh(), -6, 5, 'camera--6-5', (id) => { inv.cameras++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.cameras + ')', 2500); });
   pickups.add(makeRecordMesh(), 5, -4, 'record-5--4', (id) => { inv.records++; showObjective((id.startsWith('camera') ? '📷 vintage camera for Stacy!' : '🎵 vinyl record — new sound unlocked!') + ' (' + inv.records + ')', 2500); });
 
+  // living room center: coffee table with a few books + a mug — fills the empty middle
+  const ctbl = box(ground, 1.4, 0.35, 0.8, 0x6a4a2c, -2.2, 0.35, 1.6);
+  for (let i = 0; i < 3; i++) {
+    box(ground, 0.24, 0.04, 0.32, [0x8a3040, 0x2a4a6a, 0x4a6a3a][i], -2.5 + i * 0.3, 0.56 + i * 0.005, 1.55 + (i % 2) * 0.15);
+  }
+  box(ground, 0.09, 0.1, 0.09, 0xd8d0c0, -1.85, 0.6, 1.75);
+  solid(ctbl);
+
   return {
     update(dt) {
       window.__sceneHooks = { interactions: typeof interactions !== "undefined" ? interactions : null, player: typeof player !== "undefined" ? player : null, christian: typeof christian !== "undefined" ? christian : null, floor: typeof floor !== "undefined" ? floor : null, self: this };

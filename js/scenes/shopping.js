@@ -127,6 +127,45 @@ export async function shoppingScene(game) {
   sign('LAST-MINUTE DEALS', -8, 3.6, -10.7);
   sign('60% OFF', 6, 3.6, -10.7);
   sign('GIFT WRAP →', 16.7, 3.4, 0, -Math.PI / 2);
+  // ===== REAL WESTFIELD MONTGOMERY MATCH: storefronts along the walls =====
+  function storefront(name, color, x, z, ry, w = 4.4) {
+    // dark storefront glass
+    const glass = new THREE.Mesh(new THREE.PlaneGeometry(w, 2.6), new THREE.MeshStandardMaterial({ color: 0x101018, roughness: 0.15, metalness: 0.4 }));
+    glass.position.set(x, 1.6, z);
+    glass.rotation.y = ry;
+    scene.add(glass);
+    // interior glow hint — merchandise silhouette glow
+    const glowStrip = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.85, 1.6), new THREE.MeshBasicMaterial({ color: 0x2a2838, transparent: true, opacity: 0.75 }));
+    glowStrip.position.set(x, 1.5, z);
+    glowStrip.rotation.y = ry;
+    glowStrip.translateZ(0.02);
+    scene.add(glowStrip);
+    const c = document.createElement('canvas');
+    c.width = 512; c.height = 96;
+    const x2 = c.getContext('2d');
+    x2.fillStyle = '#0a0a12';
+    x2.fillRect(0, 0, 512, 96);
+    x2.fillStyle = color;
+    x2.font = 'bold 54px Arial';
+    x2.textAlign = 'center';
+    x2.fillText(name, 256, 66);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    const signM = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.9, 0.65), new THREE.MeshBasicMaterial({ map: t }));
+    signM.position.set(x, 3.3, z);
+    signM.rotation.y = ry;
+    signM.translateZ(0.03);
+    scene.add(signM);
+  }
+  storefront('NORDSTROM', '#e8e0d0', -10, -10.75, 0);
+  storefront('lululemon', '#d04040', -4.5, -10.75, 0);
+  storefront('Apple', '#f0f0f0', 1, -10.75, 0);
+  storefront("macy's", '#c01818', 11.5, -10.75, 0, 5.2);
+  storefront('SEPHORA', '#ffffff', 16.75, -5, -Math.PI / 2, 3.6);
+  storefront('FOOD COURT →', '#f0c040', -16.75, -5, Math.PI / 2, 4.2);
+  storefront('ZARA', '#e8e8e8', -16.75, 3, Math.PI / 2, 3.4);
+  storefront('LUSH', '#90c060', 16.75, 3, -Math.PI / 2, 3.0);
+
   // checkout lanes at the front
   for (const cz of [8.2, 9.8]) {
     const belt = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.95, 0.8), mat(0x3a3e46));

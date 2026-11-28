@@ -93,6 +93,10 @@
 if (('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
   const cl = document.getElementById('controls-line');
   if (cl) cl.textContent = 'left thumb — move · tap \u2726 — interact · sound on \ud83c\udfb6';
+  const sk = document.getElementById('dialogue-skip');
+  if (sk) sk.textContent = 'skip »';
+  const adv = document.getElementById('dialogue-advance');
+  if (adv) adv.textContent = '▼ tap';
 }
 // completion checkmarks on minigame buttons
 for (const btn of document.querySelectorAll('.mg-btn[data-scene]')) {

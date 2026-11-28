@@ -96,6 +96,24 @@ export class FollowCam {
         guard++;
       }
     }
+    // crush-overhead escape hatch: when collision has crushed the camera under
+    // ~1.7m, the horizontal view is nothing but blank wall — useless. blend
+    // toward an overhead look-down instead: you always see the player and the
+    // immediate floor around them, which is strictly more informative. this is
+    // the standard tight-corner solution in third-person games.
+    {
+      const hd = Math.hypot(desired.x - target.x, desired.z - target.z);
+      this._crush = hd < 1.9 ? 1 - hd / 1.9 : 0;
+      if (hd < 1.9) {
+        const crush = this._crush;
+        const lift = crush * 4.2;
+        desired.y = Math.max(desired.y, target.y + 1.8 + lift);
+        // pull horizontal hard toward true overhead as crush deepens
+        const over = Math.min(0.9, crush * 1.1);
+        desired.x += (target.x - desired.x) * over;
+        desired.z += (target.z - desired.z) * over;
+      }
+    }
     // line-of-sight occlusion: walk the segment from the player to the camera —
     // if a BIG blocker (structural column, wall segment — not furniture) sits
     // between them, pull the camera just in front of it. furniture stays exempt
@@ -140,7 +158,12 @@ export class FollowCam {
       this.camera.position.y += (Math.random() - 0.5) * this.shake;
       this.shake = Math.max(0, this.shake - dt * 1.5);
     }
-    this.camera.lookAt(target.clone().add(this.lookOffset));
+    // crush-aware aim: at full crush the camera is nearly overhead — aiming at
+    // the usual chest-height point looks straight into the wall. drop the aim
+    // toward the player's feet so the view becomes a readable look-down.
+    const la = this.lookOffset.clone();
+    if (this._crush) la.y = Math.max(0.7, la.y - this._crush * 1.6);
+    this.camera.lookAt(target.clone().add(la));
   }
   snap(target) {
     this.pos.copy(target.clone().add(this.offset));
@@ -391,6 +414,16 @@ export class PlayerController {
     const FADE_START = 2.7, FADE_END = 1.5;
     let op = 1;
     if (d < FADE_START) op = Math.max(0, (d - FADE_END) / (FADE_START - FADE_END));
+    // overhead exception: when the crush-overhead logic lifts the camera steeply
+    // above the player, the player is the reference point for the whole view —
+    // fading them out leaves a featureless floor/wall. only fade for close
+    // HORIZONTAL cameras, never for overhead ones.
+    const cam = window.__gameCamera;
+    if (cam && d > 0.01) {
+      const dy = cam.position.y - this.person.group.position.y;
+      const elev = Math.atan2(dy, d);
+      if (elev > 0.9) op = 1;
+    }
     // small hysteresis: don't bother writing when unchanged
     if (this._lastFadeOp !== undefined && Math.abs(op - this._lastFadeOp) < 0.02) return;
     this._lastFadeOp = op;

@@ -80,7 +80,7 @@ export function initMapScreen() {
     let nx = 0.13 + ((lng - LNG0) / (LNG1 - LNG0)) * 0.74;
     let ny = 0.12 + ((LAT1 - lat) / (LAT1 - LAT0)) * 0.78;
     // clamp: extreme-geography pins (Miami) must stay fully tappable onscreen
-    nx = Math.max(0.06, Math.min(0.94, nx));
+    nx = Math.max(0.06, Math.min(0.88, nx));
     ny = Math.max(0.05, Math.min(0.95, ny));
     return [nx * w, ny * h];
   }

@@ -49,7 +49,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #0b0e1a; f
 #dialogue-advance { text-align: right; font-size: 14px; opacity: .95; max-width: 850px; margin: 6px auto 0; animation: pulse 1.4s infinite; color: #ffd663; font-weight: bold; text-shadow: 0 0 8px rgba(255,214,99,.6); }
 
 #phone-overlay {
-  position: fixed; top: 12%; left: 50%; transform: translateX(-50%); z-index: 25;
+  position: fixed; top: 24%; left: 50%; transform: translateX(-50%); z-index: 25;
   background: rgba(12,16,30,.95); border: 1px solid rgba(232,182,76,.5); border-radius: 20px;
   padding: 16px 34px; text-align: center; color: #f5ead1; backdrop-filter: blur(6px);
   animation: phoneglow 1.4s infinite;

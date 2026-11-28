@@ -285,6 +285,11 @@ export class GuideMarker {
             a.position.set(playerPos.x + ux * dist, 0.07, playerPos.z + uz * dist);
             a.rotation.set(0, ang, 0);
             a.material.opacity = 0.95 - (i / this.arrows.length) * 0.4;
+            // never paint one onto the camera lens — when the target is behind
+            // the player the trail marches straight into the camera and one
+            // arrow fills the whole screen as a giant gold triangle
+            const cam2 = window.__gameCamera;
+            if (cam2 && cam2.position.distanceTo(a.position) < 2.4) a.visible = false;
           }
         }
       } else {

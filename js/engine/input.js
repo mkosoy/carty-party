@@ -63,6 +63,26 @@ export class Input {
       }
     }, { passive: true });
 
+    // tap-anywhere-to-advance: a quick tap outside controls while dialogue is
+    // open advances it — phone users instinctively tap the screen, not the box
+    const tapCands = new Map();
+    document.addEventListener('touchstart', (e) => {
+      const box = document.getElementById('dialogue-box');
+      if (!box || box.classList.contains('hidden')) return;
+      for (const t of e.changedTouches) {
+        if (t.target.closest('button') || t.target.closest('.hud') || t.target.closest('#joystick-zone') || t.target.closest('#dialogue-box')) continue;
+        tapCands.set(t.identifier, { x: t.clientX, y: t.clientY, t: performance.now() });
+      }
+    }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      for (const t of e.changedTouches) {
+        const c = tapCands.get(t.identifier);
+        if (!c) continue;
+        tapCands.delete(t.identifier);
+        if (performance.now() - c.t < 350 && Math.hypot(t.clientX - c.x, t.clientY - c.y) < 14) this.advanceQueued = true;
+      }
+    }, { passive: true });
+
     // Floating joystick: appears where the thumb lands in the left zone.
     const zone = document.getElementById('joystick-zone');
     const base = document.getElementById('joystick-base');

@@ -148,6 +148,25 @@ const game = {
     window.__game = this;
     setTimeout(() => { try { const n = factory.name.replace('Scene',''); if (music.scene !== n) music.play(n); } catch {} }, 50);
     if (this.sceneApi?.dispose) this.sceneApi.dispose();
+    // deep-dispose the old scene: geometries, materials, textures all hold GPU
+    // memory that is NEVER freed by dropping references — without this every
+    // scene switch leaked hundreds of geometries and the game degraded into
+    // stuttering the longer you played. dispose() is safe even for shared
+    // resources: three.js transparently re-uploads them on next use.
+    if (this.scene) {
+      this.scene.traverse((o) => {
+        if (o.geometry) o.geometry.dispose();
+        if (o.material) {
+          const mats = Array.isArray(o.material) ? o.material : [o.material];
+          for (const m of mats) {
+            for (const k in m) { const v = m[k]; if (v && v.isTexture) v.dispose(); }
+            m.dispose();
+          }
+        }
+      });
+      if (this.scene.background && this.scene.background.isTexture) this.scene.background.dispose();
+      if (this.scene.environment && this.scene.environment.isTexture) this.scene.environment.dispose();
+    }
     this.scene = new THREE.Scene();
     // cinematic baseline lighting: soft sky fill + warm key with shadows.
     // scenes add their own mood lighting on top of this floor.

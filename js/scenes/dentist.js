@@ -681,7 +681,7 @@ export async function dentistScene(game) {
         player.frozen = false;
         // step out of the chair — otherwise you escape the minigame only to
         // re-trigger it with the very next E press while still standing in it
-        christian.group.position.z += 1.6;
+        olivia.group.position.z += 1.6;
       } else {
         await dialogue.play([
           { speaker: 'Dr. Fritz', text: 'Too slow! OTHER OLIVIA — get in here! You, out of the chair. Come back when your wrists are faster.' },

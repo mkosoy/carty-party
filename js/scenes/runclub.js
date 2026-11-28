@@ -378,12 +378,12 @@ export async function runclubScene(game) {
 
   // HUD
   const hud = document.createElement('div');
-  hud.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:40;color:#ffe9b8;font-family:Georgia,serif;font-size:20px;text-shadow:0 2px 6px #000;background:rgba(10,14,26,.55);padding:8px 18px;border-radius:12px;';
+  hud.style.cssText = 'position:fixed;top:104px;left:50%;transform:translateX(-50%);z-index:40;color:#ffe9b8;white-space:nowrap;font-size:16px;font-family:Georgia,serif;font-size:20px;text-shadow:0 2px 6px #000;background:rgba(10,14,26,.55);padding:8px 18px;border-radius:12px;';
   hud.classList.add('scene-dom-extra');
   document.body.appendChild(hud);
   const restartBtn = document.createElement('button');
   restartBtn.textContent = '↻ restart race';
-  restartBtn.style.cssText = 'position:fixed;top:12px;left:14px;z-index:40;background:rgba(10,14,26,.55);border:1px solid rgba(255,233,184,.35);color:#ffe9b8;font-family:Georgia,serif;font-size:14px;padding:6px 14px;border-radius:16px;cursor:pointer';
+  restartBtn.style.cssText = 'position:fixed;top:56px;left:14px;z-index:40;background:rgba(10,14,26,.55);border:1px solid rgba(255,233,184,.35);color:#ffe9b8;font-family:Georgia,serif;font-size:14px;padding:6px 14px;border-radius:16px;cursor:pointer';
   restartBtn.addEventListener('click', async () => {
     const { runclubScene } = await import('./runclub.js');
     game.switchScene(runclubScene);

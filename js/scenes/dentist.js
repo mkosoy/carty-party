@@ -271,6 +271,22 @@ export async function dentistScene(game) {
       warn.style.cssText = 'color:#ff6a6a;font-family:Georgia,serif;font-size:17px;margin-top:6px;height:24px;font-style:italic;text-shadow:0 2px 6px #000;';
       overlay.appendChild(warn);
       overlay.classList.add('scene-dom-extra');
+      // escape hatch: the objective promises "walk away anytime to leave" —
+      // without this there was NO way out except cleaning all 14 teeth or
+      // waiting 120s, a genuine trap for confused players
+      const leaveBtn = document.createElement('button');
+      leaveBtn.textContent = '✕ get out of the chair';
+      leaveBtn.style.cssText = 'position:absolute;top:14px;left:14px;background:rgba(224,90,48,.9);border:none;color:#fff;font-size:16px;font-weight:bold;padding:10px 18px;border-radius:22px;cursor:pointer;font-family:Georgia,serif;z-index:5';
+      overlay.appendChild(leaveBtn);
+      let leftEarly = false;
+      let walkT2 = 0;
+      let walkT2last = 0;
+      leaveBtn.addEventListener('click', () => {
+        if (leftEarly) return;
+        leftEarly = true;
+        try { document.body.removeChild(overlay); } catch {}
+        resolve({ won: false, left: true, time: 0 });
+      });
       document.body.appendChild(overlay);
 
       const ctx = cv.getContext('2d');
@@ -473,6 +489,23 @@ export async function dentistScene(game) {
           resolve({ won: true, time: elapsedS });
           return;
         }
+        // walk-away: stick or keys held — the promised escape, matching the rest of the game
+        const inp2 = window.__gameInput;
+        if (!leftEarly && inp2) {
+          const jp = Math.hypot(inp2.joyX || 0, inp2.joyY || 0);
+          const kb = inp2.keys.has('KeyW') || inp2.keys.has('KeyA') || inp2.keys.has('KeyS') || inp2.keys.has('KeyD');
+          if (jp > 0.62 || kb) {
+            const nowMs = performance.now();
+            walkT2 = walkT2 ? walkT2 + (nowMs - (walkT2last || nowMs)) / 1000 : 0.001;
+            walkT2last = nowMs;
+            if (walkT2 > 0.5) {
+              leftEarly = true;
+              try { document.body.removeChild(overlay); } catch {}
+              resolve({ won: false, left: true, time: elapsedS });
+              return;
+            }
+          } else { walkT2 = 0; walkT2last = 0; }
+        }
         if (elapsedS > TIME_LIMIT * 1.6) {
           // mercy: still finish but with the other olivia arrived
           document.body.removeChild(overlay);
@@ -641,6 +674,14 @@ export async function dentistScene(game) {
         ]);
         const { miamiScene } = await import('./miami.js');
         game.switchScene(miamiScene);
+      } else if (result.left) {
+        await dialogue.play([
+          { speaker: 'Dr. Fritz', text: 'Half-cleaned is not cleaned, you know. The chair is here when you are ready.' },
+        ]);
+        player.frozen = false;
+        // step out of the chair — otherwise you escape the minigame only to
+        // re-trigger it with the very next E press while still standing in it
+        christian.group.position.z += 1.6;
       } else {
         await dialogue.play([
           { speaker: 'Dr. Fritz', text: 'Too slow! OTHER OLIVIA — get in here! You, out of the chair. Come back when your wrists are faster.' },

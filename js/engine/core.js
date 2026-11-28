@@ -280,8 +280,12 @@ export class GuideMarker {
           if (nz > 1) ang += Math.PI; // target behind camera — flip
           const cx2 = window.innerWidth / 2, cy2 = window.innerHeight / 2;
           const rx = cx2 - 44, ry = cy2 - 70;
-          const ex = cx2 + Math.cos(ang) * rx;
-          const ey = cy2 + Math.sin(ang) * ry;
+          let ex = cx2 + Math.cos(ang) * rx;
+          let ey = cy2 + Math.sin(ang) * ry;
+          // keep clear of the bottom-left joystick zone — the arrow is useless
+          // if it sits under the player's thumb
+          const jx = 130, jy = window.innerHeight - 150;
+          if (Math.hypot(ex - jx, ey - jy) < 130) ey = Math.min(ey, jy - 130);
           this.edgeEl.style.display = 'flex';
           this.edgeEl.style.left = (ex - 29) + 'px';
           this.edgeEl.style.top = (ey - 29) + 'px';

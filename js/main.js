@@ -211,7 +211,7 @@ const game = {
       document.body.appendChild(hint);
     }
     const touch = 'ontouchstart' in window;
-    let hintText = window.__sceneHint || (touch ? 'left thumb — move · right thumb — camera · tap ✦ to interact' : 'WASD move · shift sprint · space jump · E interact · drag camera');
+    let hintText = window.__sceneHint || (touch ? 'left thumb — move · push far — run · tap ✦ — interact' : 'WASD move · shift sprint · space jump · E interact · drag camera');
     if (touch && window.__sceneHint) {
       hintText = hintText
         .replace(/WASD — [^·]+/, 'left thumb — move')

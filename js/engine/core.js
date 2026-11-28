@@ -619,6 +619,12 @@ export class Dialogue {
       let walkAwayT = 0;
       let lastT = performance.now() / 1000;
       const tick = () => {
+        // eat the paired interact flag every frame while dialogue is open:
+        // one physical E press queues BOTH interact and advance — if the
+        // interact half survives the conversation, it re-fires the same
+        // interaction the frame dialogue closes and the player is trapped
+        // in an infinite re-trigger loop (the Dulles departure-board bug)
+        if (this.input.consumeInteract) this.input.consumeInteract();
         // walk-away: pushing the stick hard for a beat fast-forwards the
         // conversation to completion — dialogue progress still resolves so
         // story flags always set, but you are never trapped in a chat
@@ -745,6 +751,10 @@ export function choice(options) {
       if (box.classList.contains('hidden')) return; // already resolved
       const inp = window.__gameInput;
       if (!inp) { requestAnimationFrame(cancelTick); return; }
+      // eat interact presses while the menu is open — same re-trigger
+      // vulnerability as dialogue: a surviving flag re-fires the interaction
+      // the instant the choice resolves
+      if (inp.consumeInteract) inp.consumeInteract();
       const nowT = performance.now() / 1000;
       const dtT = Math.min(0.1, nowT - lastT);
       lastT = nowT;

@@ -705,7 +705,7 @@ export async function airportScene(game) {
 
   const followCam = new FollowCam(camera);
   followCam.setRoom(-29, 29, -11.8, 11.8, 7);
-  followCam.snap(christian.group.position);
+  followCam.snap(christian.group.position, christian.group.rotation.y);
   const player = new PlayerController(christian, input, [
     ...bounds,
     { minX: -30, maxX: 30, minZ: 12.4, maxZ: 13 },   // back wall

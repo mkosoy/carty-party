@@ -253,7 +253,7 @@ export async function echostageScene(game) {
   const player = new PlayerController(christian, input, bounds);
   const followCam = new FollowCam(camera);
   followCam.setRoom(-17.5, 17.5, -11.5, 11.5);
-  followCam.snap(christian.group.position);
+  followCam.snap(christian.group.position, christian.group.rotation.y);
 
   // ---- the bartending minigame ----
   const DRINKS = [

@@ -213,7 +213,7 @@ export async function miamiScene(game) {
   const player = new PlayerController(olivia, input, bounds);
   const followCam = new FollowCam(camera);
   followCam.setRoom(-14, 14, -9.5, 9.5, 6.5);
-  followCam.snap(olivia.group.position);
+  followCam.snap(olivia.group.position, olivia.group.rotation.y);
   camera.position.set(0, 3.2, 4);
   camera.lookAt(0, 1, -4.5);
 

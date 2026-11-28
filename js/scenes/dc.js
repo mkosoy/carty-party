@@ -271,7 +271,7 @@ export async function dcScene(game) {
   scene.add(olivia.group);
 
   const followCam = new FollowCam(camera);
-  followCam.snap(christian.group.position);
+  followCam.snap(christian.group.position, christian.group.rotation.y);
   const dcBounds = [
     { minX: -28.5, maxX: -23.5, minZ: -22.5, maxZ: -17.5 }, // washington monument
     { minX: 31, maxX: 37, minZ: -29, maxZ: -23 }, // capitol dome

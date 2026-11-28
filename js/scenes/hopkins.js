@@ -153,7 +153,7 @@ export async function hopkinsScene(game) {
   const player = new PlayerController(hero, input, bounds);
   const followCam = new FollowCam(camera);
   followCam.setRoom(-16.5, 16.5, -10.5, 10.5);
-  followCam.snap(hero.group.position);
+  followCam.snap(hero.group.position, hero.group.rotation.y);
 
   // ---- water sample analysis minigame: collect samples, bring to bench ----
   const pickups = new Pickups(scene);

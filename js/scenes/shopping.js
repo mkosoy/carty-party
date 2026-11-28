@@ -203,7 +203,7 @@ export async function shoppingScene(game) {
   const player = new PlayerController(kylie, input, bounds);
   const followCam = new FollowCam(camera);
   followCam.setRoom(-16.5, 16.5, -10.5, 10.5);
-  followCam.snap(kylie.group.position);
+  followCam.snap(kylie.group.position, kylie.group.rotation.y);
 
   // ---- the shopping list minigame ----
   const GIFTS = [

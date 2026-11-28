@@ -204,7 +204,7 @@ export async function museumScene(game) {
   const player = new PlayerController(hero, input, bounds);
   const followCam = new FollowCam(camera);
   followCam.setRoom(-17.5, 17.5, -10.5, 10.5);
-  followCam.snap(hero.group.position);
+  followCam.snap(hero.group.position, hero.group.rotation.y);
 
   const interactions = new Interactions(scene);
   const say = (lines) => async () => { player.frozen = true; await dialogue.play(lines); player.frozen = false; };
@@ -482,7 +482,7 @@ export async function museumScene(game) {
           dialogue.play(lines).then(() => {
             player.frozen = false;
             if (fl.score >= 3) try { localStorage.setItem('cp-done-museum', '1'); } catch {}
-            followCam.snap(hero.group.position);
+            followCam.snap(hero.group.position, hero.group.rotation.y);
           });
         }
       }

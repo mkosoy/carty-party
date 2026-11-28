@@ -246,7 +246,7 @@ export async function yogiScene(game) {
   const player = new PlayerController(hero, input, bounds);
   const followCam = new FollowCam(camera);
   followCam.setRoom(-14.5, 14.5, -9.5, 9.5);
-  followCam.snap(hero.group.position);
+  followCam.snap(hero.group.position, hero.group.rotation.y);
 
   const interactions = new Interactions(scene);
   const say = (lines) => async () => { player.frozen = true; await dialogue.play(lines); player.frozen = false; };

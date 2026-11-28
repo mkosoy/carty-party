@@ -165,8 +165,18 @@ export class FollowCam {
     if (this._crush) la.y = Math.max(0.7, la.y - this._crush * 1.6);
     this.camera.lookAt(target.clone().add(la));
   }
-  snap(target) {
-    this.pos.copy(target.clone().add(this.offset));
+  snap(target, facing = 0) {
+    // start BEHIND the player's initial facing, not at the fixed default offset —
+    // before this, scenes spawning the player facing +z opened with the camera
+    // squarely in front of them (measured behindness -1 at spawn)
+    this.yaw = Math.PI - facing;
+    const cy = Math.cos(this.yaw), sy = Math.sin(this.yaw);
+    const rot = new THREE.Vector3(
+      this.offset.x * cy - this.offset.z * sy,
+      this.offset.y,
+      this.offset.x * sy + this.offset.z * cy
+    );
+    this.pos.copy(target.clone().add(rot));
     if (this.room) {
       const m = 0.45;
       this.pos.x = Math.max(this.room.minX + m, Math.min(this.room.maxX - m, this.pos.x));

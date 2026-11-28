@@ -1188,7 +1188,7 @@ export async function houseScene(game) {
   showFloor('ground');
   christian.group.position.set(0.5, 0, -0.5);
   christian.group.rotation.y = Math.PI;
-  followCam.snap(christian.group.position);
+  followCam.snap(christian.group.position, christian.group.rotation.y);
 
   // item inventory
   const items = { main: false, photoDone: false, treItem: false };

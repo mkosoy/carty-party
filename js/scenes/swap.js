@@ -675,7 +675,7 @@ export async function swapScene(game) {
   const followCam = new FollowCam(camera);
   followCam.offset.set(0, 2.8, 4.6);
   followCam.setRoom(-16.5, 16.5, -11.5, 11.5);
-  followCam.snap(christian.group.position);
+  followCam.snap(christian.group.position, christian.group.rotation.y);
   const player = new PlayerController(christian, input, bounds);
   const interactions = new Interactions(scene);
   const guide = new GuideMarker(scene);

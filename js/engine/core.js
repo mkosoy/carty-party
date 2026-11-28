@@ -589,6 +589,15 @@ export class Dialogue {
     });
   }
   play(lines) {
+    // serialize conversations: overlapping play() calls (encounter dialogue
+    // firing while another chat is open) used to run two tick loops fighting
+    // over the same box — flickering speakers, split input, lost resolution.
+    if (!this._chain) this._chain = Promise.resolve();
+    const run = this._chain.then(() => this._playOnce(lines));
+    this._chain = run.catch(() => {});
+    return run;
+  }
+  _playOnce(lines) {
     return new Promise((resolve) => {
       this.active = true;
       this.box.classList.remove('hidden');

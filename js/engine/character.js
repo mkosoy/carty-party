@@ -382,6 +382,8 @@ export function makePerson({
   const baseTorsoY = torso.position.y;
   const api = {
     group: g,
+    name,
+    photo,
     head,
     headGroup,
     armL,
@@ -443,7 +445,11 @@ export function cropPhotoSquare(url) {
 
 // who the player chose on the map screen — falls back to christian
 export function playerIdentity(faces) {
-  const cid = (typeof localStorage !== 'undefined' && localStorage.getItem('cp-character')) || 'christian';
+  // empty object unless the player EXPLICITLY picked a character on the map —
+  // otherwise the fallback would silently override each scene's story-correct
+  // protagonist (you'd play the dentist as Christian instead of Olivia)
+  const cid = typeof localStorage !== 'undefined' && localStorage.getItem('cp-character');
+  if (!cid) return {};
   const fem = ['olivia', 'stacy', 'kylie'].includes(cid);
   return {
     photo: faces[cid] || faces.christian,

@@ -261,7 +261,7 @@ export async function shoppingScene(game) {
     });
   });
   const hud = document.createElement('div');
-  hud.style.cssText = 'position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:40;display:none;color:#fff;font:bold 15px Arial;text-shadow:0 2px 6px #000;text-align:center;max-width:92vw';
+  hud.style.cssText = 'position:fixed;top:108px;left:50%;transform:translateX(-50%);z-index:40;display:none;color:#fff;font:bold 15px Arial;text-shadow:0 2px 6px #000;text-align:center;max-width:92vw';
   hud.classList.add('scene-dom-extra');
   document.body.appendChild(hud);
   function hudText() {

@@ -256,7 +256,7 @@ export async function yogiScene(game) {
   // right plate crosses the glowing grab zone. five orders, belt speeds up.
   const st = { active: false, done: false, round: 0, score: 0, order: null, beltSpeed: 0.5 };
   const hud = document.createElement('div');
-  hud.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:rgba(20,10,10,.85);color:#ffe0c8;padding:8px 18px;border-radius:12px;font-family:Georgia;font-size:16px;z-index:30;display:none';
+  hud.style.cssText = 'position:fixed;top:112px;left:50%;transform:translateX(-50%);background:rgba(20,10,10,.85);color:#ffe0c8;padding:8px 18px;border-radius:12px;font-family:Georgia;font-size:16px;z-index:30;display:none';
   hud.classList.add('scene-dom-extra');
   document.body.appendChild(hud);
   // grab zone marker on the east rim of the belt

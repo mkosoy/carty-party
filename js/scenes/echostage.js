@@ -407,7 +407,7 @@ export async function echostageScene(game) {
 
   setObjective('Echostage — explore the club, then start your shift behind the bar (east side).');
   // soft key light following the player — the club stays moody but you're never a silhouette
-  const heroLight = new THREE.PointLight(0xffe8c0, 9, 7);
+  const heroLight = new THREE.PointLight(0xffe8c0, 34, 9);
   scene.add(heroLight);
   return {
     update(dt) {
@@ -416,7 +416,9 @@ export async function echostageScene(game) {
       // ambient crowd murmur under the music
       if (!this._amb) { try { this._amb = positionalLoop({ type: 'noise', freq: 260, x: 0, z: 0, maxDist: 30, gain: 0.05, rate: 4 }); } catch {} }
       if (this._amb) this._amb.update(player.person.group.position.x, player.person.group.position.z);
-      heroLight.position.set(christian.group.position.x, 2.6, christian.group.position.z + 0.6);
+      const cam = window.__gameCamera;
+      if (cam) heroLight.position.set(cam.position.x, cam.position.y + 0.4, cam.position.z);
+      else heroLight.position.set(christian.group.position.x, 2.6, christian.group.position.z + 0.6);
       chatter.update(dt);
       pickupsC.update(dt, christian.group.position);
       if (state.active || christian.group.position.x > 14.8) {

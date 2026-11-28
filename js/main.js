@@ -138,6 +138,7 @@ const game = {
     await new Promise((r) => setTimeout(r, 400));
     setTimeout(() => { veil.style.opacity = '0'; }, 900);
     try { localStorage.setItem('cp-checkpoint', factory.name.replace('Scene','')); } catch {}
+    try { const { saveInventory } = await import('./engine/collectibles.js'); saveInventory(); } catch {}
     window.__sparkles = [];
     try { window.__radioStop?.(); } catch {}
     document.querySelectorAll('.scene-dom-extra').forEach((el) => el.remove());

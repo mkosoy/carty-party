@@ -52,8 +52,14 @@ import * as THREE from 'three';
 // Shared inventory across scenes: cameras for Stacy, vinyl records that
 // unlock music. Persisted on window so scene switches keep it.
 export function inventory() {
-  if (!window.__inventory) window.__inventory = { cameras: 0, records: 0, items: [] };
+  if (!window.__inventory) {
+    try { window.__inventory = JSON.parse(localStorage.getItem('cp-inventory')) || null; } catch { window.__inventory = null; }
+    if (!window.__inventory) window.__inventory = { cameras: 0, records: 0, items: [] };
+  }
   return window.__inventory;
+}
+export function saveInventory() {
+  try { localStorage.setItem('cp-inventory', JSON.stringify(window.__inventory || { cameras: 0, records: 0, items: [] })); } catch {}
 }
 
 // vintage camera: body + lens + viewfinder bump

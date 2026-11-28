@@ -27,7 +27,7 @@ const CAST = [
 ];
 const LNG0 = -77.52, LNG1 = -76.50, LAT0 = 38.84, LAT1 = 39.33;
 
-export function initMapScreen() {
+export async function initMapScreen() {
   const el = document.createElement('div');
   el.id = 'map-overlay';
   el.style.cssText = 'position:fixed;inset:0;z-index:90;display:none;background:rgba(4,6,12,.92);backdrop-filter:blur(6px);font-family:Arial,sans-serif';
@@ -42,8 +42,15 @@ export function initMapScreen() {
         <canvas id="map-canvas" style="width:100%;height:100%;border-radius:14px;box-shadow:0 10px 60px rgba(0,0,0,.6)"></canvas>
         <div id="map-pins" style="position:absolute;inset:0"></div>
       </div>
-      <div style="color:#889;font-size:12px;margin-top:6px">tap a pin to travel — roads are real: I-270 · I-95 · I-495</div>
+      <div id="cp-map-collection" style="color:#e8b64c;font-size:13px;margin-top:6px"></div>
+      <div style="color:#889;font-size:12px;margin-top:4px">tap a pin to travel — roads are real: I-270 · I-95 · I-495</div>
     </div>`;
+  try {
+    const { inventory } = await import('./engine/collectibles.js');
+    const inv = inventory();
+    const cl = el.querySelector('#cp-map-collection');
+    if (cl) cl.textContent = (inv.cameras || inv.records) ? `collection — 📷 ${inv.cameras} vintage camera${inv.cameras === 1 ? '' : 's'} · 🎵 ${inv.records} record${inv.records === 1 ? '' : 's'}` : 'find 📷 vintage cameras and 🎵 records hidden around the county';
+  } catch {}
   document.body.appendChild(el);
   const styleEl = document.createElement('style');
   styleEl.textContent = '@keyframes cpPinPulse { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(255,220,150,.35)); } 50% { transform: scale(1.12); filter: drop-shadow(0 0 10px rgba(255,220,150,.8)); } }';

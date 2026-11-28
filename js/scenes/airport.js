@@ -1012,10 +1012,17 @@ export async function airportScene(game) {
       tvTimer += dt;
       if (tvTimer > 0.25) { drawTV(elapsed); tvTimer = 0; }
 
-      // interaction prompt + trigger
+      // interaction prompt + trigger. when the phone is ringing it takes
+      // ABSOLUTE priority: otherwise a player standing near any interaction
+      // (the TV area — exactly where the game sends you) fires the flavor
+      // dialogue instead of answering, the phone rings forever, and chapter 1
+      // can never be completed. this was the real Dulles soft-lock.
       const near = interactions.nearest(christian.group.position);
       const prompt = document.getElementById('interact-prompt');
-      if (near && !near.hidden && !player.frozen) {
+      if (phase === 'ringing') {
+        prompt.textContent = 'E';
+        prompt.classList.remove('hidden');
+      } else if (near && !near.hidden && !player.frozen) {
         prompt.textContent = 'E — ' + (near.label || 'interact');
         prompt.classList.remove('hidden');
         prompt.textContent = 'E';

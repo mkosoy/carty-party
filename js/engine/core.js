@@ -468,7 +468,7 @@ export class PlayerController {
     if (moving) {
       const targetAngle = Math.atan2(x, z);
       const joyMag = Math.hypot(this.input.joyX || 0, this.input.joyY || 0);
-      const sprint = (this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight') || joyMag > 0.94) ? 1.55 : 1;
+      const sprint = (this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight') || joyMag > 0.82) ? 1.55 : 1;
       tvx = Math.sin(targetAngle) * this.speed * len * sprint;
       tvz = Math.cos(targetAngle) * this.speed * len * sprint;
       // face movement direction with shortest-arc easing
@@ -479,7 +479,7 @@ export class PlayerController {
       window.__playerFacing = targetAngle;
     }
     // sprint dust: little puffs at your heels when going fast
-    const sprinting = moving && (this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight') || Math.hypot(this.input.joyX || 0, this.input.joyY || 0) > 0.94);
+    const sprinting = moving && (this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight') || Math.hypot(this.input.joyX || 0, this.input.joyY || 0) > 0.82);
     if (sprinting && this.grounded) {
       this.puffT = (this.puffT || 0) - dt;
       if (this.puffT <= 0) {

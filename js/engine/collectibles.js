@@ -41,7 +41,7 @@ export function makeChatter(scene, people, emojis, interval = 4) {
         b.position.x = b.userData.host.position.x;
         b.position.z = b.userData.host.position.z;
         b.material.opacity = Math.min(1, b.userData.life * 3) * Math.max(0, 1 - (b.userData.life - 1.6));
-        if (b.userData.life > 2.6) { scene.remove(b); bubbles.splice(i, 1); }
+        if (b.userData.life > 2.6) { scene.remove(b); if (b.material.map) b.material.map.dispose(); b.material.dispose(); bubbles.splice(i, 1); }
       }
     },
   };

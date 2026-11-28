@@ -350,7 +350,7 @@ export class Pickups {
         b.m.scale.setScalar(1 + b.t * 5);
         b.m.material.opacity = Math.max(0, 0.95 - b.t * 2.2);
         b.m.position.y = 0.12 + b.t * 0.8;
-        if (b.t > 0.5) { this.scene.remove(b.m); this.bursts.splice(bi, 1); }
+        if (b.t > 0.5) { this.scene.remove(b.m); b.m.geometry.dispose(); b.m.material.dispose(); this.bursts.splice(bi, 1); }
       }
     }
     for (const it of this.items) {
@@ -504,7 +504,7 @@ export class PlayerController {
         p.m.scale.setScalar(1 + p.t * 3);
         p.m.position.y += dt * 0.7;
         p.m.material.opacity = Math.max(0, 0.5 - p.t * 1.1);
-        if (p.t > 0.5) { p.sc.remove(p.m); this.puffs.splice(pi, 1); }
+        if (p.t > 0.5) { p.sc.remove(p.m); p.m.geometry.dispose(); p.m.material.dispose(); this.puffs.splice(pi, 1); }
       }
     }
 

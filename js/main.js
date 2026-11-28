@@ -322,7 +322,7 @@ if (cp && cp !== 'airport') {
   const fresh = document.createElement('div');
   fresh.textContent = 'start over from the airport';
   fresh.style.cssText = 'cursor:pointer;opacity:.7;font-size:14px;margin-top:10px;text-decoration:underline';
-  fresh.addEventListener('click', () => { localStorage.removeItem('cp-checkpoint'); startGame(); }, { once: true });
+  fresh.addEventListener('click', () => { ['cp-checkpoint','cp-collected','cp-inventory'].forEach(k => localStorage.removeItem(k)); window.__inventory = null; startGame(); }, { once: true });
   sb.parentElement.appendChild(fresh);
 }
 window.__startGame = startGame;

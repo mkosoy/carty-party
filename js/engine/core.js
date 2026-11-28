@@ -330,9 +330,11 @@ export class Pickups {
     this.items = [];
   }
   add(mesh, x, z, id, onPick) {
+    let taken = false;
+    try { taken = (JSON.parse(localStorage.getItem('cp-collected') || '[]')).includes(id); } catch {}
     mesh.position.set(x, 0.5, z);
-    this.scene.add(mesh);
-    this.items.push({ mesh, id, onPick, taken: false, baseY: 0.5 });
+    if (!taken) this.scene.add(mesh);
+    this.items.push({ mesh, id, onPick, taken, baseY: 0.5 });
   }
   update(dt, playerPos) {
     const t = performance.now() / 1000;
@@ -356,6 +358,10 @@ export class Pickups {
       if (dx * dx + dz * dz < 0.55 && dy < 1.2) {
         it.taken = true;
         this.scene.remove(it.mesh);
+        try {
+          const ids = JSON.parse(localStorage.getItem('cp-collected') || '[]');
+          if (!ids.includes(it.id)) { ids.push(it.id); localStorage.setItem('cp-collected', JSON.stringify(ids)); }
+        } catch {}
         // burst: expanding gold ring so the pickup feels rewarding
         if (!this.bursts) this.bursts = [];
         const ring = new THREE.Mesh(

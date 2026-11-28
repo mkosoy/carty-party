@@ -228,8 +228,13 @@ const game = {
     hint.textContent = hintText;
     window.__sceneHint = null;
     hint.style.opacity = '1';
+    // veterans don't need the reminder long — count scenes visited and shrink
+    // the hint's screen time once the controls are clearly learned
+    let seen = 0;
+    try { seen = parseInt(localStorage.getItem('cp-scenes-seen') || '0', 10) + 1; localStorage.setItem('cp-scenes-seen', String(seen)); } catch {}
+    const hintMs = seen <= 3 ? 14000 : seen <= 6 ? 7000 : 3500;
     clearTimeout(window.__hintT);
-    window.__hintT = setTimeout(() => { hint.style.opacity = '0'; }, 14000);
+    window.__hintT = setTimeout(() => { hint.style.opacity = '0'; }, hintMs);
   },
 };
 

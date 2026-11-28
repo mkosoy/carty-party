@@ -45,6 +45,17 @@ export async function shoppingScene(game) {
     const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(0x8a4038));
     wall.position.set(x, h / 2, z);
     scene.add(wall);
+    // real-mall architecture: pale bulkhead band above the shopfront line +
+    // dark trim ledge — breaks up the huge flat wall expanse
+    const along_x = w > d;
+    const bw = along_x ? w - 0.2 : 0.5, bd = along_x ? 0.5 : d - 0.2;
+    const band = new THREE.Mesh(new THREE.BoxGeometry(along_x ? w - 0.3 : 0.52, 1.7, along_x ? 0.52 : d - 0.3), mat(0xd8cfc0));
+    band.position.set(x, 4.6, z);
+    if (!along_x) band.position.x = x; else band.position.z = z;
+    scene.add(band);
+    const trim = new THREE.Mesh(new THREE.BoxGeometry(along_x ? w - 0.1 : 0.56, 0.14, along_x ? 0.56 : d - 0.1), mat(0x4a2420));
+    trim.position.set(x, 3.72, z);
+    scene.add(trim);
   }
   const bounds = [
     { minX: -17, maxX: 17, minZ: -11.4, maxZ: -10.9 }, { minX: -17, maxX: 17, minZ: 10.9, maxZ: 11.4 },
